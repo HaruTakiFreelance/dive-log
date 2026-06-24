@@ -273,24 +273,55 @@
       letter-spacing: 0.04em;
     }
 
-    /* ── ダイブ内動画 ── */
+    /* ── ダイブ内動画スライダー ── */
     .dive-videos {
       margin-left: calc(var(--sp-xxl) * 0.9);
       margin-top: var(--sp-s);
+      position: relative;
+    }
+    .video-slider {
       display: flex;
-      flex-wrap: wrap;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
       gap: var(--sp-s);
+      padding-bottom: var(--sp-xs);
+      scrollbar-width: none;
+    }
+    .video-slider::-webkit-scrollbar { display: none; }
+    .video-slide {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      width: 100%;
+      max-width: 460px;
     }
     .video-embed {
       border: 2px solid var(--paper-d);
       box-shadow: 2px 3px 8px var(--shadow);
       overflow: hidden;
+      border-radius: 2px;
     }
     .video-embed iframe {
       display: block;
-      /* 黄金比: 幅 * (1/phi) = 高さ → 280 / 1.618 ≒ 173 */
-      width: 280px; height: 173px;
+      width: 100%;
+      aspect-ratio: 16 / 9;
     }
+    /* スライドドット */
+    .video-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: var(--sp-xs);
+    }
+    .video-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--paper-d);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .video-dot.active { background: var(--ink-fade); }
+    /* 非YouTube動画リンク */
     .video-link a {
       display: inline-flex;
       align-items: center;
@@ -515,33 +546,73 @@
 
         
         <div class="dive-videos">
-          
+          <div class="video-slider" id="slider-1">
             
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/cgi9PrpAZhE"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/cgi9PrpAZhE"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/k_mbaN7mVjI"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/k_mbaN7mVjI"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/olJ1N8qXl2w"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/olJ1N8qXl2w"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
+          </div>
+          
+          <div class="video-dots" id="dots-1">
+            
+            <div class="video-dot active"
+                 onclick="scrollToSlide('slider-0__0')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-1__1')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-2__2')">
+            </div>
+            
+          </div>
+          <script>
+          (function() {
+            var slider = document.getElementById('slider-1');
+            var dots   = document.querySelectorAll('#dots-1 .video-dot');
+            slider.addEventListener('scroll', function() {
+              var idx = Math.round(slider.scrollLeft / slider.offsetWidth);
+              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            });
+            dots.forEach(function(dot, i) {
+              dot.addEventListener('click', function() {
+                slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
+              });
+            });
+          })();
+          </script>
           
         </div>
         
@@ -626,168 +697,298 @@
 
         
         <div class="dive-videos">
-          
+          <div class="video-slider" id="slider-2">
             
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/QbhnBCNWz8k"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/QbhnBCNWz8k"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/qZPCPr96Kvs"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/qZPCPr96Kvs"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/ex6xlkx8Lv0"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/ex6xlkx8Lv0"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/WiL_yHKPkbU"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/WiL_yHKPkbU"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/EeFjhq1eHhQ"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/EeFjhq1eHhQ"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/x17myaDAjBk"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/x17myaDAjBk"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/_224hyMrmkU"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/_224hyMrmkU"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/T-dt2ViO65U"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/T-dt2ViO65U"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/5IJ0KFO4zDM"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/5IJ0KFO4zDM"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/guyeJK_AOJ0"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/guyeJK_AOJ0"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/LqGXXWo5BZU"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/LqGXXWo5BZU"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/kvMpIhu_86s"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/kvMpIhu_86s"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/D5C9uFfnsHk"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/D5C9uFfnsHk"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/PNWE3dX4Hys"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/PNWE3dX4Hys"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/xTpWeevRl1c"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/xTpWeevRl1c"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/HhRGXk9fuCQ"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/HhRGXk9fuCQ"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/0o2v7NUWjpM"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/0o2v7NUWjpM"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/mVjxH_Xwt6g"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/mVjxH_Xwt6g"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
+          </div>
+          
+          <div class="video-dots" id="dots-2">
+            
+            <div class="video-dot active"
+                 onclick="scrollToSlide('slider-0__0')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-1__1')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-2__2')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-3__3')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-4__4')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-5__5')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-6__6')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-7__7')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-8__8')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-9__9')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-10__10')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-11__11')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-12__12')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-13__13')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-14__14')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-15__15')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-16__16')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-17__17')">
+            </div>
+            
+          </div>
+          <script>
+          (function() {
+            var slider = document.getElementById('slider-2');
+            var dots   = document.querySelectorAll('#dots-2 .video-dot');
+            slider.addEventListener('scroll', function() {
+              var idx = Math.round(slider.scrollLeft / slider.offsetWidth);
+              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            });
+            dots.forEach(function(dot, i) {
+              dot.addEventListener('click', function() {
+                slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
+              });
+            });
+          })();
+          </script>
           
         </div>
         
@@ -877,87 +1078,163 @@
 
         
         <div class="dive-videos">
-          
+          <div class="video-slider" id="slider-3">
             
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/hpyVXZwm3TM"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/hpyVXZwm3TM"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/2pJUGlki5eg"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/2pJUGlki5eg"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/7vfPM4sWZSQ"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/7vfPM4sWZSQ"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/m6AyNz-lGbk"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/m6AyNz-lGbk"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/TNa4pjRh_gc"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/TNa4pjRh_gc"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/naNNTNlzR-s"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/naNNTNlzR-s"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/Tg7rBt74-U0"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/Tg7rBt74-U0"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/ypk4azUo2VU"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/ypk4azUo2VU"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
-          
-            
-            <div class="video-embed">
-              <iframe src="https://www.youtube.com/embed/oya5BWIyxf4"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+            <div class="video-slide">
+              
+              <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/oya5BWIyxf4"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              
             </div>
             
+          </div>
+          
+          <div class="video-dots" id="dots-3">
+            
+            <div class="video-dot active"
+                 onclick="scrollToSlide('slider-0__0')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-1__1')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-2__2')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-3__3')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-4__4')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-5__5')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-6__6')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-7__7')">
+            </div>
+            
+            <div class="video-dot "
+                 onclick="scrollToSlide('slider-8__8')">
+            </div>
+            
+          </div>
+          <script>
+          (function() {
+            var slider = document.getElementById('slider-3');
+            var dots   = document.querySelectorAll('#dots-3 .video-dot');
+            slider.addEventListener('scroll', function() {
+              var idx = Math.round(slider.scrollLeft / slider.offsetWidth);
+              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            });
+            dots.forEach(function(dot, i) {
+              dot.addEventListener('click', function() {
+                slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
+              });
+            });
+          })();
+          </script>
           
         </div>
         
@@ -972,7 +1249,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/dc8722e8-136b-4b58-ba0c-f0063f5a973d/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=7e419d093873a4f212343ca95393c244a46d8306c540857a0704297347f060a7&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="アオリイカの卵" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/dc8722e8-136b-4b58-ba0c-f0063f5a973d/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=123766ba24163220bbe0abe2dc857789aae73c4055188bfd35ad2cce4579ba5e&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="アオリイカの卵" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">アオリイカの卵</div>
@@ -985,7 +1262,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/57b4e3c4-e3b9-4e85-837a-67e75f8abc8f/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=cc647eefadf5f54f6346ff1307b62e91eb448f4b212175c3eac9bc06755008c1&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="アカオビハナダイ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/57b4e3c4-e3b9-4e85-837a-67e75f8abc8f/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=3ecf5d2130549ba85cd85351333f400fc453468b0b48201510df314040b95483&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="アカオビハナダイ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">アカオビハナダイ</div>
@@ -1010,7 +1287,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/77cd8661-1a90-4bb8-87a7-f7389cb64aa2/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=14e70a3b8bc69e76fc404e7db4aac9b34928087c7a3c58aaab2cf99fffa9df73&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ウツボ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/77cd8661-1a90-4bb8-87a7-f7389cb64aa2/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=995981a98c95318f2140677636035154843a99f4ff8efa7350019791bf460c0d&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ウツボ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">ウツボ</div>
@@ -1035,7 +1312,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/152ca0e7-3557-4251-a5fa-0d6d423d1905/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=ba9ef1e325791cf16c6f59ad27eeece89d533604724f68bc9a24373dc3e8fd66&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="オトヒメエビ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/152ca0e7-3557-4251-a5fa-0d6d423d1905/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=a4893f276a2ce0a4c5054827ed0706617b5db21bd8e3352737b6a6e176f3a02a&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="オトヒメエビ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">オトヒメエビ</div>
@@ -1048,7 +1325,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/cd1d133b-8f5b-4faf-9e32-ae16ab07c0e4/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=702025cc6854e9598da2c55f74244014beaa00ca668ebcb43601308ea477926b&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="キビナゴ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/cd1d133b-8f5b-4faf-9e32-ae16ab07c0e4/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=8a7c7fa919eccfd7969ef46f6c7155ab89f3497a769dfb63d0a95ea428083c74&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="キビナゴ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">キビナゴ</div>
@@ -1073,7 +1350,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/d1cf84c7-3fe0-4aba-a648-81056ca54ea3/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=02e1fc007cfdcc02b8f1678ae0cffa98c7ebffd1d1e183b77407bdcbc0e7ee9c&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="キンギョハナダイ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/d1cf84c7-3fe0-4aba-a648-81056ca54ea3/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=911e91357e740795d56f8a8de8ed6ce5f4a31de507c306cac1dc8938b204fa85&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="キンギョハナダイ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">キンギョハナダイ</div>
@@ -1098,7 +1375,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/1bd4330e-2df4-410d-9022-3a625bd9fd5e/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=0381c543457361f648f34a15e93c69428927c8c984956f48f6002af1fd1683ab&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="クマノミ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/1bd4330e-2df4-410d-9022-3a625bd9fd5e/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=d4339a1254ac4cfbe1494bcfaab97cb03cd8ec1b25fa1578e8a1cdf67d47096f&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="クマノミ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">クマノミ</div>
@@ -1123,7 +1400,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/baf63468-e663-4d1f-9fd3-4148fff06f96/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=62a3b5ca8bfc985d1cf02ef720d3292ea958a58c2104e3e6f66bff2d845154bf&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="クロホシイシモチ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/baf63468-e663-4d1f-9fd3-4148fff06f96/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=57d94a316100ff034b5aa3b4c7bb66d6f6d28d46c24aee3968f9ea05c55b2635&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="クロホシイシモチ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">クロホシイシモチ</div>
@@ -1148,7 +1425,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/c9f8e752-7f0e-4e56-84d4-268e5b728949/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=871605144529c18106da05c6aa6399a1b49a4b0baca8be12d1e20be85b1760a0&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="サカタザメ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/c9f8e752-7f0e-4e56-84d4-268e5b728949/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=ad6cb69d32411be8fc44525f7e71cc18749e295216bff1e1c654a847004f0496&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="サカタザメ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">サカタザメ</div>
@@ -1161,7 +1438,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/1114306d-a248-416c-be90-90078dde46b5/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=5d1d245c7353ef2145788ab4867aeeadf8d64837b4e3fbc8ff27b4133c38bb1f&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="セトミノカサゴ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/1114306d-a248-416c-be90-90078dde46b5/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=aa1ac7a6ce26cf0a03fdd34bdf736db96f3ba10ec4542978d15a733a64c66637&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="セトミノカサゴ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">セトミノカサゴ</div>
@@ -1186,7 +1463,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/646ef9d8-5a33-4e3b-b525-e124d016e81b/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=c14ab3912b226171219fa59ba6d3f472015e5dc9dafe2bb04543b09f5123b769&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="トラウツボ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/646ef9d8-5a33-4e3b-b525-e124d016e81b/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=3fb3b488705ca1079743257f498ee5bdbe1b2a4eb8c5fd0c1f298b7b5569ba07&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="トラウツボ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">トラウツボ</div>
@@ -1211,7 +1488,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/79afa613-d167-4d06-9b7d-25663d9e88e7/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=99967ec568f0dd0bcea754fb861f0f4cc45f0ea3c0de00cf94b1adb5f7dc6593&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ニザダイ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/79afa613-d167-4d06-9b7d-25663d9e88e7/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=678e7be19ff8b2c4e9b30f901a95fdffcf62d9e8ef1be36a249b6c352510a0a5&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ニザダイ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">ニザダイ</div>
@@ -1236,7 +1513,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/e8e76f69-0291-407f-93c0-177b0476aa55/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=f2b0d1572fab80ed42821f1a78fe552dde8cff0a7a6a9f06617fc3512122e8ee&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ネンブツダイ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/e8e76f69-0291-407f-93c0-177b0476aa55/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=d6624fd9919273c4c2b093e0cadcb4349f5a1b74d4448e94c5fc62c39b0715f7&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ネンブツダイ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">ネンブツダイ</div>
@@ -1261,7 +1538,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/194fc0ec-8331-478e-8fa9-e638047ff59d/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=a7a25efa703bf09ed89c266bc2a6ca46a62398416cbe0c8c1d5489b968127310&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ヒフキヨウジ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/194fc0ec-8331-478e-8fa9-e638047ff59d/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=3e8e20dbd32ba5497b1973e1d391a5e2558f24d03fcb3e2c6a18143b8cf3f699&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ヒフキヨウジ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">ヒフキヨウジ</div>
@@ -1274,7 +1551,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/23d89ab1-095d-4c46-b493-ed633677b420/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=4940df3f0f1ee87ccd789e7ea25076a44d827ddb49229e4c51411fd6c1da0539&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ホウボウ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/23d89ab1-095d-4c46-b493-ed633677b420/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=a87bb9549f7aea7010192f648ba63f064ecd4b0ba63e55da6af87bc0ef3238de&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ホウボウ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">ホウボウ</div>
@@ -1299,7 +1576,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/3485daae-05aa-46fb-90ef-37d86a13f0e7/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=063311ab8ddd2921f9e6207fe056ac9e4dbf880c48608a68d37fd6d9762ccb51&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ボラ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/3485daae-05aa-46fb-90ef-37d86a13f0e7/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=3dc85c765877eb2e00942d0c67c7044e2ec9ee83eba7b518d5a1535d828fc79c&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ボラ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">ボラ</div>
@@ -1324,7 +1601,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/35aeb8c0-55fd-4728-8140-0d5691c7003b/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=f4a5af8c4a1be5f062bfcfdd789597c604632fef18df5926296ade810d230d8e&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="マツカサウオ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/35aeb8c0-55fd-4728-8140-0d5691c7003b/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=ba63f95cf32f8326d6458ff452fa1c09e4ec418badf1b9f59f842fae760d5c39&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="マツカサウオ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">マツカサウオ</div>
@@ -1349,7 +1626,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/9c03870f-0321-4806-b6d9-068bcd48f38b/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=d213ca3ac903ca0da83841d88fe9af6665f33f2fd001429737e0efe3ec4bf470&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="マトウダイ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/9c03870f-0321-4806-b6d9-068bcd48f38b/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=3ad95400a17467665d71a7d6fc65826d2c0705b4ed57f51929d390be4eb02f2f&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="マトウダイ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">マトウダイ</div>
@@ -1362,7 +1639,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/3ab32a9a-2d4b-4dc8-bc64-23dbad9fe457/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=464678bc43bda215999dd6809fa9fd1215005cdba3fab6189ede3f76a1e11e86&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ミジンベニハゼ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/3ab32a9a-2d4b-4dc8-bc64-23dbad9fe457/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=eff1ca77d9a661cfc8411f03b793ae842ccb59fae3459d83ce19926e1eb291b4&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ミジンベニハゼ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">ミジンベニハゼ</div>
@@ -1387,7 +1664,7 @@
           
           <div class="fish-card">
             
-            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/3177d826-fbb5-4526-9b57-4dbfcd168734/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466Z6QERR3X%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182015Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDe6qZADq3qM2wxcgL0%2BhvwFb7Ww3mq8pIDM1GNyk3m2QIgBPLcJRlaF3b9Y6E2%2FzcPRpJojsPdcip6Q8a1ruWtf4gq%2FwMIOhAAGgw2Mzc0MjMxODM4MDUiDBua3QzxLkS8TxYgrCrcA3Dm%2FPyRMQrByMdwzk9%2FCy%2Fw%2FsgrQkwygB8E80GkBucvw1quY3b56HcU3o%2FWXmeKz5Ueu9bsetgWJsZ0kXI%2BwTHPZcmB3lfX%2ByVp2kHUgymsecoHw5Cuwp2Rku54J%2Bpcv6AT4mirLv74xZgG1IGoGtgA3PNe7rPxBGAbPQiWC66kiQBt5kl0TT3vW0dWUl5PDTfY7C8PMAvoXzWFO7zJRnG7OhqF7ufzy%2FvEqJ1BWL5fO%2F%2BkZq7cKuJNw9UUNpFUA5Z2PWjn5K8x6XJ%2FwKy%2FHEAGn%2FbUsI6mGohYBzS4%2F3%2BdTXme%2B4voA5c8j88Ym5mXR%2FAyKA3IlC%2FdW4MxDphWzHJWOL55TCg9yhRRukI8neua8TMCMGCWx%2B8e50SHLfRcvzU5pFtzw8%2FEEAuxr0gcBCh6FuVP9FGgotVmPMUEwYIl0gm5aadkkStzCvBQ7FfwvsSuWwja9q3RCXTFKOvAib65jnm0zeHFfMRYgk19MShl7h1kAvs37zlwpV2o5PpYNIPFhuap4RE5zvcipCQDb98cDeS%2BLNa7br1LY4VajTxHCh3gVhigtRWSJZ5OeSms9EPFhqeAmNuQ0Wjm%2FehTwxSlAPKd9K4Km437xSJE6eVUkifmypdNZurvPC6eMPiT8NEGOqUBTseZLHSM9TatDRFJ7U%2BVy5tXZkdCvEVs2m%2BPY0GF7RDg%2B6L%2Fcfdhst4Q%2BPbGhu9QbPyaCO7JdjSTzRcdq0aZuf72FfMCDuCUfq2mpoy0eYIDg3MwUFsu99jPnZ%2BTVXFJV%2BImgXtLuFPoOUSI2D1MlgpJHUlv%2FyCVD34%2FRh7gwcgOTGemyh5OtmYRaSgj7UzEVfj8tDAFz87YyquhVGotkYMzpR27&amp;X-Amz-Signature=1dd66d369a2b60c15e321615bc8ffa9bc16c1c5574dc21ee9ba82060a20acf2b&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ミノカサゴ" loading="lazy"
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/3177d826-fbb5-4526-9b57-4dbfcd168734/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB4666FELLUTU%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T182656Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJIMEYCIQDORN9MTSYhDnrdO0VtmbPOBZbkqDpORAwr5VcJ7NxXOwIhAPgeh4QmAzw1GAVqoTlf%2BzTXZrGGfyEDIOw8jkMtPDIoKv8DCDoQABoMNjM3NDIzMTgzODA1IgwQH3emeTZLzsxWcFEq3AOlVrDJt2vyHxFc6IvLYBWmmrPtwGYR59MJ6GmbvT9HURGbIs6ePNGqlFqvs%2FYNJYhAbsc93BR%2BzcNSOtdEB4gHrTreETbQGRWU9K9b8HxNys51b0BLGITQKfIwdz2zfY3GVG4tvCSBmv3zdO7o8bfyWtLFBKVE1EwIO9l3zdtIhhhG7chCElesepPWfUYpbJvshiU%2FFdKqiPmz0CZJFEKzVeB8XiB%2FNNuvFlgVwxYE4JvOvasdIFIEs%2FHO8V1k4YUiHG6KOH%2BkOEOZ85FicR3RoC3ODKRJBqoYSx9pTlYD7X9mOiZtyM7CnWQwbvWPXAZlFGC%2FsynzDUQk0k%2F8lACgOWTU7ypxPDcpkU88GHoVGIvpHaxU7yVHeIEc2ap%2BzN01uWrIiV4e%2BZAz4crA7H%2Bmb%2BNiOxFhpWi0dBG6dWPcLOi2HS5iSPSjAT5OuGYN92HAMn3d4NR9TbL%2B4S9FZymeSOXwjUWMaeLj2G7uB%2BF9cyTy0NBNeyXa32f04MuPhB57hY8%2BlKAmaeU7k2RzqyXMPqZl%2BM040Olrz0q6oaSz%2B9J5uMi8ao6fNUWp27xPsmJ%2FKcupNlRyj8NFyQ8g9sSNXBuVXUSijvXhPcP1pE3c3DWbBaqlR7Tr69XyCjDukvDRBjqkAaLNI26ikNbB%2Bl%2FiV%2FjC%2FZ4I0jR773EJpTi1pGYAtoXoiJf9Xs%2BAuUJeOFcyT8QZmLfWGVGN6HHtrtxY9Sr4PoJNtcibInnDVDZKAn7ham2SI3vO5XRSO5mE0t41%2BjML7QpDAPZFGwJCQ8DAbyglGZW0TJYBQjvG2h5hO4LIOKFlsWXk%2BDrt2IM%2FGppXfLZYCxjecVYLX1qUnayqSKzUlCYxamVF&amp;X-Amz-Signature=d9107792aae770c2ff3a3519bb10163e3398a11f31b285ad9d671a165b5f5e3f&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ミノカサゴ" loading="lazy"
                  onerror="this.style.display='none'">
             
             <div class="fish-name-ja">ミノカサゴ</div>

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %} — 写真ログ入力{% endblock %}
+
+{% block content %}
+<div class="card">
+  <a href="/" style="font-size:.85rem; color:var(--sub); text-decoration:none;">← モード選択に戻る</a>
+
+  <h2 class="card-title" style="margin-top:12px;">📷 写真ログ</h2>
+  <p class="card-sub">1日単位で記録します</p>
+
+  <form action="/photo" method="POST" enctype="multipart/form-data" class="form" id="photo-form">
+
+    <div class="field-row">
+      <div class="field">
+        <label>日付</label>
+        <input type="date" name="date" value="{{ today }}" required>
+      </div>
+      <div class="field">
+        <label>場所（任意）</label>
+        <input type="text" name="location" placeholder="例: 串本" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>写真・動画をアップロード</label>
+      <div id="photo-list"></div>
+      <button type="button" class="btn btn-secondary" id="btn-add-photo" style="margin-top:8px; width:100%;">
+        + ファイルを追加
+      </button>
+      <p style="font-size:.75rem; color:var(--sub); margin-top:6px;">
+        JPG / PNG / MP4 / MOV など。複数ファイル同時選択も可。
+      </p>
+    </div>
+
+    <div class="field">
+      <label>コメント・メモ</label>
+      <textarea name="comment" rows="3" placeholder="この日の写真についてメモ"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-full" id="btn-submit">保存する</button>
+  </form>
+</div>
+
+<script>
+let rowCount = 0;
+
+function addFileRow() {
+  const idx = rowCount++;
+  const row = document.createElement('div');
+  row.className = 'photo-row';
+  row.innerHTML = `
+    <div class="field" style="margin-bottom:4px; flex:1;">
+      <input type="file" name="photo_file" accept="image/*,video/*" multiple
+             style="margin-bottom:4px;">
+      <input type="text" name="photo_caption" placeholder="キャプション（任意）">
+    </div>
+    <button type="button" class="photo-remove" onclick="this.closest('.photo-row').remove()">✕</button>
+  `;
+  document.getElementById('photo-list').appendChild(row);
+}
+
+document.getElementById('btn-add-photo').addEventListener('click', addFileRow);
+addFileRow();
+
+// 送信中ローディング表示
+document.getElementById('photo-form').addEventListener('submit', () => {
+  const btn = document.getElementById('btn-submit');
+  btn.textContent = '⏳ アップロード中...';
+  btn.disabled = true;
+});
+</script>
+
+<style>
+.photo-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.photo-row .field { flex: 1; }
+.photo-remove {
+  background: none;
+  border: none;
+  color: var(--sub);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 10px 4px 0;
+  flex-shrink: 0;
+}
+</style>
+{% endblock %}

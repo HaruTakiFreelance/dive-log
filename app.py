@@ -122,16 +122,24 @@ def photo_form():
 
 @app.route("/photo", methods=["POST"])
 def save_photo():
+    import uuid, re
     f = request.form
-    # 写真URLとキャプションをペアで受け取り「URL | キャプション」形式で結合
-    urls     = f.getlist("photo_url")
+    files    = request.files.getlist("photo_file")
     captions = f.getlist("photo_caption")
+
+    photos_dir = Path(__file__).parent / "docs" / "photos"
+    photos_dir.mkdir(parents=True, exist_ok=True)
+
     lines = []
-    for url, cap in zip(urls, captions):
-        url = url.strip()
-        if not url:
+    for file, cap in zip(files, captions):
+        if not file or not file.filename:
             continue
-        lines.append(f"{url} | {cap.strip()}" if cap.strip() else url)
+        # 安全なファイル名に変換
+        ext = Path(file.filename).suffix.lower()
+        safe_name = f"{f['date']}_{uuid.uuid4().hex[:8]}{ext}"
+        file.save(photos_dir / safe_name)
+        rel_path = f"photos/{safe_name}"
+        lines.append(f"{rel_path} | {cap.strip()}" if cap.strip() else rel_path)
 
     notion.add_photo_log({
         "date":     f["date"],

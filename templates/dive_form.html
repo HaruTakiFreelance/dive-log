@@ -1,0 +1,438 @@
+{% extends "base.html" %}
+{% block title %} — #{{ dive_number }} 入力{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 class="card-title">🌊 第{{ dive_number }}本目</h2>
+  <p class="card-sub">{{ location }} · {{ date }}</p>
+
+  <form class="form" id="dive-form">
+    <input type="hidden" name="action" id="form-action" value="done">
+
+    <div class="field">
+      <label>ポイント</label>
+      <input type="text" name="point" placeholder="例: 内湾" autocomplete="off">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>開始時刻</label>
+        <input type="time" name="start_time" required>
+      </div>
+      <div class="field">
+        <label>終了時刻</label>
+        <input type="time" name="end_time" required>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Max Depth (m)</label>
+        <input type="number" name="max_depth" step="0.1" min="0" placeholder="例: 18.4" required>
+      </div>
+      <div class="field">
+        <label>費用 (円)</label>
+        <input type="number" name="cost" min="0" placeholder="例: 9000">
+      </div>
+    </div>
+
+    <!-- 見れた魚 -->
+    <div class="field">
+      <label>見れた魚</label>
+      <div class="fish-widget">
+        <div class="fish-chips" id="fish-chips"></div>
+        <input type="text" id="fish-input" placeholder="魚名を入力して検索..."
+               autocomplete="off" autocorrect="off" spellcheck="false">
+        <div class="fish-dropdown" id="fish-dropdown" hidden></div>
+        <input type="hidden" name="fish_ids" id="fish-ids-input">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>コメント・メモ</label>
+      <textarea name="comment" rows="3"
+                placeholder="透明度よかった、ウミウシ多め、など自由に"></textarea>
+    </div>
+
+    <div class="field">
+      <label>動画リンク（複数の場合は改行区切り）</label>
+      <textarea name="video_links" rows="2" placeholder="https://youtube.com/..."></textarea>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-secondary" id="btn-add-more">
+        + もう1本追加
+      </button>
+      <button type="button" class="btn btn-primary" id="btn-done">
+        保存して終了
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- 新規魚 一括確認モーダル -->
+<div class="modal-overlay" id="bulk-overlay" hidden>
+  <div class="modal modal-wide">
+    <h3 class="modal-title">🐟 新しい魚を図鑑に登録します</h3>
+    <p class="modal-sub">AIが情報を入力しています。確認・修正してから保存してください。</p>
+    <div id="bulk-fish-list"></div>
+    <div id="bulk-error" class="modal-error" hidden></div>
+    <div class="btn-group" style="margin-top:16px">
+      <button class="btn btn-secondary" id="bulk-cancel">キャンセル</button>
+      <button class="btn btn-primary"   id="bulk-confirm">登録して保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DIVE_DATE = '{{ date }}';
+
+// ─────────────────────────────────────────
+// 魚の状態管理（必ず pageshow ハンドラより先に宣言）
+// ─────────────────────────────────────────
+const dbFish      = new Map(); // notionId  -> name  （DB登録済み）
+const pendingFish = new Map(); // 'new_N'   -> name  （未登録・一括確認待ち）
+let   tempCounter = 0;
+
+// ─────────────────────────────────────────
+// モーダルを確実に閉じる共通関数
+// ─────────────────────────────────────────
+function closeBulkModal() {
+  document.getElementById('bulk-overlay').hidden = true;
+}
+
+// ─────────────────────────────────────────
+// ページ表示時に必ずモーダルを閉じ状態に初期化
+// （ブラウザの戻るボタンによるbfcacheリストア対策）
+// ─────────────────────────────────────────
+window.addEventListener('pageshow', () => {
+  closeBulkModal();
+  dbFish.clear();
+  pendingFish.clear();
+  tempCounter = 0;
+  renderChips();
+});
+
+// ページが非表示になる直前（bfcacheに保存される前）にモーダルを閉じる
+// これによりbfcache復元時にモーダルが開き状態で出てくるのを防ぐ
+window.addEventListener('pagehide', () => {
+  closeBulkModal();
+});
+
+// ESCキーでもモーダルを閉じる
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeBulkModal();
+});
+
+// オーバーレイ背景クリックでモーダルを閉じる
+document.getElementById('bulk-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('bulk-overlay')) closeBulkModal();
+});
+
+function renderChips() {
+  const c = document.getElementById('fish-chips');
+  c.innerHTML = '';
+
+  dbFish.forEach((name, id) => {
+    c.appendChild(makeChip(name, id, false));
+  });
+  pendingFish.forEach((name, id) => {
+    c.appendChild(makeChip(name, id, true));
+  });
+
+  syncHiddenInput();
+}
+
+function makeChip(name, id, isPending) {
+  const chip = document.createElement('span');
+  chip.className = `fish-chip${isPending ? ' fish-chip-new' : ''}`;
+  chip.innerHTML = `${isPending ? '🆕 ' : ''}${name} <button type="button" data-id="${id}" data-pending="${isPending}">×</button>`;
+  chip.querySelector('button').addEventListener('click', () => {
+    if (isPending) pendingFish.delete(id);
+    else           dbFish.delete(id);
+    renderChips();
+  });
+  return chip;
+}
+
+function syncHiddenInput() {
+  // 送信時は DB 登録済みの ID のみ（pending は後で追加される）
+  document.getElementById('fish-ids-input').value = [...dbFish.keys()].join(',');
+}
+
+// ─────────────────────────────────────────
+// 魚検索ドロップダウン
+// ─────────────────────────────────────────
+const fishInput = document.getElementById('fish-input');
+const dropdown  = document.getElementById('fish-dropdown');
+let   timer     = null;
+
+fishInput.addEventListener('input', () => {
+  clearTimeout(timer);
+  const q = fishInput.value.trim();
+  if (!q) { dropdown.hidden = true; return; }
+  timer = setTimeout(() => fetchAndRender(q), 300);
+});
+
+async function fetchAndRender(q) {
+  const res  = await fetch(`/fish/search?q=${encodeURIComponent(q)}`);
+  const list = await res.json();
+
+  dropdown.innerHTML = '';
+  dropdown.hidden    = false;
+
+  list.forEach(fish => {
+    const item = document.createElement('div');
+    item.className   = 'dropdown-item';
+    item.textContent = fish.name;
+    item.addEventListener('click', () => {
+      dbFish.set(fish.id, fish.name);
+      renderChips();
+      fishInput.value = '';
+      dropdown.hidden = true;
+    });
+    dropdown.appendChild(item);
+  });
+
+  // 未登録追加オプション（常に末尾に表示）
+  const addItem = document.createElement('div');
+  addItem.className   = 'dropdown-item dropdown-add';
+  addItem.textContent = `「${q}」を新規追加（後で登録）`;
+  addItem.addEventListener('click', () => {
+    const id = `new_${tempCounter++}`;
+    pendingFish.set(id, q);
+    renderChips();
+    fishInput.value = '';
+    dropdown.hidden = true;
+  });
+  dropdown.appendChild(addItem);
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.fish-widget')) dropdown.hidden = true;
+});
+
+// ─────────────────────────────────────────
+// フォーム送信 → 未登録魚があれば一括確認へ
+// ─────────────────────────────────────────
+function handleSubmit(action) {
+  document.getElementById('form-action').value = action;
+
+  const startTime = document.querySelector('[name="start_time"]').value;
+  const endTime   = document.querySelector('[name="end_time"]').value;
+  const maxDepth  = document.querySelector('[name="max_depth"]').value;
+
+  if (!startTime || !endTime || !maxDepth) {
+    let missing = [];
+    if (!startTime) missing.push('開始時刻');
+    if (!endTime)   missing.push('終了時刻');
+    if (!maxDepth)  missing.push('Max Depth');
+
+    let errEl = document.getElementById('form-error');
+    if (!errEl) {
+      errEl = document.createElement('div');
+      errEl.id        = 'form-error';
+      errEl.className = 'alert alert-error';
+      document.getElementById('dive-form').prepend(errEl);
+    }
+    errEl.textContent = `⚠️ 未入力項目があります: ${missing.join('、')}`;
+    errEl.hidden = false;
+    return;
+  }
+
+  const errEl = document.getElementById('form-error');
+  if (errEl) errEl.hidden = true;
+
+  if (pendingFish.size === 0) {
+    submitForm(action);
+    return;
+  }
+  openBulkModal(action);
+}
+
+document.getElementById('btn-add-more').addEventListener('click', () => handleSubmit('add_more'));
+document.getElementById('btn-done').addEventListener('click',     () => handleSubmit('done'));
+
+function submitForm(action) {
+  const form   = document.getElementById('dive-form');
+  const hidden = document.createElement('input');
+  hidden.type  = 'hidden';
+  hidden.name  = 'action';
+  hidden.value = action;
+  form.appendChild(hidden);
+  form.method = 'POST';
+  form.action = '/dive';
+  form.submit();
+}
+
+// ─────────────────────────────────────────
+// 一括確認モーダル
+// ─────────────────────────────────────────
+let pendingAction = 'done';
+
+function openBulkModal(action) {
+  pendingAction = action;
+  const overlay  = document.getElementById('bulk-overlay');
+  const list     = document.getElementById('bulk-fish-list');
+  overlay.hidden = false;
+  list.innerHTML = '';
+  document.getElementById('bulk-error').hidden = true;
+  document.getElementById('bulk-confirm').disabled = false;
+
+  // 各魚のフォームを作りつつ、AI取得を並列で走らせる
+  pendingFish.forEach((name, tempId) => {
+    const item = buildFishItem(tempId, name);
+    list.appendChild(item);
+    fetchFishInfo(tempId, name); // 非同期・並列
+  });
+}
+
+function buildFishItem(tempId, name) {
+  const div = document.createElement('div');
+  div.className    = 'bulk-fish-item';
+  div.dataset.id   = tempId;
+  div.innerHTML = `
+    <div class="bulk-fish-header">
+      <span class="bulk-fish-name">${name}</span>
+      <span class="bulk-loading" id="loading-${tempId}">取得中...</span>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>英名</label>
+        <input type="text" id="en-${tempId}" placeholder="—">
+      </div>
+      <div class="field">
+        <label>学名</label>
+        <input type="text" id="sci-${tempId}" placeholder="—">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>分類</label>
+        <select id="cat-${tempId}">
+          <option>魚類</option><option>甲殻類</option><option>軟体動物</option>
+          <option>棘皮動物</option><option>爬虫類</option><option>哺乳類</option>
+          <option>その他</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>サムネイルURL（任意）</label>
+        <input type="url" id="thumb-${tempId}" placeholder="https://...">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>目</label>
+        <input type="text" id="order-${tempId}" placeholder="—" readonly style="background:#f9f9f9">
+      </div>
+      <div class="field">
+        <label>科</label>
+        <input type="text" id="family-${tempId}" placeholder="—" readonly style="background:#f9f9f9">
+      </div>
+      <div class="field">
+        <label>属</label>
+        <input type="text" id="genus-${tempId}" placeholder="—" readonly style="background:#f9f9f9">
+      </div>
+    </div>
+    <div class="field">
+      <label>メモ</label>
+      <textarea id="memo-${tempId}" rows="2"></textarea>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>レア度</label>
+        <input type="text" id="rarity-${tempId}" placeholder="—" readonly style="background:#f9f9f9">
+      </div>
+      <div class="field">
+        <label>人気</label>
+        <input type="text" id="popularity-${tempId}" placeholder="—" readonly style="background:#f9f9f9">
+      </div>
+      <div class="field">
+        <label>撮りやすさ</label>
+        <input type="text" id="photo-ease-${tempId}" placeholder="—" readonly style="background:#f9f9f9">
+      </div>
+    </div>
+  `;
+  return div;
+}
+
+async function fetchFishInfo(tempId, name) {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 10000);
+  try {
+    const res  = await fetch('/fish/suggest', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name}),
+      signal: ctrl.signal,
+    });
+    clearTimeout(timer);
+    const info = await res.json();
+    if (info.english_name)    document.getElementById(`en-${tempId}`).value         = info.english_name;
+    if (info.scientific_name) document.getElementById(`sci-${tempId}`).value        = info.scientific_name;
+    if (info.category)        document.getElementById(`cat-${tempId}`).value        = info.category;
+    if (info.memo)            document.getElementById(`memo-${tempId}`).value       = info.memo;
+    if (info.order)           document.getElementById(`order-${tempId}`).value      = info.order;
+    if (info.family)          document.getElementById(`family-${tempId}`).value     = info.family;
+    if (info.genus)           document.getElementById(`genus-${tempId}`).value      = info.genus;
+    if (info.rarity)          document.getElementById(`rarity-${tempId}`).value     = info.rarity;
+    if (info.popularity)      document.getElementById(`popularity-${tempId}`).value = info.popularity;
+    if (info.photo_ease)      document.getElementById(`photo-ease-${tempId}`).value = info.photo_ease;
+  } catch { /* タイムアウト時は手動入力 */ } finally {
+    clearTimeout(timer);
+    const el = document.getElementById(`loading-${tempId}`);
+    if (el) el.hidden = true;
+  }
+}
+
+document.getElementById('bulk-cancel').addEventListener('click', () => {
+  closeBulkModal();
+});
+
+document.getElementById('bulk-confirm').addEventListener('click', async () => {
+  const btn    = document.getElementById('bulk-confirm');
+  const errEl  = document.getElementById('bulk-error');
+  btn.disabled = true;
+  btn.textContent = '登録中...';
+  errEl.hidden = true;
+
+  try {
+    // 未登録魚を順番にDB追加（IDが必要なので直列）
+    for (const [tempId, name] of pendingFish) {
+      const res = await fetch('/fish/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          name,
+          english_name:    document.getElementById(`en-${tempId}`).value,
+          scientific_name: document.getElementById(`sci-${tempId}`).value,
+          category:        document.getElementById(`cat-${tempId}`).value,
+          memo:            document.getElementById(`memo-${tempId}`).value,
+          order:           document.getElementById(`order-${tempId}`).value,
+          family:          document.getElementById(`family-${tempId}`).value,
+          genus:           document.getElementById(`genus-${tempId}`).value,
+          rarity:          document.getElementById(`rarity-${tempId}`).value,
+          popularity:      document.getElementById(`popularity-${tempId}`).value,
+          photo_ease:      document.getElementById(`photo-ease-${tempId}`).value,
+          thumbnail_url:   document.getElementById(`thumb-${tempId}`).value,
+          first_seen:      DIVE_DATE,
+        }),
+      });
+      const data = await res.json();
+      dbFish.set(data.id, name); // 本物のIDに昇格
+    }
+
+    pendingFish.clear();
+    syncHiddenInput();
+    document.getElementById('bulk-overlay').hidden = true;
+    submitForm(pendingAction);
+
+  } catch (e) {
+    errEl.textContent = '登録中にエラーが発生しました。もう一度お試しください。';
+    errEl.hidden = false;
+    btn.disabled = false;
+    btn.textContent = '登録して保存';
+  }
+});
+</script>
+{% endblock %}

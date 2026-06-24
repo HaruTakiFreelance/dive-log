@@ -1,0 +1,556 @@
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 743-959-743
+ * Detected change in '/Users/harutakizawa/Desktop/claude code/dive-log/app.py', reloading
+ * Restarting with stat
+/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/resource_tracker.py:396: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown: {'/mp-8epdc9sm'}
+  warnings.warn(
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [24/Jun/2026 22:10:40] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:11:21] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:11:21] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 22:11:40] "[32mPOST /session HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 22:11:40] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:11:40] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 22:12:44] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:12:44] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 22:12:46] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:12:46] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 22:12:47] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:12:47] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 22:12:48] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:12:55] "[32mPOST /session HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 22:12:55] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:12:55] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [24/Jun/2026 22:14:48] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:17:59] "[32mGET /dive HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 22:17:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:17:59] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [24/Jun/2026 22:20:33] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:23:28] "[32mPOST /session HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 22:23:28] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:23:28] "GET /static/style.css HTTP/1.1" 200 -
+[2026-06-24 22:23:30,150] ERROR in app: Exception on /dive [POST]
+Traceback (most recent call last):
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/app.py", line 67, in save_dive
+    start_dt = datetime.strptime(f["start_time"], "%H:%M")
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/_strptime.py", line 815, in _strptime_datetime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/_strptime.py", line 555, in _strptime
+    raise ValueError("time data %r does not match format %r" %
+                     (data_string, format))
+ValueError: time data '' does not match format '%H:%M'
+127.0.0.1 - - [24/Jun/2026 22:23:30] "[35m[1mPOST /dive HTTP/1.1[0m" 500 -
+[2026-06-24 22:23:39,896] ERROR in app: Exception on /dive [POST]
+Traceback (most recent call last):
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/app.py", line 67, in save_dive
+    start_dt = datetime.strptime(f["start_time"], "%H:%M")
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/_strptime.py", line 815, in _strptime_datetime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/_strptime.py", line 555, in _strptime
+    raise ValueError("time data %r does not match format %r" %
+                     (data_string, format))
+ValueError: time data '' does not match format '%H:%M'
+127.0.0.1 - - [24/Jun/2026 22:23:39] "[35m[1mPOST /dive HTTP/1.1[0m" 500 -
+[2026-06-24 22:24:38,797] ERROR in app: Exception on /dive [POST]
+Traceback (most recent call last):
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/venv/lib/python3.14/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/harutakizawa/Desktop/claude code/dive-log/app.py", line 67, in save_dive
+    start_dt = datetime.strptime(f["start_time"], "%H:%M")
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/_strptime.py", line 815, in _strptime_datetime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/_strptime.py", line 555, in _strptime
+    raise ValueError("time data %r does not match format %r" %
+                     (data_string, format))
+ValueError: time data '' does not match format '%H:%M'
+127.0.0.1 - - [24/Jun/2026 22:24:38] "[35m[1mPOST /dive HTTP/1.1[0m" 500 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [24/Jun/2026 22:37:16] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:43:07] "[32mGET /dive HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 22:43:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:43:08] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 22:43:18] "[32mPOST /session HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 22:43:18] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 22:43:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 22:43:20] "[31m[1mPOST /dive HTTP/1.1[0m" 400 -
+127.0.0.1 - - [24/Jun/2026 22:46:22] "[31m[1mPOST /dive HTTP/1.1[0m" 400 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [24/Jun/2026 22:58:13] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:00:17] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:00:17] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 23:00:33] "[32mPOST /session HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 23:00:33] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:00:33] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 23:00:34] "[31m[1mPOST /dive HTTP/1.1[0m" 400 -
+127.0.0.1 - - [24/Jun/2026 23:02:44] "[31m[1mPOST /dive HTTP/1.1[0m" 400 -
+127.0.0.1 - - [24/Jun/2026 23:02:47] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:02:48] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:02:48] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 23:02:50] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:02:50] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [24/Jun/2026 23:05:26] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:06:07] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:06:07] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 23:06:18] "[32mPOST /session HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 23:06:18] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:06:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 23:06:19] "[31m[1mPOST /dive HTTP/1.1[0m" 400 -
+127.0.0.1 - - [24/Jun/2026 23:06:21] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:09:52] "[32mGET /dive HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 23:11:06] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:11:06] "GET /static/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:11:06] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [24/Jun/2026 23:11:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:11:13] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:11:13] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 23:11:22] "[32mPOST /session HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 23:11:22] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:11:22] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 23:12:00] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:12:19] "[32mPOST /session HTTP/1.1[0m" 302 -
+127.0.0.1 - - [24/Jun/2026 23:12:19] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:12:19] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [24/Jun/2026 23:25:04] "GET /fish/search?q=ほうh HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:05] "GET /fish/search?q=ほう HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:06] "GET /fish/search?q=ホウボウ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:07] "GET /fish/search?q=ホウボウ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:18] "GET /fish/search?q=みに HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:18] "GET /fish/search?q=み HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:19] "GET /fish/search?q=みのか HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:20] "GET /fish/search?q=みのかz HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:21] "GET /fish/search?q=ミノカサ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:21] "GET /fish/search?q=ミノカサゴ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:22] "GET /fish/search?q=ミノカサゴ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:30] "GET /fish/search?q=以下の HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:31] "GET /fish/search?q=以下の玉 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:32] "GET /fish/search?q=以下の卵 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:33] "GET /fish/search?q=イカの卵 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:34] "GET /fish/search?q=イカの卵 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:44] "GET /fish/search?q=せ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:46] "GET /fish/search?q=瀬戸蓑笠 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:47] "GET /fish/search?q=瀬戸ミノカサゴ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:48] "GET /fish/search?q=セトミノカサゴ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:48] "GET /fish/search?q=セトミノカサゴ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:49] "GET /fish/search?q=セトミノカサゴ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:53] "GET /fish/search?q=ふ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:56] "GET /fish/search?q=火拭き用事 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:57] "GET /fish/search?q=ﾋﾌｷ用事 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:25:59] "GET /fish/search?q=ヒフキヨウジ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:00] "GET /fish/search?q=ヒフキヨウジ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:01] "GET /fish/search?q=ヒフキ用事 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:01] "GET /fish/search?q=ヒフキ用事 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:06] "GET /fish/search?q=黒欲しい HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:08] "GET /fish/search?q=黒星石持ち HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:09] "GET /fish/search?q=クロ星石持ち HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:09] "GET /fish/search?q=クロ星石持ち HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:10] "GET /fish/search?q=クロホシイシモチ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:11] "GET /fish/search?q=クロホシイシモチ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:18] "GET /fish/search?q=ねんぶ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:19] "GET /fish/search?q=念仏 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:20] "GET /fish/search?q=念仏台 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:20] "GET /fish/search?q=ネンブツダイ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:21] "GET /fish/search?q=ネンブツダイ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:28] "GET /fish/search?q=熊野み HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:28] "GET /fish/search?q=クマノミ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:26:29] "GET /fish/search?q=クマノミ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:28:40] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:28:40] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:28:41] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:28:41] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:28:43] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:28:43] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:28:46] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:28:46] "POST /fish/suggest HTTP/1.1" 200 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [24/Jun/2026 23:32:21] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:32:59] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:32:59] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:33:00] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:33:00] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:33:00] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:33:04] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:33:04] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:33:08] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:35:18] "GET /fish/search?q=あ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:35:19] "GET /fish/search?q=青 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:35:20] "GET /fish/search?q=青r HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:35:21] "GET /fish/search?q=アオリイカの HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:35:22] "GET /fish/search?q=アオリイカの卵 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:35:24] "GET /fish/search?q=アオリイカの卵 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:38:55] "GET /fish/search?q=アオリイカの卵 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:38:55] "GET /fish/search?q=アオリイカの HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:38:56] "GET /fish/search?q=アオリイ HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:38:58] "GET /fish/search?q=アオリイか HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:39:01] "GET /fish/search?q=アオリイカの HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:39:02] "GET /fish/search?q=アオリイカの卵 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:39:02] "GET /fish/search?q=アオリイカの卵 HTTP/1.1" 200 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [24/Jun/2026 23:56:19] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:57:07] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:57:07] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:57:07] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:57:07] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:57:07] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:57:07] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:57:07] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jun/2026 23:57:07] "POST /fish/suggest HTTP/1.1" 200 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [25/Jun/2026 00:07:25] "GET / HTTP/1.1" 200 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [25/Jun/2026 00:19:09] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:20:57] "[32mGET /dive HTTP/1.1[0m" 302 -
+127.0.0.1 - - [25/Jun/2026 00:20:57] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:20:57] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 00:21:07] "[32mPOST /session HTTP/1.1[0m" 302 -
+127.0.0.1 - - [25/Jun/2026 00:21:07] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:21:07] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 00:23:48] "GET /fish/search?q=hou HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:23:50] "GET /fish/search?q=ホウボウ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:23:50] "GET /fish/search?q=ホウボウ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:23:57] "GET /fish/search?q=ミノカサゴ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:23:57] "GET /fish/search?q=ミノカサゴ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:23:58] "GET /fish/search?q=ミノカサ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:03] "GET /fish/search?q=せ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:04] "GET /fish/search?q=せと HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:06] "GET /fish/search?q=セトミノカサ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:06] "GET /fish/search?q=セトミノカサゴ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:06] "GET /fish/search?q=セトミノカサゴ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:13] "GET /fish/search?q=火吹きようじ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:14] "GET /fish/search?q=火吹き幼児 HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:15] "GET /fish/search?q=ヒフキヨウジ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:16] "GET /fish/search?q=ヒフキヨウジ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:22] "GET /fish/search?q=クロ星石持ち HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:23] "GET /fish/search?q=黒星石持ち HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:24] "GET /fish/search?q=くろ星石持ち HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:24] "GET /fish/search?q=クロ星石持ち HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:25] "GET /fish/search?q=クロ星石持ち HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:26] "GET /fish/search?q=クロホシイシモチ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:26] "GET /fish/search?q=クロホシイシモチ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:33] "GET /fish/search?q=ネンブツダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:33] "GET /fish/search?q=ネンブツダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:40] "GET /fish/search?q=くまの HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:41] "GET /fish/search?q=クマノミ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:41] "GET /fish/search?q=クマノミ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:45] "GET /fish/search?q=青 HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:47] "GET /fish/search?q=アオリイカの HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:47] "GET /fish/search?q=アオリイカのd HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:47] "GET /fish/search?q=あおりいかの HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:50] "GET /fish/search?q=アオリイカの卵 HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:50] "GET /fish/search?q=アオリイカの卵 HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:53] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:53] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:53] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:53] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:53] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:53] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:53] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:53] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:55] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:55] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:55] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:55] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:55] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:55] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:55] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:24:55] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:25:18] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:25:19] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:25:19] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:25:19] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:25:20] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:25:20] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:25:20] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:25:21] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:25:25] "[32mPOST /dive HTTP/1.1[0m" 302 -
+127.0.0.1 - - [25/Jun/2026 00:25:25] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:25:25] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 00:26:39] "GET /fish/search?q=ki HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:26:41] "GET /fish/search?q=金魚 HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:26:43] "GET /fish/search?q=キンギョハナダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:26:44] "GET /fish/search?q=キンギョハナダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:26:50] "GET /fish/search?q=あか HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:26:52] "GET /fish/search?q=赤尾 HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:26:52] "GET /fish/search?q=赤帯はなだい HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:26:53] "GET /fish/search?q=赤帯華大 HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:26:53] "GET /fish/search?q=アカオビハナダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:26:56] "GET /fish/search?q=アカオビハナダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:02] "GET /fish/search?q=にざだい HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:03] "GET /fish/search?q=にざだい HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:03] "GET /fish/search?q=にざだい HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:03] "GET /fish/search?q=ニザダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:04] "GET /fish/search?q=ニザダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:07] "GET /fish/search?q=キビナ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:07] "GET /fish/search?q=キビナゴ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:08] "GET /fish/search?q=キビナゴ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:13] "GET /fish/search?q=待とう HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:14] "GET /fish/search?q=ま HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:15] "GET /fish/search?q=待とう HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:16] "GET /fish/search?q=魔灯台 HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:16] "GET /fish/search?q=まとうだい HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:17] "GET /fish/search?q=マトウダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:17] "GET /fish/search?q=マトウダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:20] "GET /fish/search?q=とら HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:21] "GET /fish/search?q=虎うつぼ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:22] "GET /fish/search?q=トラウツボ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:22] "GET /fish/search?q=トラウツボ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:29] "GET /fish/search?q=おと HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:30] "GET /fish/search?q=乙姫 HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:31] "GET /fish/search?q=乙姫えび HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:32] "GET /fish/search?q=オトヒメエビ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:32] "GET /fish/search?q=オトヒメエビ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:40] "GET /fish/search?q=ウツボ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:27:41] "GET /fish/search?q=ウツボ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:48:48] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:48:48] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:48:48] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:48:48] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:48:48] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:48:48] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:48:48] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:48:48] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:15] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:15] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:15] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:15] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:15] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:15] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:15] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:15] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:25] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:26] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:26] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:26] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:27] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:27] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:28] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:28] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:31] "[32mPOST /dive HTTP/1.1[0m" 302 -
+127.0.0.1 - - [25/Jun/2026 00:57:31] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 00:57:31] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 01:18:07] "GET /fish/search?q=ミジンベニハゼ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:18:15] "GET /fish/search?q=マツカサウオ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:18:16] "GET /fish/search?q=マツカサウオyg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:18:25] "GET /fish/search?q=サカタザメ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:18:29] "GET /fish/search?q=サカタザメ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:18:30] "GET /fish/search?q=サカタザメ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:18:41] "GET /fish/search?q=マツカサウオ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:18:51] "GET /fish/search?q=アカオビハナダイ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:18:59] "GET /fish/search?q=ボラ HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:23:43] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:23:43] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:23:44] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:23:44] "POST /fish/suggest HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:24:03] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:24:04] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:24:04] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:24:05] "POST /fish/add HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:24:09] "[32mPOST /dive HTTP/1.1[0m" 302 -
+127.0.0.1 - - [25/Jun/2026 01:24:09] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:24:09] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 01:24:14] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:24:14] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 01:24:18] "GET /dive HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 01:24:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [25/Jun/2026 02:09:33] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 02:09:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 02:10:00] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 02:10:04] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 02:10:04] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 02:10:06] "GET /photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 02:10:06] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 02:12:07] "[32mPOST /photo HTTP/1.1[0m" 302 -
+127.0.0.1 - - [25/Jun/2026 02:12:07] "GET /complete?mode=photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 02:12:07] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 02:12:11] "GET /photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 02:15:12] "[32mPOST /photo HTTP/1.1[0m" 302 -
+127.0.0.1 - - [25/Jun/2026 02:15:17] "[32mPOST /photo HTTP/1.1[0m" 302 -
+127.0.0.1 - - [25/Jun/2026 02:15:17] "GET /complete?mode=photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 02:15:17] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 02:37:25] "GET /complete?mode=photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 02:37:25] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 02:37:29] "GET /complete?mode=photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 02:37:29] "GET /static/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 02:37:29] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [25/Jun/2026 03:14:07] "GET /photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:14:08] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 03:14:24] "GET /photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:14:24] "GET /static/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:14:24] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [25/Jun/2026 03:14:27] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:14:27] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 03:14:28] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:14:28] "GET /static/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:14:28] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [25/Jun/2026 03:14:29] "GET /photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:14:29] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [25/Jun/2026 03:16:09] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:16:17] "GET /photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:16:17] "GET /static/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:16:17] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [25/Jun/2026 03:17:51] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:17:51] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 03:17:52] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:17:52] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 03:17:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:17:54] "GET /static/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:17:54] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [25/Jun/2026 03:17:55] "GET /photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:17:55] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 03:20:08] "[32mPOST /photo HTTP/1.1[0m" 302 -
+127.0.0.1 - - [25/Jun/2026 03:20:08] "GET /complete?mode=photo HTTP/1.1" 200 -
+127.0.0.1 - - [25/Jun/2026 03:20:08] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [25/Jun/2026 03:20:13] "POST /build HTTP/1.1" 200 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.16.80.31:5001
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [25/Jun/2026 03:22:14] "GET / HTTP/1.1" 200 -

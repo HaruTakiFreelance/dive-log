@@ -273,24 +273,55 @@
       letter-spacing: 0.04em;
     }
 
-    /* ── ダイブ内動画 ── */
+    /* ── ダイブ内動画スライダー ── */
     .dive-videos {
       margin-left: calc(var(--sp-xxl) * 0.9);
       margin-top: var(--sp-s);
+      position: relative;
+    }
+    .video-slider {
       display: flex;
-      flex-wrap: wrap;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
       gap: var(--sp-s);
+      padding-bottom: var(--sp-xs);
+      scrollbar-width: none;
+    }
+    .video-slider::-webkit-scrollbar { display: none; }
+    .video-slide {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      width: 100%;
+      max-width: 460px;
     }
     .video-embed {
       border: 2px solid var(--paper-d);
       box-shadow: 2px 3px 8px var(--shadow);
       overflow: hidden;
+      border-radius: 2px;
     }
     .video-embed iframe {
       display: block;
-      /* 黄金比: 幅 * (1/phi) = 高さ → 280 / 1.618 ≒ 173 */
-      width: 280px; height: 173px;
+      width: 100%;
+      aspect-ratio: 16 / 9;
     }
+    /* スライドドット */
+    .video-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: var(--sp-xs);
+    }
+    .video-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--paper-d);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .video-dot.active { background: var(--ink-fade); }
+    /* 非YouTube動画リンク */
     .video-link a {
       display: inline-flex;
       align-items: center;
@@ -389,8 +420,7 @@
         {% for ph in s.photos %}
         <div class="photo-item">
           <a href="{{ ph.url }}" target="_blank" rel="noopener">
-            <img src="{{ ph.url }}" alt="{{ ph.caption }}" loading="lazy"
-                 onerror="this.parentElement.innerHTML='<div style=\'width:100px;height:152px;background:var(--paper-d);display:flex;align-items:center;justify-content:center;font-size:1.5rem;\'>🐠</div>'">
+            <img src="{{ ph.url }}" alt="{{ ph.caption }}" loading="lazy">
           </a>
           {% if ph.caption %}<div class="photo-caption">{{ ph.caption }}</div>{% endif %}
         </div>
@@ -441,20 +471,48 @@
 
         {% if d.videos %}
         <div class="dive-videos">
-          {% for v in d.videos %}
-            {% if v.embed %}
-            <div class="video-embed">
-              <iframe src="{{ v.embed }}"
-                      frameborder="0" allowfullscreen loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-              </iframe>
+          <div class="video-slider" id="slider-{{ loop.index }}">
+            {% for v in d.videos %}
+            <div class="video-slide">
+              {% if v.embed %}
+              <div class="video-embed">
+                <iframe src="{{ v.embed }}"
+                        frameborder="0" allowfullscreen loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                </iframe>
+              </div>
+              {% else %}
+              <div class="video-link">
+                <a href="{{ v.url }}" target="_blank" rel="noopener">🎬 動画を見る</a>
+              </div>
+              {% endif %}
             </div>
-            {% else %}
-            <div class="video-link">
-              <a href="{{ v.url }}" target="_blank" rel="noopener">🎬 動画を見る</a>
+            {% endfor %}
+          </div>
+          {% if d.videos|length > 1 %}
+          <div class="video-dots" id="dots-{{ loop.index }}">
+            {% for v in d.videos %}
+            <div class="video-dot {% if loop.first %}active{% endif %}"
+                 onclick="scrollToSlide('slider-{{ loop.index0 }}__{{ loop.index0 }}')">
             </div>
-            {% endif %}
-          {% endfor %}
+            {% endfor %}
+          </div>
+          <script>
+          (function() {
+            var slider = document.getElementById('slider-{{ loop.index }}');
+            var dots   = document.querySelectorAll('#dots-{{ loop.index }} .video-dot');
+            slider.addEventListener('scroll', function() {
+              var idx = Math.round(slider.scrollLeft / slider.offsetWidth);
+              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            });
+            dots.forEach(function(dot, i) {
+              dot.addEventListener('click', function() {
+                slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
+              });
+            });
+          })();
+          </script>
+          {% endif %}
         </div>
         {% endif %}
 

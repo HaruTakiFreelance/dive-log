@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %} — セッション開始{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 class="card-title">📋 今日の共通情報</h2>
+  <p class="card-sub">1回入力すれば、複数ダイブに引き継がれます</p>
+
+  <a href="/" style="font-size:.85rem; color:var(--sub); text-decoration:none;">← モード選択に戻る</a>
+
+  <form action="/session" method="POST" class="form" style="margin-top:12px;">
+    <div class="field">
+      <label>日付</label>
+      <input type="date" name="date" value="{{ defaults.date }}" required>
+    </div>
+
+    <div class="field">
+      <label>場所</label>
+      <input type="text" name="location" value="{{ defaults.location }}"
+             placeholder="例: 大瀬崎" required autocomplete="off">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>今日の1本目は通算何本目？</label>
+        <input type="number" name="dive_number" value="{{ defaults.next_dive_number }}"
+               min="1" required>
+      </div>
+      <div class="field">
+        <label>ウェイト (kg)</label>
+        <input type="number" name="weight" value="{{ defaults.weight }}"
+               step="0.5" min="0" placeholder="例: 4.5" required>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-full">
+      ダイブ入力へ →
+    </button>
+  </form>
+</div>
+{% endblock %}

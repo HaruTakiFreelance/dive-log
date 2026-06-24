@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.divelog.app</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/harutakizawa/Desktop/claude code/dive-log/venv/bin/python</string>
+    <string>/Users/harutakizawa/Desktop/claude code/dive-log/app.py</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/harutakizawa/Desktop/claude code/dive-log</string>
+
+  <!-- Mac起動時に自動スタート -->
+  <key>RunAtLoad</key>
+  <true/>
+
+  <!-- クラッシュ時に自動再起動 -->
+  <key>KeepAlive</key>
+  <true/>
+
+  <!-- ログ出力先 -->
+  <key>StandardOutPath</key>
+  <string>/Users/harutakizawa/Desktop/claude code/dive-log/logs/app.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/harutakizawa/Desktop/claude code/dive-log/logs/app-error.log</string>
+</dict>
+</plist>
