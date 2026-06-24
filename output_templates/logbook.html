@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dive Log Book</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── tokens ── */
+    :root {
+      --paper:    #f4ede0;
+      --paper-d:  #e8dbc8;
+      --ink:      #2c1e10;
+      --ink-fade: #6b5040;
+      --ink-faint:#a8937e;
+      --accent:   #3d6b8a;
+      --accent-d: #2a4f6b;
+      --rust:     #8b3a1e;
+      --tape:     rgba(255,240,180,0.55);
+      --shadow:   rgba(44,30,16,0.18);
+    }
+
+    /* ── reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── body ── */
+    body {
+      background: #2a2016;
+      background-image:
+        radial-gradient(ellipse at 30% 10%, #3d2e1a 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 90%, #1e1608 0%, transparent 60%);
+      min-height: 100vh;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: var(--ink);
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── page wrapper ── */
+    .book {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* ── paper card ── */
+    .page {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow:
+        0 2px 6px var(--shadow),
+        0 8px 24px rgba(0,0,0,0.35),
+        inset 0 0 80px rgba(180,150,100,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          transparent,
+          transparent 27px,
+          rgba(44,30,16,0.06) 28px
+        );
+      pointer-events: none;
+    }
+    .page-inner { padding: 3rem 3.5rem; position: relative; }
+
+    /* ── cover ── */
+    .cover {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .cover-stamp {
+      display: inline-block;
+      border: 3px double var(--rust);
+      padding: 0.4rem 1.2rem;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--rust);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+    .cover-title {
+      font-family: 'Special Elite', monospace;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      color: var(--ink);
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+    }
+    .cover-subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--ink-fade);
+      margin-bottom: 2rem;
+    }
+
+    /* ── cover photo gallery ── */
+    .cover-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 1.5rem 0;
+    }
+    .cover-gallery a {
+      display: block;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+      transform: rotate(var(--rot, 0deg));
+      transition: transform 0.2s;
+    }
+    .cover-gallery a:nth-child(1) { --rot: -1.2deg; }
+    .cover-gallery a:nth-child(2) { --rot:  0.8deg; }
+    .cover-gallery a:nth-child(3) { --rot: -0.5deg; }
+    .cover-gallery a:nth-child(4) { --rot:  1.1deg; }
+    .cover-gallery a:nth-child(5) { --rot: -0.7deg; }
+    .cover-gallery a:nth-child(6) { --rot:  0.4deg; }
+    .cover-gallery a:hover { transform: rotate(0deg) scale(1.03); z-index: 2; }
+    .cover-gallery img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: sepia(20%) saturate(90%);
+    }
+    .photo-placeholder {
+      width: 100%; height: 100%;
+      background: var(--paper-d);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; opacity: 0.4;
+    }
+
+    /* ── divider ── */
+    .divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      color: var(--ink-faint);
+      font-size: 0.8rem;
+      letter-spacing: 0.5em;
+    }
+    .divider::before, .divider::after {
+      content: '─────';
+      margin: 0 0.5em;
+    }
+
+    /* ── stats ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .stat-box {
+      text-align: center;
+      padding: 0.8rem 0.5rem;
+      border: 1px solid var(--paper-d);
+      background: rgba(255,255,255,0.3);
+    }
+    .stat-num {
+      font-family: 'Special Elite', monospace;
+      font-size: 2rem;
+      color: var(--accent-d);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.1em;
+      margin-top: 0.3rem;
+    }
+
+    /* ── table of contents ── */
+    .toc {
+      margin: 1.5rem 0 0;
+    }
+    .toc-title {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .toc-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      margin-bottom: 0.3rem;
+      font-size: 0.9rem;
+    }
+    .toc-item a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .toc-item a:hover { color: var(--accent); }
+    .toc-dot {
+      flex: 1;
+      border-bottom: 1px dotted var(--ink-faint);
+      margin-bottom: 3px;
+    }
+    .toc-count {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.8rem;
+      color: var(--ink-fade);
+    }
+
+    /* ── session ── */
+    .session {
+      margin-top: 2.5rem;
+      scroll-margin-top: 1.5rem;
+    }
+    .session-header {
+      display: flex;
+      align-items: flex-end;
+      gap: 1rem;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .session-date {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.75rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.15em;
+      line-height: 1;
+    }
+    .session-location {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+    .session-divecount {
+      margin-left: auto;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.8rem;
+      color: var(--ink-fade);
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    /* ── location description ── */
+    .loc-desc {
+      font-style: italic;
+      color: var(--ink-fade);
+      font-size: 0.93rem;
+      line-height: 1.7;
+      border-left: 2px solid var(--paper-d);
+      padding-left: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── photo strip ── */
+    .photo-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 1.2rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--paper-d) transparent;
+    }
+    .photo-strip-item {
+      flex-shrink: 0;
+      position: relative;
+    }
+    .photo-strip-item a {
+      display: block;
+      height: 140px;
+      width: auto;
+      overflow: hidden;
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+    }
+    .photo-strip-item img {
+      height: 140px;
+      width: auto;
+      min-width: 100px;
+      max-width: 200px;
+      object-fit: cover;
+      display: block;
+      filter: sepia(15%) saturate(90%);
+      transition: filter 0.2s;
+    }
+    .photo-strip-item a:hover img { filter: none; }
+    .photo-caption {
+      font-family: 'Caveat', cursive;
+      font-size: 0.78rem;
+      color: var(--ink-fade);
+      text-align: center;
+      margin-top: 3px;
+      max-width: 180px;
+    }
+
+    /* ── video strip ── */
+    .video-strip {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+    .video-embed {
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+      overflow: hidden;
+      border-radius: 2px;
+    }
+    .video-embed iframe {
+      display: block;
+      width: 280px;
+      height: 158px;
+    }
+    .video-link a {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      word-break: break-all;
+    }
+
+    /* ── dive entries ── */
+    .dive-list { margin-bottom: 1.5rem; }
+    .dive-entry {
+      border: 1px solid var(--paper-d);
+      background: rgba(255,255,255,0.25);
+      padding: 0.9rem 1rem;
+      margin-bottom: 0.7rem;
+      position: relative;
+    }
+    .dive-number-badge {
+      position: absolute;
+      top: 0.7rem; left: -0.1rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      letter-spacing: 0.05em;
+    }
+    .dive-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      margin-left: 3rem;
+      margin-bottom: 0.5rem;
+    }
+    .dive-point {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+    .dive-chip {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.72rem;
+      color: var(--ink-fade);
+      letter-spacing: 0.06em;
+      background: var(--paper-d);
+      padding: 2px 6px;
+    }
+    .dive-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.2rem;
+      margin-left: 3rem;
+      margin-bottom: 0.4rem;
+    }
+    .dive-meta-item {
+      font-size: 0.82rem;
+      color: var(--ink-fade);
+    }
+    .dive-meta-item strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .dive-comment {
+      margin-left: 3rem;
+      font-style: italic;
+      font-size: 0.87rem;
+      color: var(--ink-fade);
+      line-height: 1.5;
+    }
+    .dive-fish-list {
+      margin-left: 3rem;
+      margin-top: 0.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .fish-tag {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.7rem;
+      padding: 1px 7px;
+      background: var(--accent);
+      color: #e8f0f5;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── fish encyclopedia ── */
+    .fish-section { margin-top: 1.5rem; }
+    .fish-section-title {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      border-bottom: 1px dashed var(--paper-d);
+      padding-bottom: 0.3rem;
+    }
+    .fish-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.8rem;
+    }
+    .fish-card {
+      background: rgba(255,255,255,0.3);
+      border: 1px solid var(--paper-d);
+      padding: 0.7rem;
+      position: relative;
+    }
+    .fish-thumb {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 0.5rem;
+      border: 1px solid var(--paper-d);
+      filter: sepia(10%) saturate(90%);
+    }
+    .fish-name-ja {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--ink);
+      margin-bottom: 0.1rem;
+    }
+    .fish-name-sci {
+      font-style: italic;
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+      margin-bottom: 0.3rem;
+    }
+    .fish-taxonomy {
+      font-size: 0.7rem;
+      color: var(--ink-faint);
+      margin-bottom: 0.3rem;
+    }
+    .fish-memo {
+      font-size: 0.75rem;
+      color: var(--ink-fade);
+      line-height: 1.5;
+      margin-top: 0.3rem;
+    }
+    .fish-stars {
+      font-size: 0.7rem;
+      color: var(--ink-faint);
+      margin-top: 0.3rem;
+    }
+    .fish-stars .row { display: flex; gap: 0.5rem; align-items: center; }
+    .fish-stars .label { min-width: 3.5em; }
+    .star.filled { color: #c8a000; }
+    .star.empty  { color: var(--ink-faint); }
+
+    /* ── tape decoration ── */
+    .tape {
+      display: inline-block;
+      background: var(--tape);
+      width: 60px; height: 18px;
+      position: absolute;
+      transform: rotate(-2deg);
+    }
+
+    /* ── page separator ── */
+    .page-sep {
+      height: 1.5rem;
+    }
+
+    /* ── build note ── */
+    .build-note {
+      text-align: center;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.25);
+      margin-top: 2rem;
+      letter-spacing: 0.15em;
+    }
+
+    /* ── responsive ── */
+    @media (max-width: 600px) {
+      .page-inner { padding: 2rem 1.5rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .fish-grid  { grid-template-columns: repeat(2, 1fr); }
+      .cover-gallery { grid-template-columns: repeat(2, 1fr); }
+      .session-location { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="book">
+
+  <!-- ═══════════════════════════════════ COVER ═══════════════════════════════ -->
+  <div class="page cover">
+    <div class="page-inner">
+      <div class="cover-stamp">Personal Dive Log Book</div>
+      <div class="cover-title">Dive Log</div>
+      <div class="cover-subtitle">水中の記録</div>
+
+      {% if cover_photos %}
+      <div class="cover-gallery">
+        {% for ph in cover_photos %}
+        <a href="{{ ph.url }}" target="_blank" rel="noopener">
+          <img src="{{ ph.url }}" alt="{{ ph.caption }}" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'>🐠</div>'">
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="divider">✦</div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-num">{{ summary.total_dives }}</div>
+          <div class="stat-label">TOTAL DIVES</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">{{ summary.total_species }}</div>
+          <div class="stat-label">SPECIES</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">{{ summary.total_locations }}</div>
+          <div class="stat-label">LOCATIONS</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">{{ summary.max_depth }}m</div>
+          <div class="stat-label">MAX DEPTH</div>
+        </div>
+      </div>
+
+      {% if summary.total_hours or summary.total_mins %}
+      <div style="text-align:center; margin: 0.5rem 0 1rem; font-family:'Special Elite',monospace; font-size:0.8rem; color:var(--ink-fade); letter-spacing:0.15em;">
+        TOTAL UNDERWATER TIME — {{ summary.total_hours }}h {{ summary.total_mins }}m
+      </div>
+      {% endif %}
+
+      <!-- TOC -->
+      <div class="toc">
+        <div class="toc-title">Contents</div>
+        {% for s in sessions %}
+        <div class="toc-item">
+          <a href="#session-{{ loop.index }}">{{ s.date_display }} {{ s.location }}</a>
+          <span class="toc-dot"></span>
+          <span class="toc-count">{{ s.dives|length }} dives</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div><!-- /cover -->
+
+  <!-- ═══════════════════════════════ SESSIONS ════════════════════════════════ -->
+  {% for s in sessions %}
+  <div class="page-sep"></div>
+  <div class="page session" id="session-{{ loop.index }}">
+    <div class="page-inner">
+
+      <!-- Session header -->
+      <div class="session-header">
+        <div>
+          <div class="session-date">{{ s.year }} / {{ s.date_display }}</div>
+          <div class="session-location">{{ s.location }}</div>
+        </div>
+        <div class="session-divecount">{{ s.dives|length }} DIVES</div>
+      </div>
+
+      <!-- Location description -->
+      {% if s.loc_desc %}
+      <div class="loc-desc">{{ s.loc_desc }}</div>
+      {% endif %}
+
+      <!-- Photo strip -->
+      {% if s.photos %}
+      <div class="photo-strip">
+        {% for ph in s.photos %}
+        <div class="photo-strip-item">
+          <a href="{{ ph.url }}" target="_blank" rel="noopener">
+            <img src="{{ ph.url }}" alt="{{ ph.caption }}" loading="lazy"
+                 onerror="this.style.display='none'">
+          </a>
+          {% if ph.caption %}
+          <div class="photo-caption">{{ ph.caption }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Videos -->
+      {% if s.videos %}
+      <div class="video-strip">
+        {% for v in s.videos %}
+          {% if v.embed %}
+          <div class="video-embed">
+            <iframe src="{{ v.embed }}" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          {% else %}
+          <div class="video-link">
+            <a href="{{ v.url }}" target="_blank" rel="noopener">🎬 {{ v.url }}</a>
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="divider">· · ·</div>
+
+      <!-- Dive entries -->
+      <div class="dive-list">
+        {% for d in s.dives %}
+        <div class="dive-entry">
+          <div class="dive-number-badge">#{{ d.number }}</div>
+
+          <div class="dive-header">
+            <span class="dive-point">{{ d.point or d.location }}</span>
+            {% if d.weather %}<span class="dive-chip">{{ d.weather }}</span>{% endif %}
+            {% if d.water_temp %}<span class="dive-chip">水温 {{ d.water_temp }}℃</span>{% endif %}
+          </div>
+
+          <div class="dive-meta">
+            {% if d.start_time and d.end_time %}
+            <span class="dive-meta-item">⏱ <strong>{{ d.start_time }}–{{ d.end_time }}</strong>{% if d.duration %} ({{ d.duration }}min){% endif %}</span>
+            {% endif %}
+            {% if d.max_depth %}
+            <span class="dive-meta-item">📏 <strong>{{ d.max_depth }}m</strong></span>
+            {% endif %}
+            {% if d.weight %}
+            <span class="dive-meta-item">⚖️ {{ d.weight }}kg</span>
+            {% endif %}
+            {% if d.wave_height is not none and d.wave_height != '' %}
+            <span class="dive-meta-item">🌊 {{ d.wave_height }}m</span>
+            {% endif %}
+          </div>
+
+          {% if d.comment %}
+          <div class="dive-comment">"{{ d.comment }}"</div>
+          {% endif %}
+
+          {% set ns = namespace(fish_in_dive=[]) %}
+          {% for f in s.fish %}
+            {% if f.id in d.fish_ids %}
+              {% set ns.fish_in_dive = ns.fish_in_dive + [f] %}
+            {% endif %}
+          {% endfor %}
+          {% if ns.fish_in_dive %}
+          <div class="dive-fish-list">
+            {% for f in ns.fish_in_dive %}
+            <span class="fish-tag">{{ f.name }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div><!-- /dive-list -->
+
+      <!-- Fish encyclopedia for this session -->
+      {% if s.fish %}
+      <div class="fish-section">
+        <div class="fish-section-title">── Encountered Species ──</div>
+        <div class="fish-grid">
+          {% for f in s.fish %}
+          <div class="fish-card">
+            {% if f.thumbnail %}
+            <img class="fish-thumb" src="{{ f.thumbnail }}" alt="{{ f.name }}"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            {% endif %}
+            <div class="fish-name-ja">{{ f.name }}</div>
+            {% if f.english_name %}
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">{{ f.english_name }}</div>
+            {% endif %}
+            {% if f.scientific_name %}
+            <div class="fish-name-sci">{{ f.scientific_name }}</div>
+            {% endif %}
+            {% if f.order or f.family %}
+            <div class="fish-taxonomy">
+              {% if f.order %}{{ f.order }}{% endif %}
+              {% if f.family %} / {{ f.family }}{% endif %}
+              {% if f.genus %} / {{ f.genus }}{% endif %}
+            </div>
+            {% endif %}
+            {% if f.memo %}
+            <div class="fish-memo">{{ f.memo }}</div>
+            {% endif %}
+            {% if f.rarity or f.popularity or f.photo_ease %}
+            <div class="fish-stars">
+              {% if f.rarity %}
+              <div class="row"><span class="label">レア度</span>{{ f.rarity | stars_html }}</div>
+              {% endif %}
+              {% if f.popularity %}
+              <div class="row"><span class="label">人気</span>{{ f.popularity | stars_html }}</div>
+              {% endif %}
+              {% if f.photo_ease %}
+              <div class="row"><span class="label">撮影</span>{{ f.photo_ease | stars_html }}</div>
+              {% endif %}
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div><!-- /session -->
+  {% endfor %}
+
+</div><!-- /book -->
+
+<div class="build-note">Generated {{ build_date }} · Dive Log Book</div>
+
+</body>
+</html>

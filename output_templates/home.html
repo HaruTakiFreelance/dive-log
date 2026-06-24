@@ -250,29 +250,29 @@
 
       <div class="stats-grid">
         <div class="stat-box">
-          <div class="stat-num">128</div>
+          <div class="stat-num">{{ summary.total_dives }}</div>
           <div class="stat-label">TOTAL DIVES</div>
         </div>
         <div class="stat-box">
-          <div class="stat-num">20</div>
+          <div class="stat-num">{{ summary.total_species }}</div>
           <div class="stat-label">SPECIES</div>
         </div>
         <div class="stat-box">
-          <div class="stat-num">1</div>
+          <div class="stat-num">{{ summary.total_locations }}</div>
           <div class="stat-label">LOCATIONS</div>
         </div>
         <div class="stat-box">
-          <div class="stat-num">30.8m</div>
+          <div class="stat-num">{{ summary.max_depth }}m</div>
           <div class="stat-label">MAX DEPTH</div>
         </div>
       </div>
-      
-      <div class="time-note">TOTAL UNDERWATER — 1h 49m</div>
-      
+      {% if summary.total_hours or summary.total_mins %}
+      <div class="time-note">TOTAL UNDERWATER — {{ summary.total_hours }}h {{ summary.total_mins }}m</div>
+      {% endif %}
 
       <div class="divider">✦</div>
       <div style="font-family:'Caveat',cursive; font-size:1rem; color:var(--ink-fade); text-align:center;">
-        2026-06-21 〜 2026-06-21
+        {{ summary.first_date }} 〜 {{ summary.last_date }}
       </div>
     </div>
   </div>
@@ -280,29 +280,31 @@
   <!-- セッション一覧 -->
   <div class="section-title">── All Sessions ──</div>
   <div class="sessions-grid">
-    
-    <a class="session-card" href="sessions/2026-06-21_大瀬崎.html">
-      
-      <img class="card-thumb" src="https://photos.app.goo.gl/FGC22itqap7PUC8J8" alt="大瀬崎"
+    {% for s in sessions %}
+    <a class="session-card" href="sessions/{{ s.filename }}">
+      {% if s.thumb %}
+      <img class="card-thumb" src="{{ s.thumb }}" alt="{{ s.location }}"
            loading="lazy"
            onerror="this.outerHTML='<div class=\'card-thumb-placeholder\'>🤿</div>'">
-      
+      {% else %}
+      <div class="card-thumb-placeholder">🤿</div>
+      {% endif %}
       <div class="card-body">
-        <div class="card-date">6月21日 · 2026</div>
-        <div class="card-location">大瀬崎</div>
+        <div class="card-date">{{ s.date_display }} · {{ s.year }}</div>
+        <div class="card-location">{{ s.location }}</div>
         <div class="card-meta">
-          <span class="card-chip accent">3 dives</span>
-          <span class="card-chip">#126〜128本目</span>
-          
-          <span class="card-chip">🐠 20種</span>
-          
+          <span class="card-chip accent">{{ s.dives|length }} dives</span>
+          <span class="card-chip">#{{ s.dive_range }}</span>
+          {% if s.fish|length > 0 %}
+          <span class="card-chip">🐠 {{ s.fish|length }}種</span>
+          {% endif %}
         </div>
       </div>
     </a>
-    
+    {% endfor %}
   </div>
 
 </div>
-<div class="build-note">Generated 2026年6月25日 · Dive Log Book</div>
+<div class="build-note">Generated {{ build_date }} · Dive Log Book</div>
 </body>
 </html>

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %} — 保存完了{% endblock %}
+
+{% block content %}
+<div class="card card-center">
+  {% if mode == "dive" %}
+    <div class="complete-icon">🤿</div>
+    <h2 class="card-title">ダイブログ保存完了！</h2>
+    <p class="card-sub">
+      {{ date }} · {{ location }}<br>
+      {{ dives }}本のログをNotionに保存しました
+    </p>
+  {% else %}
+    <div class="complete-icon">📷</div>
+    <h2 class="card-title">写真ログ保存完了！</h2>
+    <p class="card-sub">
+      {{ date }}{% if location %} · {{ location }}{% endif %}<br>
+      Notionに保存しました
+    </p>
+  {% endif %}
+
+  <div class="btn-group-col" style="margin-top: 4px;">
+    {% if mode == "dive" %}
+      <a href="/dive" class="btn btn-secondary btn-full">🤿 もう1本記録する</a>
+      <a href="/photo" class="btn btn-secondary btn-full">📷 写真を追加する</a>
+    {% else %}
+      <a href="/photo" class="btn btn-secondary btn-full">📷 別の日の写真を追加</a>
+      <a href="/dive/setup" class="btn btn-secondary btn-full">🤿 ダイビングを記録する</a>
+    {% endif %}
+    <button class="btn btn-primary btn-full" id="btn-build" onclick="buildLogbook()">
+      📖 ログブックを作成
+    </button>
+    <a href="/" class="btn btn-secondary btn-full">🏠 トップへ</a>
+  </div>
+</div>
+
+<script>
+async function buildLogbook() {
+  const btn = document.getElementById('btn-build');
+  btn.disabled = true;
+  btn.textContent = '⏳ 生成中...';
+  try {
+    const res = await fetch('/build', { method: 'POST' });
+    const data = await res.json();
+    if (data.ok) {
+      btn.textContent = '✅ 生成完了！';
+      const note = document.createElement('p');
+      note.style.cssText = 'font-size:.8rem;color:var(--sub);margin-top:6px;';
+      note.textContent = data.message || 'docs/ に出力されました';
+      btn.insertAdjacentElement('afterend', note);
+    } else {
+      btn.disabled = false;
+      btn.textContent = '📖 ログブックを作成';
+      alert('エラー: ' + data.message);
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = '📖 ログブックを作成';
+    alert('通信エラー: ' + e.message);
+  }
+}
+</script>
+{% endblock %}

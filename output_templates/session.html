@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ s.date_display }} {{ s.location }} — Dive Log</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* 黄金比: 1.618 を基準にスペースと比率を設計 */
+    :root {
+      --phi: 1.618;
+
+      --paper:     #f4ede0;
+      --paper-d:   #e8dbc8;
+      --ink:       #333333;
+      --ink-fade:  #666655;
+      --ink-faint: #999988;
+      --accent:    #3d6b8a;
+      --accent-d:  #2a4f6b;
+      --rust:      #8b3a1e;
+      --shadow:    rgba(51,51,51,0.15);
+
+      /* 黄金比ベースのスペーシング */
+      --sp-xs:  0.382rem;   /* 1/phi^2 */
+      --sp-s:   0.618rem;   /* 1/phi   */
+      --sp-m:   1rem;
+      --sp-l:   1.618rem;   /* phi     */
+      --sp-xl:  2.618rem;   /* phi^2   */
+      --sp-xxl: 4.236rem;   /* phi^3   */
+
+      /* 黄金比ベースのフォントスケール */
+      --fs-xs:  0.618rem;
+      --fs-s:   0.764rem;
+      --fs-m:   1rem;
+      --fs-l:   1.272rem;
+      --fs-xl:  1.618rem;
+      --fs-xxl: 2.618rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1e1a14;
+      background-image:
+        radial-gradient(ellipse at 30% 10%, #2e2318 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 90%, #141008 0%, transparent 60%);
+      min-height: 100vh;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: var(--ink);
+      padding: var(--sp-xl) var(--sp-m) var(--sp-xxl);
+    }
+
+    .book { max-width: 860px; margin: 0 auto; }
+
+    .page {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 2px 6px var(--shadow), 0 8px 24px rgba(0,0,0,0.35);
+      position: relative; overflow: hidden;
+    }
+    .page::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        transparent, transparent 27px, rgba(51,51,51,0.05) 28px
+      );
+      pointer-events: none;
+    }
+    .page-inner {
+      padding: var(--sp-xxl) calc(var(--sp-xxl) * var(--phi) * 0.5);
+      position: relative;
+    }
+
+    /* ── 戻るリンク ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-xs);
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      margin-bottom: var(--sp-l);
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: rgba(255,255,255,0.7); }
+
+    /* ── セッションヘッダ ── */
+    .session-header {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--sp-m);
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: var(--sp-s);
+      margin-bottom: var(--sp-l);
+    }
+    .session-date {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      color: var(--ink-faint);
+      letter-spacing: 0.15em;
+      line-height: 1;
+      margin-bottom: var(--sp-xs);
+    }
+    .session-location {
+      font-size: var(--fs-xxl);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .session-diverange {
+      margin-left: auto;
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-s);
+      color: var(--ink-fade);
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    /* ── 場所説明 ── */
+    .loc-desc {
+      font-style: italic;
+      color: var(--ink-fade);
+      font-size: var(--fs-m);
+      line-height: var(--phi);
+      border-left: 2px solid var(--paper-d);
+      padding-left: var(--sp-m);
+      margin-bottom: var(--sp-xl);
+    }
+
+    /* ── 写真ストリップ ── */
+    .photo-strip {
+      display: flex;
+      gap: var(--sp-s);
+      overflow-x: auto;
+      padding-bottom: var(--sp-s);
+      margin-bottom: var(--sp-xl);
+      scrollbar-width: thin;
+      scrollbar-color: var(--paper-d) transparent;
+    }
+    .photo-item { flex-shrink: 0; }
+
+    /* 直接表示できる画像 */
+    .photo-item-img a {
+      display: block;
+      height: 152px;
+      overflow: hidden;
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+    }
+    .photo-item-img img {
+      height: 152px;
+      width: auto;
+      min-width: 100px;
+      max-width: 246px;
+      object-fit: cover;
+      display: block;
+      filter: sepia(12%) saturate(88%);
+      transition: filter 0.2s;
+    }
+    .photo-item-img a:hover img { filter: none; }
+
+    /* 直接表示できないリンク（Google フォト等） */
+    .photo-item-link a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 152px;
+      width: 120px;
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+      background: var(--paper-d);
+      text-decoration: none;
+      color: var(--ink-fade);
+      gap: var(--sp-xs);
+      transition: background 0.15s;
+    }
+    .photo-item-link a:hover { background: #ddd0ba; }
+    .photo-item-link .ph-icon { font-size: 2rem; }
+    .photo-item-link .ph-label {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.08em;
+    }
+
+    .photo-caption {
+      font-family: 'Caveat', cursive;
+      font-size: var(--fs-s);
+      color: var(--ink-fade);
+      text-align: center;
+      margin-top: var(--sp-xs);
+      max-width: 220px;
+    }
+
+    .divider {
+      text-align: center;
+      margin: var(--sp-xl) 0;
+      color: var(--ink-faint);
+      font-size: var(--fs-s);
+      letter-spacing: 0.5em;
+    }
+    .divider::before, .divider::after { content: '─────'; margin: 0 0.5em; }
+
+    /* ── ダイブエントリ ── */
+    .dive-entry {
+      border: 1px solid var(--paper-d);
+      background: rgba(255,255,255,0.22);
+      padding: var(--sp-m) var(--sp-l);
+      margin-bottom: var(--sp-m);
+      position: relative;
+    }
+    .dive-badge {
+      position: absolute;
+      top: var(--sp-m); left: -0.1rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      padding: 2px var(--sp-s);
+      letter-spacing: 0.05em;
+    }
+    .dive-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-s);
+      align-items: center;
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-bottom: var(--sp-s);
+    }
+    .dive-point { font-weight: 700; font-size: var(--fs-l); color: var(--ink); }
+    .dive-chip {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      color: var(--ink-fade);
+      background: var(--paper-d);
+      padding: 2px var(--sp-s);
+      letter-spacing: 0.04em;
+    }
+    .dive-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-xs) var(--sp-xl);
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-bottom: var(--sp-s);
+    }
+    .dive-meta-item { font-size: var(--fs-s); color: var(--ink-fade); }
+    .dive-meta-item strong { color: var(--ink); font-weight: 600; }
+
+    .dive-comment {
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      font-style: italic;
+      font-size: var(--fs-m);
+      color: var(--ink-fade);
+      line-height: var(--phi);
+      margin-bottom: var(--sp-s);
+    }
+
+    .dive-fish-list {
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-top: var(--sp-xs);
+      display: flex; flex-wrap: wrap; gap: var(--sp-xs);
+    }
+    .fish-tag {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      padding: 2px var(--sp-s);
+      background: var(--accent);
+      color: #deeaf3;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── ダイブ内動画 ── */
+    .dive-videos {
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-top: var(--sp-s);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-s);
+    }
+    .video-embed {
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+      overflow: hidden;
+    }
+    .video-embed iframe {
+      display: block;
+      /* 黄金比: 幅 * (1/phi) = 高さ → 280 / 1.618 ≒ 173 */
+      width: 280px; height: 173px;
+    }
+    .video-link a {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-xs);
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-s);
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      padding: var(--sp-xs) var(--sp-s);
+    }
+    .video-link a:hover { background: var(--accent); color: #fff; }
+
+    /* ── 魚図鑑 ── */
+    .fish-section { margin-top: var(--sp-xl); }
+    .fish-section-title {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.3em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      margin-bottom: var(--sp-m);
+      border-bottom: 1px dashed var(--paper-d);
+      padding-bottom: var(--sp-xs);
+    }
+    .fish-grid {
+      display: grid;
+      /* 黄金比: カード幅 180px, gap = 180/phi^2 ≒ 69 → 約 var(--sp-l) */
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: var(--sp-l);
+    }
+    .fish-card {
+      background: rgba(255,255,255,0.28);
+      border: 1px solid var(--paper-d);
+      padding: var(--sp-s);
+    }
+    .fish-thumb {
+      width: 100%;
+      /* 黄金比: 幅:高さ = phi:1 → aspect-ratio phi */
+      aspect-ratio: 1.618 / 1;
+      object-fit: cover;
+      display: block;
+      margin-bottom: var(--sp-s);
+      border: 1px solid var(--paper-d);
+      filter: sepia(10%) saturate(88%);
+    }
+    .fish-name-ja { font-weight: 700; font-size: var(--fs-m); color: var(--ink); margin-bottom: var(--sp-xs); }
+    .fish-name-en { font-size: var(--fs-s); color: var(--ink-fade); margin-bottom: 2px; }
+    .fish-name-sci { font-style: italic; font-size: var(--fs-xs); color: var(--ink-faint); margin-bottom: var(--sp-xs); }
+    .fish-taxonomy { font-size: var(--fs-xs); color: var(--ink-faint); margin-bottom: var(--sp-xs); }
+    .fish-memo { font-size: var(--fs-s); color: var(--ink-fade); line-height: var(--phi); margin-top: var(--sp-xs); }
+    .fish-stars { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--sp-s); }
+    .fish-stars .row { display: flex; gap: var(--sp-s); align-items: center; margin-bottom: 2px; }
+    .fish-stars .label { min-width: 3.5em; }
+    .star.filled { color: #b89200; }
+    .star.empty  { color: var(--ink-faint); }
+
+    .build-note {
+      text-align: center;
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      color: rgba(255,255,255,0.18);
+      margin-top: var(--sp-xl);
+      letter-spacing: 0.15em;
+    }
+
+    @media (max-width: 600px) {
+      .page-inner { padding: var(--sp-xl) var(--sp-l); }
+      .fish-grid { grid-template-columns: repeat(2, 1fr); }
+      .session-location { font-size: var(--fs-xl); }
+    }
+  </style>
+</head>
+<body>
+<div class="book">
+
+  <a class="back-link" href="../index.html">← ログブック一覧に戻る</a>
+
+  <div class="page">
+    <div class="page-inner">
+
+      <div class="session-header">
+        <div>
+          <div class="session-date">{{ s.year }} / {{ s.date_display }}</div>
+          <div class="session-location">{{ s.location }}</div>
+        </div>
+        <div class="session-diverange">#{{ s.dive_range }}</div>
+      </div>
+
+      {% if s.loc_desc %}
+      <div class="loc-desc">{{ s.loc_desc }}</div>
+      {% endif %}
+
+      {% if s.photos %}
+      <div class="photo-strip">
+        {% for ph in s.photos %}
+        <div class="photo-item">
+          <a href="{{ ph.url }}" target="_blank" rel="noopener">
+            <img src="{{ ph.url }}" alt="{{ ph.caption }}" loading="lazy"
+                 onerror="this.parentElement.innerHTML='<div style=\'width:100px;height:152px;background:var(--paper-d);display:flex;align-items:center;justify-content:center;font-size:1.5rem;\'>🐠</div>'">
+          </a>
+          {% if ph.caption %}<div class="photo-caption">{{ ph.caption }}</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="divider">· · ·</div>
+
+      {% for d in s.dives %}
+      <div class="dive-entry">
+        <div class="dive-badge">#{{ d.number }}</div>
+
+        <div class="dive-header">
+          <span class="dive-point">{{ d.point or d.location }}</span>
+          {% if d.weather %}<span class="dive-chip">{{ d.weather }}</span>{% endif %}
+          {% if d.water_temp %}<span class="dive-chip">水温 {{ d.water_temp }}℃</span>{% endif %}
+        </div>
+
+        <div class="dive-meta">
+          {% if d.start_time and d.end_time %}
+          <span class="dive-meta-item">⏱ <strong>{{ d.start_time }}–{{ d.end_time }}</strong>{% if d.duration %} ({{ d.duration }}min){% endif %}</span>
+          {% endif %}
+          {% if d.max_depth %}
+          <span class="dive-meta-item">📏 <strong>{{ d.max_depth }}m</strong></span>
+          {% endif %}
+          {% if d.weight %}
+          <span class="dive-meta-item">⚖️ {{ d.weight }}kg</span>
+          {% endif %}
+          {% if d.wave_height is not none %}
+          <span class="dive-meta-item">🌊 {{ d.wave_height }}m</span>
+          {% endif %}
+        </div>
+
+        {% if d.comment %}
+        <div class="dive-comment">"{{ d.comment }}"</div>
+        {% endif %}
+
+        {% set ns = namespace(fish_in_dive=[]) %}
+        {% for f in s.fish %}
+          {% if f.id in d.fish_ids %}{% set ns.fish_in_dive = ns.fish_in_dive + [f] %}{% endif %}
+        {% endfor %}
+        {% if ns.fish_in_dive %}
+        <div class="dive-fish-list">
+          {% for f in ns.fish_in_dive %}<span class="fish-tag">{{ f.name }}</span>{% endfor %}
+        </div>
+        {% endif %}
+
+        {% if d.videos %}
+        <div class="dive-videos">
+          {% for v in d.videos %}
+            {% if v.embed %}
+            <div class="video-embed">
+              <iframe src="{{ v.embed }}"
+                      frameborder="0" allowfullscreen loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+              </iframe>
+            </div>
+            {% else %}
+            <div class="video-link">
+              <a href="{{ v.url }}" target="_blank" rel="noopener">🎬 動画を見る</a>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+
+      </div>
+      {% endfor %}
+
+      {% if s.fish %}
+      <div class="fish-section">
+        <div class="fish-section-title">── Encountered Species ──</div>
+        <div class="fish-grid">
+          {% for f in s.fish %}
+          <div class="fish-card">
+            {% if f.thumbnail %}
+            <img class="fish-thumb" src="{{ f.thumbnail }}" alt="{{ f.name }}" loading="lazy"
+                 onerror="this.style.display='none'">
+            {% endif %}
+            <div class="fish-name-ja">{{ f.name }}</div>
+            {% if f.english_name %}<div class="fish-name-en">{{ f.english_name }}</div>{% endif %}
+            {% if f.scientific_name %}<div class="fish-name-sci">{{ f.scientific_name }}</div>{% endif %}
+            {% if f.order or f.family %}
+            <div class="fish-taxonomy">
+              {% if f.order %}{{ f.order }}{% endif %}
+              {% if f.family %} / {{ f.family }}{% endif %}
+              {% if f.genus %} / {{ f.genus }}{% endif %}
+            </div>
+            {% endif %}
+            {% if f.memo %}<div class="fish-memo">{{ f.memo }}</div>{% endif %}
+            {% if f.rarity or f.popularity or f.photo_ease %}
+            <div class="fish-stars">
+              {% if f.rarity %}<div class="row"><span class="label">レア度</span>{{ f.rarity | stars_html }}</div>{% endif %}
+              {% if f.popularity %}<div class="row"><span class="label">人気</span>{{ f.popularity | stars_html }}</div>{% endif %}
+              {% if f.photo_ease %}<div class="row"><span class="label">撮影</span>{{ f.photo_ease | stars_html }}</div>{% endif %}
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+</div>
+<div class="build-note">Generated {{ build_date }} · Dive Log Book</div>
+</body>
+</html>
