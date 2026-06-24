@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dive Log Book</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── tokens ── */
+    :root {
+      --paper:    #f4ede0;
+      --paper-d:  #e8dbc8;
+      --ink:      #2c1e10;
+      --ink-fade: #6b5040;
+      --ink-faint:#a8937e;
+      --accent:   #3d6b8a;
+      --accent-d: #2a4f6b;
+      --rust:     #8b3a1e;
+      --tape:     rgba(255,240,180,0.55);
+      --shadow:   rgba(44,30,16,0.18);
+    }
+
+    /* ── reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── body ── */
+    body {
+      background: #2a2016;
+      background-image:
+        radial-gradient(ellipse at 30% 10%, #3d2e1a 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 90%, #1e1608 0%, transparent 60%);
+      min-height: 100vh;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: var(--ink);
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── page wrapper ── */
+    .book {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* ── paper card ── */
+    .page {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow:
+        0 2px 6px var(--shadow),
+        0 8px 24px rgba(0,0,0,0.35),
+        inset 0 0 80px rgba(180,150,100,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          transparent,
+          transparent 27px,
+          rgba(44,30,16,0.06) 28px
+        );
+      pointer-events: none;
+    }
+    .page-inner { padding: 3rem 3.5rem; position: relative; }
+
+    /* ── cover ── */
+    .cover {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .cover-stamp {
+      display: inline-block;
+      border: 3px double var(--rust);
+      padding: 0.4rem 1.2rem;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--rust);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+    .cover-title {
+      font-family: 'Special Elite', monospace;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      color: var(--ink);
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+    }
+    .cover-subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--ink-fade);
+      margin-bottom: 2rem;
+    }
+
+    /* ── cover photo gallery ── */
+    .cover-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 1.5rem 0;
+    }
+    .cover-gallery a {
+      display: block;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+      transform: rotate(var(--rot, 0deg));
+      transition: transform 0.2s;
+    }
+    .cover-gallery a:nth-child(1) { --rot: -1.2deg; }
+    .cover-gallery a:nth-child(2) { --rot:  0.8deg; }
+    .cover-gallery a:nth-child(3) { --rot: -0.5deg; }
+    .cover-gallery a:nth-child(4) { --rot:  1.1deg; }
+    .cover-gallery a:nth-child(5) { --rot: -0.7deg; }
+    .cover-gallery a:nth-child(6) { --rot:  0.4deg; }
+    .cover-gallery a:hover { transform: rotate(0deg) scale(1.03); z-index: 2; }
+    .cover-gallery img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: sepia(20%) saturate(90%);
+    }
+    .photo-placeholder {
+      width: 100%; height: 100%;
+      background: var(--paper-d);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; opacity: 0.4;
+    }
+
+    /* ── divider ── */
+    .divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      color: var(--ink-faint);
+      font-size: 0.8rem;
+      letter-spacing: 0.5em;
+    }
+    .divider::before, .divider::after {
+      content: '─────';
+      margin: 0 0.5em;
+    }
+
+    /* ── stats ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .stat-box {
+      text-align: center;
+      padding: 0.8rem 0.5rem;
+      border: 1px solid var(--paper-d);
+      background: rgba(255,255,255,0.3);
+    }
+    .stat-num {
+      font-family: 'Special Elite', monospace;
+      font-size: 2rem;
+      color: var(--accent-d);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.1em;
+      margin-top: 0.3rem;
+    }
+
+    /* ── table of contents ── */
+    .toc {
+      margin: 1.5rem 0 0;
+    }
+    .toc-title {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .toc-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      margin-bottom: 0.3rem;
+      font-size: 0.9rem;
+    }
+    .toc-item a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .toc-item a:hover { color: var(--accent); }
+    .toc-dot {
+      flex: 1;
+      border-bottom: 1px dotted var(--ink-faint);
+      margin-bottom: 3px;
+    }
+    .toc-count {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.8rem;
+      color: var(--ink-fade);
+    }
+
+    /* ── session ── */
+    .session {
+      margin-top: 2.5rem;
+      scroll-margin-top: 1.5rem;
+    }
+    .session-header {
+      display: flex;
+      align-items: flex-end;
+      gap: 1rem;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .session-date {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.75rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.15em;
+      line-height: 1;
+    }
+    .session-location {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+    .session-divecount {
+      margin-left: auto;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.8rem;
+      color: var(--ink-fade);
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    /* ── location description ── */
+    .loc-desc {
+      font-style: italic;
+      color: var(--ink-fade);
+      font-size: 0.93rem;
+      line-height: 1.7;
+      border-left: 2px solid var(--paper-d);
+      padding-left: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── photo strip ── */
+    .photo-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 1.2rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--paper-d) transparent;
+    }
+    .photo-strip-item {
+      flex-shrink: 0;
+      position: relative;
+    }
+    .photo-strip-item a {
+      display: block;
+      height: 140px;
+      width: auto;
+      overflow: hidden;
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+    }
+    .photo-strip-item img {
+      height: 140px;
+      width: auto;
+      min-width: 100px;
+      max-width: 200px;
+      object-fit: cover;
+      display: block;
+      filter: sepia(15%) saturate(90%);
+      transition: filter 0.2s;
+    }
+    .photo-strip-item a:hover img { filter: none; }
+    .photo-caption {
+      font-family: 'Caveat', cursive;
+      font-size: 0.78rem;
+      color: var(--ink-fade);
+      text-align: center;
+      margin-top: 3px;
+      max-width: 180px;
+    }
+
+    /* ── video strip ── */
+    .video-strip {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+    .video-embed {
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+      overflow: hidden;
+      border-radius: 2px;
+    }
+    .video-embed iframe {
+      display: block;
+      width: 280px;
+      height: 158px;
+    }
+    .video-link a {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      word-break: break-all;
+    }
+
+    /* ── dive entries ── */
+    .dive-list { margin-bottom: 1.5rem; }
+    .dive-entry {
+      border: 1px solid var(--paper-d);
+      background: rgba(255,255,255,0.25);
+      padding: 0.9rem 1rem;
+      margin-bottom: 0.7rem;
+      position: relative;
+    }
+    .dive-number-badge {
+      position: absolute;
+      top: 0.7rem; left: -0.1rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      letter-spacing: 0.05em;
+    }
+    .dive-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      margin-left: 3rem;
+      margin-bottom: 0.5rem;
+    }
+    .dive-point {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+    .dive-chip {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.72rem;
+      color: var(--ink-fade);
+      letter-spacing: 0.06em;
+      background: var(--paper-d);
+      padding: 2px 6px;
+    }
+    .dive-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.2rem;
+      margin-left: 3rem;
+      margin-bottom: 0.4rem;
+    }
+    .dive-meta-item {
+      font-size: 0.82rem;
+      color: var(--ink-fade);
+    }
+    .dive-meta-item strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .dive-comment {
+      margin-left: 3rem;
+      font-style: italic;
+      font-size: 0.87rem;
+      color: var(--ink-fade);
+      line-height: 1.5;
+    }
+    .dive-fish-list {
+      margin-left: 3rem;
+      margin-top: 0.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .fish-tag {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.7rem;
+      padding: 1px 7px;
+      background: var(--accent);
+      color: #e8f0f5;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── fish encyclopedia ── */
+    .fish-section { margin-top: 1.5rem; }
+    .fish-section-title {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      border-bottom: 1px dashed var(--paper-d);
+      padding-bottom: 0.3rem;
+    }
+    .fish-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.8rem;
+    }
+    .fish-card {
+      background: rgba(255,255,255,0.3);
+      border: 1px solid var(--paper-d);
+      padding: 0.7rem;
+      position: relative;
+    }
+    .fish-thumb {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 0.5rem;
+      border: 1px solid var(--paper-d);
+      filter: sepia(10%) saturate(90%);
+    }
+    .fish-name-ja {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--ink);
+      margin-bottom: 0.1rem;
+    }
+    .fish-name-sci {
+      font-style: italic;
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+      margin-bottom: 0.3rem;
+    }
+    .fish-taxonomy {
+      font-size: 0.7rem;
+      color: var(--ink-faint);
+      margin-bottom: 0.3rem;
+    }
+    .fish-memo {
+      font-size: 0.75rem;
+      color: var(--ink-fade);
+      line-height: 1.5;
+      margin-top: 0.3rem;
+    }
+    .fish-stars {
+      font-size: 0.7rem;
+      color: var(--ink-faint);
+      margin-top: 0.3rem;
+    }
+    .fish-stars .row { display: flex; gap: 0.5rem; align-items: center; }
+    .fish-stars .label { min-width: 3.5em; }
+    .star.filled { color: #c8a000; }
+    .star.empty  { color: var(--ink-faint); }
+
+    /* ── tape decoration ── */
+    .tape {
+      display: inline-block;
+      background: var(--tape);
+      width: 60px; height: 18px;
+      position: absolute;
+      transform: rotate(-2deg);
+    }
+
+    /* ── page separator ── */
+    .page-sep {
+      height: 1.5rem;
+    }
+
+    /* ── build note ── */
+    .build-note {
+      text-align: center;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.25);
+      margin-top: 2rem;
+      letter-spacing: 0.15em;
+    }
+
+    /* ── responsive ── */
+    @media (max-width: 600px) {
+      .page-inner { padding: 2rem 1.5rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .fish-grid  { grid-template-columns: repeat(2, 1fr); }
+      .cover-gallery { grid-template-columns: repeat(2, 1fr); }
+      .session-location { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="book">
+
+  <!-- ═══════════════════════════════════ COVER ═══════════════════════════════ -->
+  <div class="page cover">
+    <div class="page-inner">
+      <div class="cover-stamp">Personal Dive Log Book</div>
+      <div class="cover-title">Dive Log</div>
+      <div class="cover-subtitle">水中の記録</div>
+
+      
+      <div class="cover-gallery">
+        
+        <a href="https://photos.app.goo.gl/FGC22itqap7PUC8J8" target="_blank" rel="noopener">
+          <img src="https://photos.app.goo.gl/FGC22itqap7PUC8J8" alt="集合写真" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'>🐠</div>'">
+        </a>
+        
+        <a href="https://photos.app.goo.gl/NS7YdXfEepT1Gdny7" target="_blank" rel="noopener">
+          <img src="https://photos.app.goo.gl/NS7YdXfEepT1Gdny7" alt="到着" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'>🐠</div>'">
+        </a>
+        
+        <a href="https://photos.app.goo.gl/Ty4WDRsxk4mkeCm27" target="_blank" rel="noopener">
+          <img src="https://photos.app.goo.gl/Ty4WDRsxk4mkeCm27" alt="セッテッング3本目" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'>🐠</div>'">
+        </a>
+        
+        <a href="https://photos.app.goo.gl/PUZrKvMnHT3ZPJSD6" target="_blank" rel="noopener">
+          <img src="https://photos.app.goo.gl/PUZrKvMnHT3ZPJSD6" alt="爆睡" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'>🐠</div>'">
+        </a>
+        
+        <a href="https://photos.app.goo.gl/9ePauizmhTYojK4q7" target="_blank" rel="noopener">
+          <img src="https://photos.app.goo.gl/9ePauizmhTYojK4q7" alt="チュニジア戦観戦" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'>🐠</div>'">
+        </a>
+        
+        <a href="https://photos.app.goo.gl/hTk2BGqfBgBj6o7F8" target="_blank" rel="noopener">
+          <img src="https://photos.app.goo.gl/hTk2BGqfBgBj6o7F8" alt="ログ" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'>🐠</div>'">
+        </a>
+        
+      </div>
+      
+
+      <div class="divider">✦</div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-num">3</div>
+          <div class="stat-label">TOTAL DIVES</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">20</div>
+          <div class="stat-label">SPECIES</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">1</div>
+          <div class="stat-label">LOCATIONS</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">30.8m</div>
+          <div class="stat-label">MAX DEPTH</div>
+        </div>
+      </div>
+
+      
+      <div style="text-align:center; margin: 0.5rem 0 1rem; font-family:'Special Elite',monospace; font-size:0.8rem; color:var(--ink-fade); letter-spacing:0.15em;">
+        TOTAL UNDERWATER TIME — 1h 49m
+      </div>
+      
+
+      <!-- TOC -->
+      <div class="toc">
+        <div class="toc-title">Contents</div>
+        
+        <div class="toc-item">
+          <a href="#session-1">6月21日 大瀬崎</a>
+          <span class="toc-dot"></span>
+          <span class="toc-count">3 dives</span>
+        </div>
+        
+      </div>
+    </div>
+  </div><!-- /cover -->
+
+  <!-- ═══════════════════════════════ SESSIONS ════════════════════════════════ -->
+  
+  <div class="page-sep"></div>
+  <div class="page session" id="session-1">
+    <div class="page-inner">
+
+      <!-- Session header -->
+      <div class="session-header">
+        <div>
+          <div class="session-date">2026 / 6月21日</div>
+          <div class="session-location">大瀬崎</div>
+        </div>
+        <div class="session-divecount">3 DIVES</div>
+      </div>
+
+      <!-- Location description -->
+      
+      <div class="loc-desc">{&#39;lat&#39;: 35.02987, &#39;lon&#39;: 138.78899}</div>
+      
+
+      <!-- Photo strip -->
+      
+      <div class="photo-strip">
+        
+        <div class="photo-strip-item">
+          <a href="https://photos.app.goo.gl/FGC22itqap7PUC8J8" target="_blank" rel="noopener">
+            <img src="https://photos.app.goo.gl/FGC22itqap7PUC8J8" alt="集合写真" loading="lazy"
+                 onerror="this.style.display='none'">
+          </a>
+          
+          <div class="photo-caption">集合写真</div>
+          
+        </div>
+        
+        <div class="photo-strip-item">
+          <a href="https://photos.app.goo.gl/NS7YdXfEepT1Gdny7" target="_blank" rel="noopener">
+            <img src="https://photos.app.goo.gl/NS7YdXfEepT1Gdny7" alt="到着" loading="lazy"
+                 onerror="this.style.display='none'">
+          </a>
+          
+          <div class="photo-caption">到着</div>
+          
+        </div>
+        
+        <div class="photo-strip-item">
+          <a href="https://photos.app.goo.gl/Ty4WDRsxk4mkeCm27" target="_blank" rel="noopener">
+            <img src="https://photos.app.goo.gl/Ty4WDRsxk4mkeCm27" alt="セッテッング3本目" loading="lazy"
+                 onerror="this.style.display='none'">
+          </a>
+          
+          <div class="photo-caption">セッテッング3本目</div>
+          
+        </div>
+        
+        <div class="photo-strip-item">
+          <a href="https://photos.app.goo.gl/PUZrKvMnHT3ZPJSD6" target="_blank" rel="noopener">
+            <img src="https://photos.app.goo.gl/PUZrKvMnHT3ZPJSD6" alt="爆睡" loading="lazy"
+                 onerror="this.style.display='none'">
+          </a>
+          
+          <div class="photo-caption">爆睡</div>
+          
+        </div>
+        
+        <div class="photo-strip-item">
+          <a href="https://photos.app.goo.gl/9ePauizmhTYojK4q7" target="_blank" rel="noopener">
+            <img src="https://photos.app.goo.gl/9ePauizmhTYojK4q7" alt="チュニジア戦観戦" loading="lazy"
+                 onerror="this.style.display='none'">
+          </a>
+          
+          <div class="photo-caption">チュニジア戦観戦</div>
+          
+        </div>
+        
+        <div class="photo-strip-item">
+          <a href="https://photos.app.goo.gl/hTk2BGqfBgBj6o7F8" target="_blank" rel="noopener">
+            <img src="https://photos.app.goo.gl/hTk2BGqfBgBj6o7F8" alt="ログ" loading="lazy"
+                 onerror="this.style.display='none'">
+          </a>
+          
+          <div class="photo-caption">ログ</div>
+          
+        </div>
+        
+      </div>
+      
+
+      <!-- Videos -->
+      
+      <div class="video-strip">
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/cgi9PrpAZhE" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/k_mbaN7mVjI" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/olJ1N8qXl2w" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/QbhnBCNWz8k" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/qZPCPr96Kvs" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/ex6xlkx8Lv0" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/WiL_yHKPkbU" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/EeFjhq1eHhQ" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/x17myaDAjBk" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/_224hyMrmkU" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/T-dt2ViO65U" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/5IJ0KFO4zDM" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/guyeJK_AOJ0" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/LqGXXWo5BZU" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/kvMpIhu_86s" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/D5C9uFfnsHk" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/PNWE3dX4Hys" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/xTpWeevRl1c" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/HhRGXk9fuCQ" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/0o2v7NUWjpM" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/mVjxH_Xwt6g" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/hpyVXZwm3TM" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/2pJUGlki5eg" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/7vfPM4sWZSQ" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/m6AyNz-lGbk" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/TNa4pjRh_gc" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/naNNTNlzR-s" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/Tg7rBt74-U0" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/ypk4azUo2VU" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+          
+          <div class="video-embed">
+            <iframe src="https://www.youtube.com/embed/oya5BWIyxf4" frameborder="0" allowfullscreen
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+          </div>
+          
+        
+      </div>
+      
+
+      <div class="divider">· · ·</div>
+
+      <!-- Dive entries -->
+      <div class="dive-list">
+        
+        <div class="dive-entry">
+          <div class="dive-number-badge">#126</div>
+
+          <div class="dive-header">
+            <span class="dive-point">湾内</span>
+            <span class="dive-chip">雨</span>
+            <span class="dive-chip">水温 23℃</span>
+          </div>
+
+          <div class="dive-meta">
+            
+            <span class="dive-meta-item">⏱ <strong>09:31–10:11</strong> (40min)</span>
+            
+            
+            <span class="dive-meta-item">📏 <strong>21.6m</strong></span>
+            
+            
+            <span class="dive-meta-item">⚖️ 2kg</span>
+            
+            
+            <span class="dive-meta-item">🌊 1m</span>
+            
+          </div>
+
+          
+          <div class="dive-comment">"久しぶりのダイビング（半年以上もあいた！）だったので、なかなか安定しなかった。またバブルリングに挑戦したが塩の流れと寒さによる頬の張りの変化の影響でうまくできなかった。"</div>
+          
+
+          
+          
+            
+              
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+              
+            
+          
+            
+              
+            
+          
+            
+          
+            
+              
+            
+          
+            
+          
+            
+          
+            
+              
+            
+          
+            
+              
+            
+          
+            
+              
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+              
+            
+          
+          
+          <div class="dive-fish-list">
+            
+            <span class="fish-tag">アオリイカの卵</span>
+            
+            <span class="fish-tag">クマノミ</span>
+            
+            <span class="fish-tag">クロホシイシモチ</span>
+            
+            <span class="fish-tag">セトミノカサゴ</span>
+            
+            <span class="fish-tag">ネンブツダイ</span>
+            
+            <span class="fish-tag">ヒフキヨウジ</span>
+            
+            <span class="fish-tag">ホウボウ</span>
+            
+            <span class="fish-tag">ミノカサゴ</span>
+            
+          </div>
+          
+        </div>
+        
+        <div class="dive-entry">
+          <div class="dive-number-badge">#127</div>
+
+          <div class="dive-header">
+            <span class="dive-point">先端</span>
+            <span class="dive-chip">雨</span>
+            <span class="dive-chip">水温 23℃</span>
+          </div>
+
+          <div class="dive-meta">
+            
+            <span class="dive-meta-item">⏱ <strong>11:15–11:46</strong> (31min)</span>
+            
+            
+            <span class="dive-meta-item">📏 <strong>30.8m</strong></span>
+            
+            
+            <span class="dive-meta-item">⚖️ 2kg</span>
+            
+            
+            <span class="dive-meta-item">🌊 1.2m</span>
+            
+          </div>
+
+          
+          <div class="dive-comment">"先端はやはり内湾に比べて透明度が良く、魚も多かった。エントリーの時に前にいた集団が下手くそで邪魔だった。表層の波のが荒れていて（低気圧の影響かな）、特に疲れてたエグジット時は大変だった。"</div>
+          
+
+          
+          
+            
+          
+            
+              
+            
+          
+            
+              
+            
+          
+            
+              
+            
+          
+            
+              
+            
+          
+            
+              
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+              
+            
+          
+            
+              
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+              
+            
+          
+            
+          
+            
+          
+          
+          <div class="dive-fish-list">
+            
+            <span class="fish-tag">アカオビハナダイ</span>
+            
+            <span class="fish-tag">ウツボ</span>
+            
+            <span class="fish-tag">オトヒメエビ</span>
+            
+            <span class="fish-tag">キビナゴ</span>
+            
+            <span class="fish-tag">キンギョハナダイ</span>
+            
+            <span class="fish-tag">トラウツボ</span>
+            
+            <span class="fish-tag">ニザダイ</span>
+            
+            <span class="fish-tag">マトウダイ</span>
+            
+          </div>
+          
+        </div>
+        
+        <div class="dive-entry">
+          <div class="dive-number-badge">#128</div>
+
+          <div class="dive-header">
+            <span class="dive-point">湾内</span>
+            <span class="dive-chip">快晴</span>
+            <span class="dive-chip">水温 23.1℃</span>
+          </div>
+
+          <div class="dive-meta">
+            
+            <span class="dive-meta-item">⏱ <strong>12:30–13:08</strong> (38min)</span>
+            
+            
+            <span class="dive-meta-item">📏 <strong>25.8m</strong></span>
+            
+            
+            <span class="dive-meta-item">⚖️ 2kg</span>
+            
+            
+            <span class="dive-meta-item">🌊 1.3m</span>
+            
+          </div>
+
+          
+          <div class="dive-comment">"ツボの中に入ってたミジンベニハゼが可愛かった。
+あとはサカタザメかな。ホッカの人たちがおってた個体がこっちにきたことで見ることができた。
+
+最後に神社の前で日本代表の応援をした。
+思ったよりも音声が映像に入っているのに驚いたかな。
+13時から日本代表戦だったので急いでエグジット。実は途中でDECOった。"</div>
+          
+
+          
+          
+            
+          
+            
+              
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+              
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+              
+            
+          
+            
+              
+            
+          
+            
+          
+            
+              
+            
+          
+            
+          
+          
+          <div class="dive-fish-list">
+            
+            <span class="fish-tag">アカオビハナダイ</span>
+            
+            <span class="fish-tag">サカタザメ</span>
+            
+            <span class="fish-tag">ボラ</span>
+            
+            <span class="fish-tag">マツカサウオ</span>
+            
+            <span class="fish-tag">ミジンベニハゼ</span>
+            
+          </div>
+          
+        </div>
+        
+      </div><!-- /dive-list -->
+
+      <!-- Fish encyclopedia for this session -->
+      
+      <div class="fish-section">
+        <div class="fish-section-title">── Encountered Species ──</div>
+        <div class="fish-grid">
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/dc8722e8-136b-4b58-ba0c-f0063f5a973d/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=0e55bb7e2ddc3baf16e863eddae1ef61386c0efbd2a138042c2c05806fbbac14&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="アオリイカの卵"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">アオリイカの卵</div>
+            
+            
+            
+            
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/57b4e3c4-e3b9-4e85-837a-67e75f8abc8f/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=14fddfba0442c70feb4f096be7b9291f35f26b7f6e60e65a6cd030c2fae882b5&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="アカオビハナダイ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">アカオビハナダイ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Redbar anthias</div>
+            
+            
+            <div class="fish-name-sci">Pseudanthias rubrizonatus</div>
+            
+            
+            <div class="fish-taxonomy">
+              スズキ目
+               / ハタ科
+               / ナガハナダイ属
+            </div>
+            
+            
+            <div class="fish-memo">サンゴ礁、岩礁域に生息する。　分布：伊豆半島以南、太平洋域に分布する。</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/77cd8661-1a90-4bb8-87a7-f7389cb64aa2/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=08a0b2a5f2f569430276277ba1a8327f4c77268c669ad39393fade153fd1c52c&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ウツボ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">ウツボ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Barred moray</div>
+            
+            
+            <div class="fish-name-sci">Gymnothorax kidako</div>
+            
+            
+            <div class="fish-taxonomy">
+              ウナギ目
+               / ウツボ科
+               / ウツボ属
+            </div>
+            
+            
+            <div class="fish-memo">岩礁域　分布：南日本、台湾</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/152ca0e7-3557-4251-a5fa-0d6d423d1905/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=e275bd54dc7fe93bc539ef8d7946b996c4713c6fc8eee2d81b0fe4888b52fb4b&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="オトヒメエビ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">オトヒメエビ</div>
+            
+            
+            
+            
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/cd1d133b-8f5b-4faf-9e32-ae16ab07c0e4/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=0741373f4a79fb3aee9d2e8dca2d8133635a537008d2ec44560dc4d1ea3a4e21&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="キビナゴ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">キビナゴ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Silver-stripe round herring</div>
+            
+            
+            <div class="fish-name-sci">Spratelloides gracilis</div>
+            
+            
+            <div class="fish-taxonomy">
+              ニシン目
+               / ニシン科
+               / キビナゴ属
+            </div>
+            
+            
+            <div class="fish-memo">沿岸域を群れで遊泳する。　分布：千葉県以南、インド洋から西太平洋に分布する。</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/d1cf84c7-3fe0-4aba-a648-81056ca54ea3/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=bf529d447120699bc3a320429664dfa93f595efcbc341fcc0ed47e6189a7fe1a&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="キンギョハナダイ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">キンギョハナダイ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Scalefin anthias</div>
+            
+            
+            <div class="fish-name-sci">Pseudanthias squamipinnis</div>
+            
+            
+            <div class="fish-taxonomy">
+              スズキ目
+               / ハタ科
+               / ナガハナダイ属
+            </div>
+            
+            
+            <div class="fish-memo">岩礁や根の近くで大きな群れで生息する。　分布：関東以南、紅海からインド、太平洋。</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/1bd4330e-2df4-410d-9022-3a625bd9fd5e/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=5c664e9cc5594be8b2b72173e5195609e7fb6a39a213c73dde97a53fe44e4f3d&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="クマノミ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">クマノミ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Clark&#39;s Anemonefish</div>
+            
+            
+            <div class="fish-name-sci">Amphiprion clarkii</div>
+            
+            
+            <div class="fish-taxonomy">
+              スズキ目
+               / スズメダイ科
+               / クマノミ属
+            </div>
+            
+            
+            <div class="fish-memo">岩礁帯のイソギンチャクと共生している。水深１０～５０ ｍ　分布：千葉県以南、インド洋から太平洋。</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/baf63468-e663-4d1f-9fd3-4148fff06f96/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=599245d38ec749a63b99aff50a7bfd4c8d928da46195a191a24c20f00e5088f6&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="クロホシイシモチ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">クロホシイシモチ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Blackspotted cardinafish</div>
+            
+            
+            <div class="fish-name-sci">Apogon notatus</div>
+            
+            
+            <div class="fish-taxonomy">
+              スズキ目
+               / テンジクダイ科
+               / テンジクダイ属
+            </div>
+            
+            
+            <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/c9f8e752-7f0e-4e56-84d4-268e5b728949/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=f173df8048a13a8ece3c47f131a7e5dd98e4fea2dc8591058dc140fd02436f98&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="サカタザメ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">サカタザメ</div>
+            
+            
+            
+            
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/1114306d-a248-416c-be90-90078dde46b5/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=f74afb37ab384e25e580f79cf46762f22bc6ff07f0df5a8166660f9ee13156cb&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="セトミノカサゴ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">セトミノカサゴ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Marbled rockfish</div>
+            
+            
+            <div class="fish-name-sci">Sabastiscus marmoratus</div>
+            
+            
+            <div class="fish-taxonomy">
+              カサゴ目
+               / フサカサゴ科
+               / カサゴ属
+            </div>
+            
+            
+            <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、東シナ海に分布する。</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/646ef9d8-5a33-4e3b-b525-e124d016e81b/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=9bfd21a4b0b5d818ee266b17a2a7af3cf9cedfd76977ac98e072ebc158eb1eac&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="トラウツボ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">トラウツボ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Dragon moray</div>
+            
+            
+            <div class="fish-name-sci">Muraena pardalis</div>
+            
+            
+            <div class="fish-taxonomy">
+              ウナギ目
+               / ウツボ科
+               / トラウツボ属
+            </div>
+            
+            
+            <div class="fish-memo">岩礁域　分布：南日本、インド洋から太平洋</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/79afa613-d167-4d06-9b7d-25663d9e88e7/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=7179b87504ed316c74520358f1e408c0ae4756fe74f1a4a17cae531ca57ea7bb&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ニザダイ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">ニザダイ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Scalpel sawtail</div>
+            
+            
+            <div class="fish-name-sci">Prionurus scalprus</div>
+            
+            
+            <div class="fish-taxonomy">
+              スズキ目
+               / ニザダイ科
+               / ニザダイ属
+            </div>
+            
+            
+            <div class="fish-memo">浅い岩礁域　分布：宮城県以南、台湾など</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/e8e76f69-0291-407f-93c0-177b0476aa55/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=d47ffb59f68d801d169c36b3907c0a361765b2b48597029ba3039d1b1ea31795&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ネンブツダイ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">ネンブツダイ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Half-lined cardinalfish</div>
+            
+            
+            <div class="fish-name-sci">Apogon semilineatus</div>
+            
+            
+            <div class="fish-taxonomy">
+              スズキ目
+               / テンジクダイ科
+               / テンジクダイ属
+            </div>
+            
+            
+            <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/194fc0ec-8331-478e-8fa9-e638047ff59d/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=0a049295b077e704aeb4a88d76f45e9b6d4008cae7eac36f0f86b57c124f97ba&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ヒフキヨウジ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">ヒフキヨウジ</div>
+            
+            
+            
+            
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/23d89ab1-095d-4c46-b493-ed633677b420/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=20c0a1aea991fd0dd45f43b7887e097f1a8691b0d74a8519f8d193e8c077975a&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ホウボウ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">ホウボウ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Red gurnard</div>
+            
+            
+            <div class="fish-name-sci">Chelidonichthys spinosus</div>
+            
+            
+            <div class="fish-taxonomy">
+              カサゴ目
+               / ホウボウ科
+               / ホウボウ属
+            </div>
+            
+            
+            <div class="fish-memo">砂泥底に生息する。指のように見える3本の胸鰭軟条を動かして餌を探す。　分布：北海道南部から南シナ海</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/3485daae-05aa-46fb-90ef-37d86a13f0e7/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=81c056b97723042cefb8b8156f62e14bf7391ed4ca85a31fd1e15784343d1164&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ボラ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">ボラ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Flathead mullet</div>
+            
+            
+            <div class="fish-name-sci">Mugil cephalus</div>
+            
+            
+            <div class="fish-taxonomy">
+              ボラ目
+               / ボラ科
+               / ボラ属
+            </div>
+            
+            
+            <div class="fish-memo">沿岸浅所や汽水域、河川に群れで生息する。　分布：北海道以南、東アフリカから太平洋に分布する。</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/35aeb8c0-55fd-4728-8140-0d5691c7003b/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=d0631b11e5d994d8a44840545178437712ef3d0c3aae96f7621e392097b1b82b&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="マツカサウオ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">マツカサウオ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Pineconefish</div>
+            
+            
+            <div class="fish-name-sci">Monocentris japonica</div>
+            
+            
+            <div class="fish-taxonomy">
+              キンメダイ目
+               / マツカサウオ科
+               / マツカサウオ属
+            </div>
+            
+            
+            <div class="fish-memo">浅海の岩礁域　分布：紅海、南アフリカから西太平洋、オーストラリア南部に分布</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/9c03870f-0321-4806-b6d9-068bcd48f38b/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=7ef916b4a1fd7d72d398bdd911187e28e2182543b2460a8ecfd1b02740f06ba8&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="マトウダイ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">マトウダイ</div>
+            
+            
+            
+            
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/3ab32a9a-2d4b-4dc8-bc64-23dbad9fe457/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=763d3dafa09ac7a88e2b97b61780b8668645558a83e8bf83ec6d30c9ea390d4e&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ミジンベニハゼ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">ミジンベニハゼ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Caesiura dwarfgoby</div>
+            
+            
+            <div class="fish-name-sci">Trimma caesiura</div>
+            
+            
+            <div class="fish-taxonomy">
+              スズキ目
+               / ハゼ科
+               / ベニハゼ属
+            </div>
+            
+            
+            <div class="fish-memo">岩礁域、サンゴ礁域の礁斜面。水深 3-20m。　分布：八丈島以南の南日本、インドから太平洋</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+          <div class="fish-card">
+            
+            <img class="fish-thumb" src="https://prod-files-secure.s3.us-west-2.amazonaws.com/8a30adff-a840-4744-ade5-34ed2a692c7a/3177d826-fbb5-4526-9b57-4dbfcd168734/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=ASIAZI2LB466TE5XC4ZS%2F20260624%2Fus-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20260624T173824Z&amp;X-Amz-Expires=3600&amp;X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJGMEQCIDedJVsyFtTwGDrj585Qop50qHxyH%2BbV1KNZt1Oqrp%2F8AiACnYCbgFiNSKMtz8%2FAx%2FzLNs3KJvs0%2FmvR9UTd08f3Uir%2FAwg6EAAaDDYzNzQyMzE4MzgwNSIMTvEPHObvwJuepq8xKtwDJOTcbhKr0UlFAhRVUlUa3jiq2cMylCyPJsJ8OOrljOjpyHwLqDPqr9%2Fa7XN9tmRZN8Y30jmVswAomLtD0VPkNmeD2gYwuIqwfrb%2BtQSwmG%2BaGJRxwTr7hGTgVDVCFJsXcZyKYYZ7M%2BoRJoSRTosVjjYgy7Tp4Fvt9%2BOccMCL7JIFGgVaWEMKbLCguNxzj4QrseyNe6e6BQBrJUyAlf3rQWmS4MSDu6UCYBhPbgucDuRbyicUnbFZNBbaiiQ9gBAWSvcnYUSJVWPX7eeB3%2FtvNWTo1PFSDPI%2FmfTzLHIBEXhQ5hOrfsW2d1c%2BGTLn%2FVs0SPK7xCQfWakhfTM1WySRMK%2BczhW5lemUBxW6UDu0rdAmZMnpf2sYkdpkE0G6WgWkm06oXc2Zd1R9CXBm0n7UxOcPx8XjJ0ShrGEchA9mV4BCtpFfZlwoKUuznej3rClGkouV3hH5wYP2VOO2LgFxyr0CxchP5SziJrIz4%2BzLOsjQfVTP2Ofct88yGZCOsDaXpi6VUbqyCTJSU5VQ2HyYIOmIFLJy72rNRBu%2FVdKYkGNV%2BOrJi0n4RNmAr9HfvLPAJlbSkp8x8VBaeuSaJhA4Dl4i%2FhXyMw37KWwr5IHmAanepuw856rnY4jTOQ4wuZbw0QY6pgGvIAHnggPLJwDAjfN%2F90XD0NS1nJfgAfW2B9%2B3VExCNMNMRS027YX3NoOvJDwVZCkBnitZif80omeEiO6sDGgp1rUCMxtoghSZIlZcgg5a2631jdWWHWkhQNeGiUJR7a3muwQBDVnfzDkvPVkYi1Q4TQvqYeMRKjNRfVn5pzvQE1OjWNXP3%2BOBLyjIpaQ1YBmiIsColQE6dlVuHUdxQvZO8KyeRoWi&amp;X-Amz-Signature=0182f2eeffc9f23e8facaaac3a140add05547f39066c3601e17af75df4b2004d&amp;X-Amz-SignedHeaders=host&amp;x-amz-checksum-mode=ENABLED&amp;x-id=GetObject" alt="ミノカサゴ"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
+            
+            <div class="fish-name-ja">ミノカサゴ</div>
+            
+            <div style="font-size:0.75rem;color:var(--ink-fade);margin-bottom:0.1rem;">Luna lionfish</div>
+            
+            
+            <div class="fish-name-sci">Pterois lunulata</div>
+            
+            
+            <div class="fish-taxonomy">
+              カサゴ目
+               / フサカサゴ科
+               / ミノカサゴ属
+            </div>
+            
+            
+            <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、インドから太平洋西部</div>
+            
+            
+            <div class="fish-stars">
+              
+              <div class="row"><span class="label">レア度</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">人気</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+              
+              <div class="row"><span class="label">撮影</span>&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star filled&#34;&gt;★&lt;/span&gt;&lt;span class=&#34;star empty&#34;&gt;☆&lt;/span&gt;</div>
+              
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+
+    </div>
+  </div><!-- /session -->
+  
+
+</div><!-- /book -->
+
+<div class="build-note">Generated 2026年6月25日 · Dive Log Book</div>
+
+</body>
+</html>
