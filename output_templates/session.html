@@ -195,6 +195,29 @@
       margin-top: var(--sp-xs);
       max-width: 220px;
     }
+    .photo-link-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 152px;
+      width: 110px;
+      background: var(--paper-d);
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+      text-decoration: none;
+      color: var(--ink-fade);
+      gap: var(--sp-xs);
+      transition: background 0.15s;
+    }
+    .photo-link-card:hover { background: #d8cab0; }
+    .photo-link-card .ph-icon { font-size: 1.8rem; }
+    .photo-link-card .ph-label {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      text-align: center;
+      padding: 0 6px;
+    }
 
     .divider {
       text-align: center;
@@ -419,10 +442,21 @@
       <div class="photo-strip">
         {% for ph in s.photos %}
         <div class="photo-item">
+          {% if ph.is_local %}
+          {# アップロード済みローカル画像 → <img>で直接表示 #}
           <a href="{{ ph.url }}" target="_blank" rel="noopener">
             <img src="{{ ph.url }}" alt="{{ ph.caption }}" loading="lazy">
           </a>
-          {% if ph.caption %}<div class="photo-caption">{{ ph.caption }}</div>{% endif %}
+          {% else %}
+          {# 外部リンク（Google Photos等）→ リンクカード表示 #}
+          <a href="{{ ph.url }}" target="_blank" rel="noopener" class="photo-link-card">
+            <span class="ph-icon">📷</span>
+            <span class="ph-label">{{ ph.caption or '写真を見る' }}</span>
+          </a>
+          {% endif %}
+          {% if ph.caption and ph.is_local %}
+          <div class="photo-caption">{{ ph.caption }}</div>
+          {% endif %}
         </div>
         {% endfor %}
       </div>

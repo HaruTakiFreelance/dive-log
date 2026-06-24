@@ -162,9 +162,13 @@ def parse_photo_log(page: dict) -> dict:
             continue
         if " | " in line:
             url, cap = line.split(" | ", 1)
-            entries.append({"url": url.strip(), "caption": cap.strip()})
+            url = url.strip()
         else:
-            entries.append({"url": line, "caption": ""})
+            url, cap = line, ""
+        # photos/ で始まる = アップロード済みローカル画像
+        # それ以外 = 外部リンク（Google Photos等）→ クリックで開くだけ
+        is_local = url.startswith("photos/")
+        entries.append({"url": url, "caption": cap.strip(), "is_local": is_local})
     return {
         "date":     _date(p, "日付"),
         "location": _txt(p, "場所"),
