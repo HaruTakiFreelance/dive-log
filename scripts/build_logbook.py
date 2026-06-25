@@ -32,8 +32,9 @@ notion = NotionDiveClient(
 )
 
 LOCATION_CACHE_PATH = ROOT / "data" / "locations_cache.json"
-OUTPUT_DIR   = ROOT / "docs"
-SESSIONS_DIR = OUTPUT_DIR / "sessions"
+OUTPUT_DIR    = ROOT / "docs"
+SESSIONS_DIR  = OUTPUT_DIR / "sessions"
+FISH_THUMB_DIR = OUTPUT_DIR / "fish_thumbs"
 
 
 # ── Notionプロパティ取得ヘルパー ──────────────────────────────────────────────
@@ -189,6 +190,22 @@ def youtube_embed(url: str):
 
 
 # ── ファイル名生成（安全な文字のみ） ─────────────────────────────────────────
+def download_fish_thumbnail(fish_id: str, url: str, thumb_dir: Path) -> str:
+    """NotionのS3署名付きURLをローカルに保存して相対パスを返す"""
+    if not url:
+        return ""
+    local_path = thumb_dir / f"{fish_id.replace('-', '')}.jpg"
+    if local_path.exists():
+        return f"../fish_thumbs/{local_path.name}"
+    try:
+        import urllib.request
+        urllib.request.urlretrieve(url, local_path)
+        return f"../fish_thumbs/{local_path.name}"
+    except Exception as e:
+        print(f"  [warn] サムネイル取得失敗 ({fish_id}): {e}")
+        return ""
+
+
 def make_session_filename(date_str: str, location: str) -> str:
     safe_loc = re.sub(r"[^\w぀-鿿]", "_", location)
     return f"{date_str}_{safe_loc}.html"
@@ -232,7 +249,13 @@ def build():
             key=lambda f: f["name"]
         )
 
-        session_photos = photo_map.get((date_str, location), [])
+        # 写真パスをセッションページ用に調整（docs/sessions/ → ../photos/）
+        session_photos = []
+        for ph in photo_map.get((date_str, location), []):
+            ph = dict(ph)
+            if ph["is_local"]:
+                ph["url"] = "../" + ph["url"]
+            session_photos.append(ph)
 
         # 動画はダイブ単位で保持
         for d in dive_list:
@@ -291,6 +314,14 @@ def build():
         "first_date":      dives[0]["date"] if dives else "",
         "last_date":       dives[-1]["date"] if dives else "",
     }
+
+    # 魚サムネイルをローカルにダウンロード（S3署名付きURLは期限切れになるため）
+    print("\n🐠 魚サムネイルをダウンロード中...")
+    FISH_THUMB_DIR.mkdir(exist_ok=True)
+    for f in fish_index.values():
+        if f["thumbnail"]:
+            local_url = download_fish_thumbnail(f["id"], f["thumbnail"], FISH_THUMB_DIR)
+            f["thumbnail"] = local_url  # ローカルパスに差し替え
 
     build_date = datetime.now().strftime("%Y年%-m月%-d日")
 
