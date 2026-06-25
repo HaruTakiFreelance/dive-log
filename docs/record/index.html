@@ -661,16 +661,34 @@ function renderFishTags() {
 }
 
 // ── 新規魚モーダル ─────────────────────────────────────────────────────
-function openFishModal(name) {
+async function openFishModal(name) {
   pendingNewFishName = name;
   document.getElementById('new-fish-name').value = name;
   document.getElementById('new-fish-en').value = '';
   document.getElementById('new-fish-sci').value = '';
   document.getElementById('new-fish-cat').value = '';
   document.getElementById('new-fish-memo').value = '';
-  setMsg('fish-modal-msg', '', '');
+  document.getElementById('btn-fish-add').disabled = true;
+  setMsg('fish-modal-msg', 'AIが情報を取得中...', '');
   document.getElementById('fish-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  try {
+    const res = await fetch(`${WORKER}/fish/suggest`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
+    const data = await res.json();
+    if (data.english_name)    document.getElementById('new-fish-en').value = data.english_name;
+    if (data.scientific_name) document.getElementById('new-fish-sci').value = data.scientific_name;
+    if (data.category)        document.getElementById('new-fish-cat').value = data.category;
+    if (data.memo)            document.getElementById('new-fish-memo').value = data.memo;
+    setMsg('fish-modal-msg', 'AIが入力しました（修正できます）', 'ok');
+  } catch (e) {
+    setMsg('fish-modal-msg', '手動で入力してください', '');
+  }
+  document.getElementById('btn-fish-add').disabled = false;
 }
 
 function closeFishModal() {

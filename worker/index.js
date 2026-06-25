@@ -80,6 +80,40 @@ export default {
         return respond(results);
       }
 
+      // ── 魚情報AI自動入力 ──
+      if (pathname === '/fish/suggest' && request.method === 'POST') {
+        const { name } = await request.json();
+        const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': env.ANTHROPIC_API_KEY,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 400,
+            messages: [{
+              role: 'user',
+              content: `海の生き物「${name}」の情報をJSONで返してください。
+english_name: 英名（なければ空文字）
+scientific_name: 学名（なければ空文字）
+category: 分類（魚類/甲殻類/頭足類/棘皮動物/軟体動物/その他 のどれか）
+memo: 生息域・特徴など1〜2文（日本語）
+JSONのみ返してください。`
+            }]
+          })
+        });
+        const aiData = await aiRes.json();
+        const text = aiData.content?.[0]?.text || '{}';
+        const match = text.match(/\{[\s\S]*\}/);
+        try {
+          return respond(match ? JSON.parse(match[0]) : {});
+        } catch {
+          return respond({});
+        }
+      }
+
       // ── 魚追加 ──
       if (pathname === '/fish/add' && request.method === 'POST') {
         const d = await request.json();
