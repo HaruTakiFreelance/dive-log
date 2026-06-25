@@ -290,12 +290,12 @@
       position: relative;
     }
     /* ── スワイプスライダー共通 ── */
+    .slider-wrap { position: relative; }
     .inf-slider {
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      position: relative;
     }
     .inf-slider::-webkit-scrollbar { display: none; }
     .inf-track {
@@ -490,36 +490,38 @@
         {% if ns.fish_in_dive %}
         <div class="fish-slider-wrap">
           <div class="fish-slider-label">── 見れた魚 ──</div>
-          <div class="inf-slider fish-inf-slider">
-            <div class="inf-track">
-            {% for f in ns.fish_in_dive %}
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                {% if f.thumbnail %}
-                <img class="fish-thumb" src="{{ f.thumbnail }}" alt="{{ f.name }}" loading="lazy"
-                     onerror="this.style.display='none'">
-                {% endif %}
-                <div class="fish-name-ja">{{ f.name }}</div>
-                {% if f.english_name %}<div class="fish-name-en">{{ f.english_name }}</div>{% endif %}
-                {% if f.scientific_name %}<div class="fish-name-sci">{{ f.scientific_name }}</div>{% endif %}
-                {% if f.order or f.family %}
-                <div class="fish-taxonomy">
-                  {% if f.order %}{{ f.order }}{% endif %}
-                  {% if f.family %} / {{ f.family }}{% endif %}
-                  {% if f.genus %} / {{ f.genus }}{% endif %}
+          <div class="slider-wrap">
+            <div class="inf-slider fish-inf-slider">
+              <div class="inf-track">
+              {% for f in ns.fish_in_dive %}
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  {% if f.thumbnail %}
+                  <img class="fish-thumb" src="{{ f.thumbnail }}" alt="{{ f.name }}" loading="lazy"
+                       onerror="this.style.display='none'">
+                  {% endif %}
+                  <div class="fish-name-ja">{{ f.name }}</div>
+                  {% if f.english_name %}<div class="fish-name-en">{{ f.english_name }}</div>{% endif %}
+                  {% if f.scientific_name %}<div class="fish-name-sci">{{ f.scientific_name }}</div>{% endif %}
+                  {% if f.order or f.family %}
+                  <div class="fish-taxonomy">
+                    {% if f.order %}{{ f.order }}{% endif %}
+                    {% if f.family %} / {{ f.family }}{% endif %}
+                    {% if f.genus %} / {{ f.genus }}{% endif %}
+                  </div>
+                  {% endif %}
+                  {% if f.memo %}<div class="fish-memo">{{ f.memo }}</div>{% endif %}
+                  {% if f.rarity or f.popularity or f.photo_ease %}
+                  <div class="fish-stars">
+                    {% if f.rarity %}<div class="row"><span class="label">レア度</span>{{ f.rarity | stars_html }}</div>{% endif %}
+                    {% if f.popularity %}<div class="row"><span class="label">人気</span>{{ f.popularity | stars_html }}</div>{% endif %}
+                    {% if f.photo_ease %}<div class="row"><span class="label">撮影</span>{{ f.photo_ease | stars_html }}</div>{% endif %}
+                  </div>
+                  {% endif %}
                 </div>
-                {% endif %}
-                {% if f.memo %}<div class="fish-memo">{{ f.memo }}</div>{% endif %}
-                {% if f.rarity or f.popularity or f.photo_ease %}
-                <div class="fish-stars">
-                  {% if f.rarity %}<div class="row"><span class="label">レア度</span>{{ f.rarity | stars_html }}</div>{% endif %}
-                  {% if f.popularity %}<div class="row"><span class="label">人気</span>{{ f.popularity | stars_html }}</div>{% endif %}
-                  {% if f.photo_ease %}<div class="row"><span class="label">撮影</span>{{ f.photo_ease | stars_html }}</div>{% endif %}
-                </div>
-                {% endif %}
               </div>
-            </div>
-            {% endfor %}
+              {% endfor %}
+              </div>
             </div>
             {% if ns.fish_in_dive|length > 1 %}
             <div class="inf-dots">
@@ -534,24 +536,26 @@
 
         {% if d.videos %}
         <div class="dive-videos">
-          <div class="inf-slider video-inf-slider">
-            <div class="inf-track">
-              {% for v in d.videos %}
-              <div class="video-slide inf-slide">
-                {% if v.embed %}
-                <div class="video-embed">
-                  <iframe src="{{ v.embed }}"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
+          <div class="slider-wrap">
+            <div class="inf-slider video-inf-slider">
+              <div class="inf-track">
+                {% for v in d.videos %}
+                <div class="video-slide inf-slide">
+                  {% if v.embed %}
+                  <div class="video-embed">
+                    <iframe src="{{ v.embed }}"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  {% else %}
+                  <div class="video-link">
+                    <a href="{{ v.url }}" target="_blank" rel="noopener">🎬 動画を見る</a>
+                  </div>
+                  {% endif %}
                 </div>
-                {% else %}
-                <div class="video-link">
-                  <a href="{{ v.url }}" target="_blank" rel="noopener">🎬 動画を見る</a>
-                </div>
-                {% endif %}
+                {% endfor %}
               </div>
-              {% endfor %}
             </div>
             {% if d.videos|length > 1 %}
             <div class="inf-dots">
@@ -587,7 +591,8 @@
 
   // スクロールでドット更新 & ドットクリックでスクロール
   document.querySelectorAll('.inf-slider').forEach(function(slider) {
-    var dots = Array.from(slider.querySelectorAll('.inf-dot'));
+    var wrap = slider.closest('.slider-wrap') || slider;
+    var dots = Array.from(wrap.querySelectorAll('.inf-dot'));
     if (!dots.length) return;
     var slides = Array.from(slider.querySelectorAll('.inf-slide'));
 

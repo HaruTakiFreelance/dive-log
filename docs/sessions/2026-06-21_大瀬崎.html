@@ -290,12 +290,12 @@
       position: relative;
     }
     /* ── スワイプスライダー共通 ── */
+    .slider-wrap { position: relative; }
     .inf-slider {
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      position: relative;
     }
     .inf-slider::-webkit-scrollbar { display: none; }
     .inf-track {
@@ -572,201 +572,203 @@
         
         <div class="fish-slider-wrap">
           <div class="fish-slider-label">── 見れた魚 ──</div>
-          <div class="inf-slider fish-inf-slider">
-            <div class="inf-track">
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg" alt="アオリイカの卵" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">アオリイカの卵</div>
-                
-                
-                
-                
-                
+          <div class="slider-wrap">
+            <div class="inf-slider fish-inf-slider">
+              <div class="inf-track">
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg" alt="アオリイカの卵" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">アオリイカの卵</div>
+                  
+                  
+                  
+                  
+                  
+                </div>
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81817cb9e8e0657a0a5ba5.jpg" alt="クマノミ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">クマノミ</div>
-                <div class="fish-name-en">Clark&#39;s Anemonefish</div>
-                <div class="fish-name-sci">Amphiprion clarkii</div>
-                
-                <div class="fish-taxonomy">
-                  スズキ目
-                   / スズメダイ科
-                   / クマノミ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81817cb9e8e0657a0a5ba5.jpg" alt="クマノミ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">クマノミ</div>
+                  <div class="fish-name-en">Clark&#39;s Anemonefish</div>
+                  <div class="fish-name-sci">Amphiprion clarkii</div>
+                  
+                  <div class="fish-taxonomy">
+                    スズキ目
+                     / スズメダイ科
+                     / クマノミ属
+                  </div>
+                  
+                  <div class="fish-memo">岩礁帯のイソギンチャクと共生している。水深１０～５０ ｍ　分布：千葉県以南、インド洋から太平洋。</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">岩礁帯のイソギンチャクと共生している。水深１０～５０ ｍ　分布：千葉県以南、インド洋から太平洋。</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df8181368346f5fe7a08f5b3.jpg" alt="クロホシイシモチ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">クロホシイシモチ</div>
-                <div class="fish-name-en">Blackspotted cardinafish</div>
-                <div class="fish-name-sci">Apogon notatus</div>
-                
-                <div class="fish-taxonomy">
-                  スズキ目
-                   / テンジクダイ科
-                   / テンジクダイ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df8181368346f5fe7a08f5b3.jpg" alt="クロホシイシモチ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">クロホシイシモチ</div>
+                  <div class="fish-name-en">Blackspotted cardinafish</div>
+                  <div class="fish-name-sci">Apogon notatus</div>
+                  
+                  <div class="fish-taxonomy">
+                    スズキ目
+                     / テンジクダイ科
+                     / テンジクダイ属
+                  </div>
+                  
+                  <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81810595fced342517aeb3.jpg" alt="セトミノカサゴ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">セトミノカサゴ</div>
-                <div class="fish-name-en">Marbled rockfish</div>
-                <div class="fish-name-sci">Sabastiscus marmoratus</div>
-                
-                <div class="fish-taxonomy">
-                  カサゴ目
-                   / フサカサゴ科
-                   / カサゴ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81810595fced342517aeb3.jpg" alt="セトミノカサゴ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">セトミノカサゴ</div>
+                  <div class="fish-name-en">Marbled rockfish</div>
+                  <div class="fish-name-sci">Sabastiscus marmoratus</div>
+                  
+                  <div class="fish-taxonomy">
+                    カサゴ目
+                     / フサカサゴ科
+                     / カサゴ属
+                  </div>
+                  
+                  <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、東シナ海に分布する。</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、東シナ海に分布する。</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df8181a2affaecc150d2fbfe.jpg" alt="ネンブツダイ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">ネンブツダイ</div>
-                <div class="fish-name-en">Half-lined cardinalfish</div>
-                <div class="fish-name-sci">Apogon semilineatus</div>
-                
-                <div class="fish-taxonomy">
-                  スズキ目
-                   / テンジクダイ科
-                   / テンジクダイ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df8181a2affaecc150d2fbfe.jpg" alt="ネンブツダイ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">ネンブツダイ</div>
+                  <div class="fish-name-en">Half-lined cardinalfish</div>
+                  <div class="fish-name-sci">Apogon semilineatus</div>
+                  
+                  <div class="fish-taxonomy">
+                    スズキ目
+                     / テンジクダイ科
+                     / テンジクダイ属
+                  </div>
+                  
+                  <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df818105acfbc0356a1e42f1.jpg" alt="ヒフキヨウジ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">ヒフキヨウジ</div>
-                
-                
-                
-                
-                
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df818105acfbc0356a1e42f1.jpg" alt="ヒフキヨウジ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">ヒフキヨウジ</div>
+                  
+                  
+                  
+                  
+                  
+                </div>
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df8181149505e5a95ae62285.jpg" alt="ホウボウ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">ホウボウ</div>
-                <div class="fish-name-en">Red gurnard</div>
-                <div class="fish-name-sci">Chelidonichthys spinosus</div>
-                
-                <div class="fish-taxonomy">
-                  カサゴ目
-                   / ホウボウ科
-                   / ホウボウ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df8181149505e5a95ae62285.jpg" alt="ホウボウ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">ホウボウ</div>
+                  <div class="fish-name-en">Red gurnard</div>
+                  <div class="fish-name-sci">Chelidonichthys spinosus</div>
+                  
+                  <div class="fish-taxonomy">
+                    カサゴ目
+                     / ホウボウ科
+                     / ホウボウ属
+                  </div>
+                  
+                  <div class="fish-memo">砂泥底に生息する。指のように見える3本の胸鰭軟条を動かして餌を探す。　分布：北海道南部から南シナ海</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">砂泥底に生息する。指のように見える3本の胸鰭軟条を動かして餌を探す。　分布：北海道南部から南シナ海</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg" alt="ミノカサゴ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">ミノカサゴ</div>
-                <div class="fish-name-en">Luna lionfish</div>
-                <div class="fish-name-sci">Pterois lunulata</div>
-                
-                <div class="fish-taxonomy">
-                  カサゴ目
-                   / フサカサゴ科
-                   / ミノカサゴ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg" alt="ミノカサゴ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">ミノカサゴ</div>
+                  <div class="fish-name-en">Luna lionfish</div>
+                  <div class="fish-name-sci">Pterois lunulata</div>
+                  
+                  <div class="fish-taxonomy">
+                    カサゴ目
+                     / フサカサゴ科
+                     / ミノカサゴ属
+                  </div>
+                  
+                  <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、インドから太平洋西部</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、インドから太平洋西部</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
+              
+              </div>
             </div>
             
             <div class="inf-dots">
@@ -795,42 +797,44 @@
 
         
         <div class="dive-videos">
-          <div class="inf-slider video-inf-slider">
-            <div class="inf-track">
-              
-              <div class="video-slide inf-slide">
+          <div class="slider-wrap">
+            <div class="inf-slider video-inf-slider">
+              <div class="inf-track">
                 
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/cgi9PrpAZhE"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/cgi9PrpAZhE"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/k_mbaN7mVjI"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/olJ1N8qXl2w"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
                 </div>
                 
               </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/k_mbaN7mVjI"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/olJ1N8qXl2w"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
             </div>
             
             <div class="inf-dots">
@@ -922,201 +926,203 @@
         
         <div class="fish-slider-wrap">
           <div class="fish-slider-label">── 見れた魚 ──</div>
-          <div class="inf-slider fish-inf-slider">
-            <div class="inf-track">
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">アカオビハナダイ</div>
-                <div class="fish-name-en">Redbar anthias</div>
-                <div class="fish-name-sci">Pseudanthias rubrizonatus</div>
-                
-                <div class="fish-taxonomy">
-                  スズキ目
-                   / ハタ科
-                   / ナガハナダイ属
+          <div class="slider-wrap">
+            <div class="inf-slider fish-inf-slider">
+              <div class="inf-track">
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">アカオビハナダイ</div>
+                  <div class="fish-name-en">Redbar anthias</div>
+                  <div class="fish-name-sci">Pseudanthias rubrizonatus</div>
+                  
+                  <div class="fish-taxonomy">
+                    スズキ目
+                     / ハタ科
+                     / ナガハナダイ属
+                  </div>
+                  
+                  <div class="fish-memo">サンゴ礁、岩礁域に生息する。　分布：伊豆半島以南、太平洋域に分布する。</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">サンゴ礁、岩礁域に生息する。　分布：伊豆半島以南、太平洋域に分布する。</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg" alt="ウツボ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">ウツボ</div>
-                <div class="fish-name-en">Barred moray</div>
-                <div class="fish-name-sci">Gymnothorax kidako</div>
-                
-                <div class="fish-taxonomy">
-                  ウナギ目
-                   / ウツボ科
-                   / ウツボ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg" alt="ウツボ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">ウツボ</div>
+                  <div class="fish-name-en">Barred moray</div>
+                  <div class="fish-name-sci">Gymnothorax kidako</div>
+                  
+                  <div class="fish-taxonomy">
+                    ウナギ目
+                     / ウツボ科
+                     / ウツボ属
+                  </div>
+                  
+                  <div class="fish-memo">岩礁域　分布：南日本、台湾</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">岩礁域　分布：南日本、台湾</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df818181b606d9e5ae682a4c.jpg" alt="オトヒメエビ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">オトヒメエビ</div>
-                
-                
-                
-                
-                
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df818181b606d9e5ae682a4c.jpg" alt="オトヒメエビ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">オトヒメエビ</div>
+                  
+                  
+                  
+                  
+                  
+                </div>
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df8181ca8350dc9cb6d16760.jpg" alt="キビナゴ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">キビナゴ</div>
-                <div class="fish-name-en">Silver-stripe round herring</div>
-                <div class="fish-name-sci">Spratelloides gracilis</div>
-                
-                <div class="fish-taxonomy">
-                  ニシン目
-                   / ニシン科
-                   / キビナゴ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df8181ca8350dc9cb6d16760.jpg" alt="キビナゴ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">キビナゴ</div>
+                  <div class="fish-name-en">Silver-stripe round herring</div>
+                  <div class="fish-name-sci">Spratelloides gracilis</div>
+                  
+                  <div class="fish-taxonomy">
+                    ニシン目
+                     / ニシン科
+                     / キビナゴ属
+                  </div>
+                  
+                  <div class="fish-memo">沿岸域を群れで遊泳する。　分布：千葉県以南、インド洋から西太平洋に分布する。</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">沿岸域を群れで遊泳する。　分布：千葉県以南、インド洋から西太平洋に分布する。</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81819f99f6e22434c8f673.jpg" alt="キンギョハナダイ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">キンギョハナダイ</div>
-                <div class="fish-name-en">Scalefin anthias</div>
-                <div class="fish-name-sci">Pseudanthias squamipinnis</div>
-                
-                <div class="fish-taxonomy">
-                  スズキ目
-                   / ハタ科
-                   / ナガハナダイ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81819f99f6e22434c8f673.jpg" alt="キンギョハナダイ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">キンギョハナダイ</div>
+                  <div class="fish-name-en">Scalefin anthias</div>
+                  <div class="fish-name-sci">Pseudanthias squamipinnis</div>
+                  
+                  <div class="fish-taxonomy">
+                    スズキ目
+                     / ハタ科
+                     / ナガハナダイ属
+                  </div>
+                  
+                  <div class="fish-memo">岩礁や根の近くで大きな群れで生息する。　分布：関東以南、紅海からインド、太平洋。</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">岩礁や根の近くで大きな群れで生息する。　分布：関東以南、紅海からインド、太平洋。</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81813496d8dddcb15d62dd.jpg" alt="トラウツボ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">トラウツボ</div>
-                <div class="fish-name-en">Dragon moray</div>
-                <div class="fish-name-sci">Muraena pardalis</div>
-                
-                <div class="fish-taxonomy">
-                  ウナギ目
-                   / ウツボ科
-                   / トラウツボ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81813496d8dddcb15d62dd.jpg" alt="トラウツボ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">トラウツボ</div>
+                  <div class="fish-name-en">Dragon moray</div>
+                  <div class="fish-name-sci">Muraena pardalis</div>
+                  
+                  <div class="fish-taxonomy">
+                    ウナギ目
+                     / ウツボ科
+                     / トラウツボ属
+                  </div>
+                  
+                  <div class="fish-memo">岩礁域　分布：南日本、インド洋から太平洋</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">岩礁域　分布：南日本、インド洋から太平洋</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81814ea3e7de1441159d84.jpg" alt="ニザダイ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">ニザダイ</div>
-                <div class="fish-name-en">Scalpel sawtail</div>
-                <div class="fish-name-sci">Prionurus scalprus</div>
-                
-                <div class="fish-taxonomy">
-                  スズキ目
-                   / ニザダイ科
-                   / ニザダイ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81814ea3e7de1441159d84.jpg" alt="ニザダイ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">ニザダイ</div>
+                  <div class="fish-name-en">Scalpel sawtail</div>
+                  <div class="fish-name-sci">Prionurus scalprus</div>
+                  
+                  <div class="fish-taxonomy">
+                    スズキ目
+                     / ニザダイ科
+                     / ニザダイ属
+                  </div>
+                  
+                  <div class="fish-memo">浅い岩礁域　分布：宮城県以南、台湾など</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">浅い岩礁域　分布：宮城県以南、台湾など</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81814a8936d806185e2970.jpg" alt="マトウダイ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">マトウダイ</div>
+                  
+                  
+                  
+                  
+                  
                 </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81814a8936d806185e2970.jpg" alt="マトウダイ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">マトウダイ</div>
-                
-                
-                
-                
-                
+              
               </div>
-            </div>
-            
             </div>
             
             <div class="inf-dots">
@@ -1145,207 +1151,209 @@
 
         
         <div class="dive-videos">
-          <div class="inf-slider video-inf-slider">
-            <div class="inf-track">
-              
-              <div class="video-slide inf-slide">
+          <div class="slider-wrap">
+            <div class="inf-slider video-inf-slider">
+              <div class="inf-track">
                 
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/QbhnBCNWz8k"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/QbhnBCNWz8k"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/qZPCPr96Kvs"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/ex6xlkx8Lv0"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/WiL_yHKPkbU"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/EeFjhq1eHhQ"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/x17myaDAjBk"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/_224hyMrmkU"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/T-dt2ViO65U"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/5IJ0KFO4zDM"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/guyeJK_AOJ0"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/LqGXXWo5BZU"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/kvMpIhu_86s"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/D5C9uFfnsHk"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/PNWE3dX4Hys"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/xTpWeevRl1c"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/HhRGXk9fuCQ"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/0o2v7NUWjpM"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/mVjxH_Xwt6g"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
                 </div>
                 
               </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/qZPCPr96Kvs"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/ex6xlkx8Lv0"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/WiL_yHKPkbU"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/EeFjhq1eHhQ"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/x17myaDAjBk"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/_224hyMrmkU"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/T-dt2ViO65U"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/5IJ0KFO4zDM"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/guyeJK_AOJ0"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/LqGXXWo5BZU"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/kvMpIhu_86s"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/D5C9uFfnsHk"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/PNWE3dX4Hys"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/xTpWeevRl1c"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/HhRGXk9fuCQ"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/0o2v7NUWjpM"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/mVjxH_Xwt6g"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
             </div>
             
             <div class="inf-dots">
@@ -1473,132 +1481,134 @@
         
         <div class="fish-slider-wrap">
           <div class="fish-slider-label">── 見れた魚 ──</div>
-          <div class="inf-slider fish-inf-slider">
-            <div class="inf-track">
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">アカオビハナダイ</div>
-                <div class="fish-name-en">Redbar anthias</div>
-                <div class="fish-name-sci">Pseudanthias rubrizonatus</div>
-                
-                <div class="fish-taxonomy">
-                  スズキ目
-                   / ハタ科
-                   / ナガハナダイ属
+          <div class="slider-wrap">
+            <div class="inf-slider fish-inf-slider">
+              <div class="inf-track">
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">アカオビハナダイ</div>
+                  <div class="fish-name-en">Redbar anthias</div>
+                  <div class="fish-name-sci">Pseudanthias rubrizonatus</div>
+                  
+                  <div class="fish-taxonomy">
+                    スズキ目
+                     / ハタ科
+                     / ナガハナダイ属
+                  </div>
+                  
+                  <div class="fish-memo">サンゴ礁、岩礁域に生息する。　分布：伊豆半島以南、太平洋域に分布する。</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">サンゴ礁、岩礁域に生息する。　分布：伊豆半島以南、太平洋域に分布する。</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg" alt="サカタザメ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">サカタザメ</div>
-                
-                
-                
-                
-                
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg" alt="サカタザメ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">サカタザメ</div>
+                  
+                  
+                  
+                  
+                  
+                </div>
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81811b9771daf3fb21ca7c.jpg" alt="ボラ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">ボラ</div>
-                <div class="fish-name-en">Flathead mullet</div>
-                <div class="fish-name-sci">Mugil cephalus</div>
-                
-                <div class="fish-taxonomy">
-                  ボラ目
-                   / ボラ科
-                   / ボラ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81811b9771daf3fb21ca7c.jpg" alt="ボラ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">ボラ</div>
+                  <div class="fish-name-en">Flathead mullet</div>
+                  <div class="fish-name-sci">Mugil cephalus</div>
+                  
+                  <div class="fish-taxonomy">
+                    ボラ目
+                     / ボラ科
+                     / ボラ属
+                  </div>
+                  
+                  <div class="fish-memo">沿岸浅所や汽水域、河川に群れで生息する。　分布：北海道以南、東アフリカから太平洋に分布する。</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">沿岸浅所や汽水域、河川に群れで生息する。　分布：北海道以南、東アフリカから太平洋に分布する。</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df81816b9175e88db47473e4.jpg" alt="マツカサウオ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">マツカサウオ</div>
-                <div class="fish-name-en">Pineconefish</div>
-                <div class="fish-name-sci">Monocentris japonica</div>
-                
-                <div class="fish-taxonomy">
-                  キンメダイ目
-                   / マツカサウオ科
-                   / マツカサウオ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81816b9175e88db47473e4.jpg" alt="マツカサウオ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">マツカサウオ</div>
+                  <div class="fish-name-en">Pineconefish</div>
+                  <div class="fish-name-sci">Monocentris japonica</div>
+                  
+                  <div class="fish-taxonomy">
+                    キンメダイ目
+                     / マツカサウオ科
+                     / マツカサウオ属
+                  </div>
+                  
+                  <div class="fish-memo">浅海の岩礁域　分布：紅海、南アフリカから西太平洋、オーストラリア南部に分布</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">浅海の岩礁域　分布：紅海、南アフリカから西太平洋、オーストラリア南部に分布</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
-            <div class="fish-slide inf-slide">
-              <div class="fish-card">
-                
-                <img class="fish-thumb" src="../fish_thumbs/389393d9df8181b39778f0d8885915b6.jpg" alt="ミジンベニハゼ" loading="lazy"
-                     onerror="this.style.display='none'">
-                
-                <div class="fish-name-ja">ミジンベニハゼ</div>
-                <div class="fish-name-en">Caesiura dwarfgoby</div>
-                <div class="fish-name-sci">Trimma caesiura</div>
-                
-                <div class="fish-taxonomy">
-                  スズキ目
-                   / ハゼ科
-                   / ベニハゼ属
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df8181b39778f0d8885915b6.jpg" alt="ミジンベニハゼ" loading="lazy"
+                       onerror="this.style.display='none'">
+                  
+                  <div class="fish-name-ja">ミジンベニハゼ</div>
+                  <div class="fish-name-en">Caesiura dwarfgoby</div>
+                  <div class="fish-name-sci">Trimma caesiura</div>
+                  
+                  <div class="fish-taxonomy">
+                    スズキ目
+                     / ハゼ科
+                     / ベニハゼ属
+                  </div>
+                  
+                  <div class="fish-memo">岩礁域、サンゴ礁域の礁斜面。水深 3-20m。　分布：八丈島以南の南日本、インドから太平洋</div>
+                  
+                  <div class="fish-stars">
+                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  </div>
+                  
                 </div>
-                
-                <div class="fish-memo">岩礁域、サンゴ礁域の礁斜面。水深 3-20m。　分布：八丈島以南の南日本、インドから太平洋</div>
-                
-                <div class="fish-stars">
-                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                </div>
-                
               </div>
-            </div>
-            
+              
+              </div>
             </div>
             
             <div class="inf-dots">
@@ -1621,108 +1631,110 @@
 
         
         <div class="dive-videos">
-          <div class="inf-slider video-inf-slider">
-            <div class="inf-track">
-              
-              <div class="video-slide inf-slide">
+          <div class="slider-wrap">
+            <div class="inf-slider video-inf-slider">
+              <div class="inf-track">
                 
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/hpyVXZwm3TM"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/hpyVXZwm3TM"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/2pJUGlki5eg"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/7vfPM4sWZSQ"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/m6AyNz-lGbk"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/TNa4pjRh_gc"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/naNNTNlzR-s"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/Tg7rBt74-U0"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/ypk4azUo2VU"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
+                </div>
+                
+                <div class="video-slide inf-slide">
+                  
+                  <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/oya5BWIyxf4"
+                            frameborder="0" allowfullscreen loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                    </iframe>
+                  </div>
+                  
                 </div>
                 
               </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/2pJUGlki5eg"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/7vfPM4sWZSQ"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/m6AyNz-lGbk"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/TNa4pjRh_gc"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/naNNTNlzR-s"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/Tg7rBt74-U0"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/ypk4azUo2VU"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
-              <div class="video-slide inf-slide">
-                
-                <div class="video-embed">
-                  <iframe src="https://www.youtube.com/embed/oya5BWIyxf4"
-                          frameborder="0" allowfullscreen loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                  </iframe>
-                </div>
-                
-              </div>
-              
             </div>
             
             <div class="inf-dots">
@@ -1774,7 +1786,8 @@
 
   // スクロールでドット更新 & ドットクリックでスクロール
   document.querySelectorAll('.inf-slider').forEach(function(slider) {
-    var dots = Array.from(slider.querySelectorAll('.inf-dot'));
+    var wrap = slider.closest('.slider-wrap') || slider;
+    var dots = Array.from(wrap.querySelectorAll('.inf-dot'));
     if (!dots.length) return;
     var slides = Array.from(slider.querySelectorAll('.inf-slide'));
 
