@@ -278,30 +278,52 @@
   </div>
 
   <!-- ナビゲーション -->
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1.5rem;">
-    <a href="record/index.html" style="
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      gap:0.4rem; padding:1.1rem 0.8rem;
-      background:var(--paper); border-radius:2px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.3);
-      text-decoration:none; color:var(--ink);
-      transition:transform 0.15s, box-shadow 0.15s;
-    " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.4)'"
-       onmouseout="this.style.transform='';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.3)'">
-      <span style="font-size:1.6rem;">🤿</span>
-      <span style="font-family:'Special Elite',monospace; font-size:0.68rem; letter-spacing:0.18em; color:var(--ink-fade);">RECORD DIVE</span>
+  <style>
+    .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1.6rem; }
+    .nav-card {
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: flex-end;
+      padding: 0.9rem 1rem;
+      background: var(--paper);
+      border-radius: 2px;
+      border-left: 3px solid var(--paper-d);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      min-height: 72px;
+    }
+    .nav-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      border-color: var(--accent);
+    }
+    .nav-card-en {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .nav-card-ja {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+  </style>
+  <div class="nav-grid">
+    <a href="record/index.html" class="nav-card">
+      <div class="nav-card-en">Record</div>
+      <div class="nav-card-ja">ダイブ記録</div>
     </a>
-    <a href="fish.html" style="
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      gap:0.4rem; padding:1.1rem 0.8rem;
-      background:var(--paper); border-radius:2px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.3);
-      text-decoration:none; color:var(--ink);
-      transition:transform 0.15s, box-shadow 0.15s;
-    " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.4)'"
-       onmouseout="this.style.transform='';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.3)'">
-      <span style="font-size:1.6rem;">🐠</span>
-      <span style="font-family:'Special Elite',monospace; font-size:0.68rem; letter-spacing:0.18em; color:var(--ink-fade);">FISH ENCYCLOPEDIA</span>
+    <a href="fish.html" class="nav-card">
+      <div class="nav-card-en">Encyclopedia</div>
+      <div class="nav-card-ja">魚図鑑</div>
+    </a>
+    <a href="workflow/index.html" class="nav-card">
+      <div class="nav-card-en">How to use</div>
+      <div class="nav-card-ja">使い方</div>
     </a>
   </div>
 

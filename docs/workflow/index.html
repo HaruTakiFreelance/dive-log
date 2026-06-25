@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使い方 — Dive Log</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper:    #f4ede0;
+      --paper-d:  #e8dbc8;
+      --ink:      #333333;
+      --ink-fade: #666655;
+      --ink-faint:#999988;
+      --accent:   #3d6b8a;
+      --accent-d: #2a4f6b;
+      --rust:     #8b3a1e;
+      --shadow:   rgba(51,51,51,0.15);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #2a2016;
+      background-image:
+        radial-gradient(ellipse at 30% 10%, #3d2e1a 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 90%, #1e1608 0%, transparent 60%);
+      min-height: 100vh;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: var(--ink);
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    .book { max-width: 680px; margin: 0 auto; }
+
+    .back-link {
+      display: inline-block;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      margin-bottom: 1rem;
+    }
+    .back-link:hover { color: rgba(255,255,255,0.7); }
+
+    .card {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 2px 6px var(--shadow), 0 8px 24px rgba(0,0,0,0.35);
+      position: relative; overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(51,51,51,0.05) 28px);
+      pointer-events: none;
+    }
+    .card-inner { padding: 2rem 2rem; position: relative; }
+
+    .stamp {
+      display: inline-block;
+      border: 2px double var(--rust);
+      padding: 0.3rem 0.9rem;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--rust);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
+    .page-title {
+      font-family: 'Special Elite', monospace;
+      font-size: 1.8rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.3rem;
+    }
+    .page-sub {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--ink-fade);
+      margin-bottom: 2rem;
+    }
+
+    /* ステップ */
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step {
+      display: flex;
+      gap: 1.2rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--paper-d);
+      position: relative;
+    }
+    .step:last-child { border-bottom: none; }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--accent-d);
+      color: #deeaf3;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+
+    .step-body { flex: 1; }
+    .step-title {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.88rem;
+      letter-spacing: 0.1em;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+    .step-desc {
+      font-size: 0.88rem;
+      color: var(--ink-fade);
+      line-height: 1.7;
+      margin-bottom: 0.6rem;
+    }
+
+    .step-action {
+      display: inline-block;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      padding: 0.4rem 1rem;
+      border-radius: 1px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .step-action:hover { opacity: 0.8; }
+    .step-action-primary { background: var(--accent-d); color: #deeaf3; }
+    .step-action-secondary { background: var(--paper-d); color: var(--ink-fade); border: 1px solid var(--paper-d); }
+
+    .code-block {
+      background: #1e1a14;
+      border-radius: 2px;
+      padding: 0.7rem 1rem;
+      margin-top: 0.5rem;
+    }
+    .code-block code {
+      display: block;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #a8d8a8;
+      line-height: 1.8;
+    }
+
+    .note {
+      font-size: 0.78rem;
+      color: var(--ink-faint);
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      padding: 1px 6px;
+      border-radius: 1px;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+    .badge-online { background: #2e7d4f; color: #d6f0e0; }
+    .badge-local  { background: var(--rust); color: #f0dbd8; }
+
+    .divider {
+      text-align: center;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      color: var(--ink-faint);
+      margin: 0.6rem 0;
+    }
+    .divider::before, .divider::after { content: '───'; margin: 0 0.3em; }
+
+    .build-note {
+      text-align: center;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.18);
+      margin-top: 1.5rem;
+      letter-spacing: 0.15em;
+    }
+  </style>
+</head>
+<body>
+<div class="book">
+  <a class="back-link" href="../index.html">← Logbook Home</a>
+
+  <div class="card">
+    <div class="card-inner">
+      <div class="stamp">Dive Log Book</div>
+      <div class="page-title">How to Use</div>
+      <div class="page-sub">ダイビングログの記録から公開まで</div>
+
+      <div class="steps">
+
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">
+              RECORD YOUR DIVE
+              <span class="badge badge-online">どこでも可</span>
+            </div>
+            <div class="step-desc">
+              ダイビング当日、スマホやPCから記録フォームを開いて潜水データを入力します。<br>
+              日付・場所・時刻・深度・見た魚を登録すると、Notionデータベースに自動で保存されます。
+            </div>
+            <a href="../record/index.html" class="step-action step-action-primary">
+              記録フォームを開く →
+            </a>
+          </div>
+        </div>
+
+        <div class="divider">↓</div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">
+              UPLOAD PHOTOS
+              <span class="badge badge-local">Mac必要</span>
+            </div>
+            <div class="step-desc">
+              帰宅後、Macでローカルアプリを起動して写真・動画をアップロードします。<br>
+              HEIC は自動で JPEG に変換され、縦1280pxにリサイズして保存されます。
+            </div>
+            <div class="code-block">
+              <code>cd "/Users/harutakizawa/Desktop/claude code/dive-log"</code>
+              <code>python3 app.py</code>
+            </div>
+            <p class="note">起動後 → http://localhost:5001/photo でアップロード</p>
+          </div>
+        </div>
+
+        <div class="divider">↓</div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">
+              BUILD LOGBOOK
+              <span class="badge badge-local">Mac必要</span>
+            </div>
+            <div class="step-desc">
+              Notionのデータと写真を元に、静的HTMLのログブックを生成します。<br>
+              ローカルアプリのホーム画面から「ログブックを生成」ボタンを押すか、ターミナルで実行します。
+            </div>
+            <div class="code-block">
+              <code>python3 scripts/build_logbook.py</code>
+            </div>
+            <p class="note">docs/ フォルダに index.html・セッションページ・魚図鑑が生成されます</p>
+          </div>
+        </div>
+
+        <div class="divider">↓</div>
+
+        <!-- Step 4 -->
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">
+              PUBLISH TO GITHUB PAGES
+              <span class="badge badge-local">Mac必要</span>
+            </div>
+            <div class="step-desc">
+              生成した docs/ フォルダを GitHub にプッシュすると、自動でウェブ公開されます。
+            </div>
+            <div class="code-block">
+              <code>cd "/Users/harutakizawa/Desktop/claude code/dive-log"</code>
+              <code>git add docs/</code>
+              <code>git commit -m "update logbook"</code>
+              <code>git push</code>
+            </div>
+            <a href="https://harutakifreelance.github.io/dive-log/" target="_blank" rel="noopener"
+               class="step-action step-action-secondary" style="margin-top:0.6rem; display:inline-block;">
+              ログブックを見る →
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- クイックリンク -->
+  <div class="card">
+    <div class="card-inner" style="padding:1.2rem 2rem;">
+      <div style="font-family:'Special Elite',monospace; font-size:0.65rem; letter-spacing:0.25em; color:var(--ink-faint); margin-bottom:0.8rem;">QUICK LINKS</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+        <a href="../record/index.html" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ ダイブ記録</a>
+        <a href="../fish.html" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ 魚図鑑</a>
+        <a href="../index.html" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ ログブック一覧</a>
+        <a href="https://www.notion.so" target="_blank" rel="noopener" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ Notion DB</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="build-note">Dive Log Book — Workflow Guide</div>
+</body>
+</html>

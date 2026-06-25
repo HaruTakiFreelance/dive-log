@@ -363,7 +363,12 @@
       </div>
       <div class="field">
         <label>動画リンク（YouTube等）</label>
-        <input type="text" id="dive-videos" placeholder="URLをカンマ区切りで">
+        <div class="fish-tags" id="video-tags"></div>
+        <div style="display:flex; gap:0.5rem; margin-top:0.4rem;">
+          <input type="text" id="video-input" placeholder="URLを入力して Enter or 追加"
+                 style="flex:1;" onkeydown="onVideoKey(event)">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addVideoUrl()" style="flex-shrink:0; width:auto; padding:0 0.8rem;">追加</button>
+        </div>
       </div>
 
       <div style="display:flex; gap:0.6rem; margin-top:1.2rem;">
@@ -447,7 +452,8 @@ let sessDiveNum = 1;
 let sessWeight = 5;
 let savedCount = 0;
 
-let selectedFish = []; // [{id, name}]
+let selectedFish = [];   // [{id, name}]
+let selectedVideos = []; // [url, ...]
 let fishSearchTimer = null;
 let pendingNewFishName = '';
 
@@ -492,10 +498,13 @@ function showDiveForm() {
   document.getElementById('dive-weight').value = sessWeight || '';
 
   // フォームリセット
-  ['dive-point','dive-start','dive-end','dive-depth','dive-cost','dive-comment','dive-videos']
+  ['dive-point','dive-start','dive-end','dive-depth','dive-cost','dive-comment']
     .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('video-input').value = '';
   selectedFish = [];
+  selectedVideos = [];
   renderFishTags();
+  renderVideoTags();
   setMsg('dive-msg', '', '');
 }
 
@@ -529,7 +538,7 @@ async function saveDive(action) {
     max_depth:   maxDepth,
     cost:        parseInt(document.getElementById('dive-cost').value) || 0,
     comment:     document.getElementById('dive-comment').value.trim(),
-    video_links: document.getElementById('dive-videos').value.trim(),
+    video_links: selectedVideos.join('\n'),
     fish_ids:    selectedFish.map(f => f.id),
   };
 
@@ -697,6 +706,33 @@ async function addNewFish() {
     setMsg('fish-modal-msg', `エラー: ${e.message}`, 'err');
     document.getElementById('btn-fish-add').disabled = false;
   }
+}
+
+// ── 動画URL タグ入力 ──────────────────────────────────────────────────
+function onVideoKey(e) {
+  if (e.key === 'Enter') { e.preventDefault(); addVideoUrl(); }
+}
+function addVideoUrl() {
+  const url = document.getElementById('video-input').value.trim();
+  if (!url || selectedVideos.includes(url)) return;
+  selectedVideos.push(url);
+  renderVideoTags();
+  document.getElementById('video-input').value = '';
+}
+function removeVideo(i) {
+  selectedVideos.splice(i, 1);
+  renderVideoTags();
+}
+function renderVideoTags() {
+  const wrap = document.getElementById('video-tags');
+  wrap.innerHTML = '';
+  selectedVideos.forEach(function(url, i) {
+    const label = url.length > 38 ? url.slice(0, 38) + '…' : url;
+    const tag = document.createElement('span');
+    tag.className = 'fish-tag';
+    tag.innerHTML = label + `<button type="button" onclick="removeVideo(${i})">✕</button>`;
+    wrap.appendChild(tag);
+  });
 }
 
 // ── ユーティリティ ─────────────────────────────────────────────────────
