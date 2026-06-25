@@ -267,15 +267,15 @@
           <div class="step-body">
             <div class="step-title">
               RECORD YOUR DIVE
-              <span class="badge badge-online">スマホ可</span>
+              <span class="badge badge-local">Mac必要</span>
             </div>
             <div class="step-desc">
-              ダイビング当日、スマホやPCから記録フォームを開いて潜水データを入力します。<br>
-              日付・場所・ポイント・開始〜終了時刻・深度・ウェイト・見た魚などを登録すると、Cloudflare Worker 経由で Notion に自動保存されます。<br>
+              ダイビング当日、ローカルアプリから記録フォームを開いて潜水データを入力します。<br>
+              日付・場所・ポイント・開始〜終了時刻・深度・ウェイト・見た魚などを登録すると、Notion に自動保存されます。<br>
               天気・波高は Open-Meteo から自動取得されます。
             </div>
-            <a href="../record/index.html" class="step-action step-action-primary">
-              記録フォームを開く →
+            <a href="http://localhost:5001/" class="step-action step-action-primary">
+              ローカルアプリを開く →
             </a>
           </div>
         </div>
@@ -288,14 +288,14 @@
           <div class="step-body">
             <div class="step-title">
               ADD FISH TO ENCYCLOPEDIA
-              <span class="badge badge-online">スマホ可</span>
+              <span class="badge badge-local">Mac必要</span>
             </div>
             <div class="step-desc">
-              記録フォームで魚を検索し、未登録の場合は「新しい魚を登録」ボタンから追加できます。<br>
+              ローカルアプリの記録フォームで魚を検索し、未登録の場合は「新しい魚を登録」ボタンから追加できます。<br>
               魚名を入力して「図鑑から取得」を押すと、<strong>shiny-ace.com</strong> から英名・学名・分類（目・科・属）・生息域・レア度・人気・撮りやすさを自動入力します。
             </div>
-            <a href="../record/index.html" class="step-action step-action-secondary">
-              記録フォームへ →
+            <a href="http://localhost:5001/" class="step-action step-action-secondary">
+              ローカルアプリへ →
             </a>
           </div>
         </div>
@@ -376,7 +376,7 @@
           <div class="feature-icon">🤿</div>
           <div class="feature-name">ダイブ記録</div>
           <div class="feature-desc">日付・場所・ポイント・時刻・深度・ウェイト・見た魚・コスト・コメント・動画リンクを Notion に保存</div>
-          <div class="feature-env env-online">● スマホ・PC どこでも可</div>
+          <div class="feature-env env-local">● Mac（localhost:5001）</div>
         </div>
 
         <div class="feature-item">
@@ -390,7 +390,7 @@
           <div class="feature-icon">✨</div>
           <div class="feature-name">魚情報自動取得</div>
           <div class="feature-desc">shiny-ace.com をスクレイプして英名・学名・目・科・属・生息域・レア度・人気・撮りやすさを自動入力</div>
-          <div class="feature-env env-online">● スマホ・PC どこでも可</div>
+          <div class="feature-env env-local">● Mac（localhost:5001）</div>
         </div>
 
         <div class="feature-item">
@@ -437,12 +437,12 @@
     <div class="card-inner" style="padding:1.2rem 2rem;">
       <div style="font-family:'Special Elite',monospace; font-size:0.65rem; letter-spacing:0.25em; color:var(--ink-faint); margin-bottom:0.8rem;">QUICK LINKS</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
-        <a href="../record/index.html" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ ダイブ記録フォーム</a>
+        <a href="http://localhost:5001/" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ 記録する（ローカル）</a>
+        <a href="http://localhost:5001/photo" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ 写真アップロード</a>
         <a href="../fish.html" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ 魚図鑑</a>
         <a href="../index.html" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ ログブック一覧</a>
         <a href="https://www.notion.so/389393d9df818033be93fd6d046d9fc4" target="_blank" rel="noopener" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ Notion DB</a>
-        <a href="http://localhost:5001/" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ ローカルアプリ</a>
-        <a href="http://localhost:5001/photo" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ 写真アップロード</a>
+        <a href="https://harutakifreelance.github.io/dive-log/" target="_blank" rel="noopener" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ 公開ログブック</a>
       </div>
     </div>
   </div>
