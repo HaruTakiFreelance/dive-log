@@ -401,6 +401,22 @@
       .page-inner { padding: var(--sp-xl) var(--sp-l); }
       .fish-grid { grid-template-columns: repeat(2, 1fr); }
       .session-location { font-size: var(--fs-xl); }
+
+      /* モバイル: バッジをフロー内に戻してインデント解除 */
+      .dive-entry { padding: var(--sp-s) var(--sp-m); }
+      .dive-badge {
+        position: static;
+        display: inline-block;
+        margin-bottom: var(--sp-s);
+      }
+      .dive-header,
+      .dive-meta,
+      .dive-comment,
+      .dive-fish-list,
+      .fish-slider-wrap,
+      .dive-videos {
+        margin-left: 0;
+      }
     }
   </style>
 </head>
