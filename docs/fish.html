@@ -39,19 +39,39 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: #2a2016;
-      background-image:
-        radial-gradient(ellipse at 30% 10%, #3d2e1a 0%, transparent 60%),
-        radial-gradient(ellipse at 70% 90%, #1e1608 0%, transparent 60%),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M0 30 Q15 20 30 30 Q45 40 60 30' fill='none' stroke='rgba(255,255,255,0.025)' stroke-width='1'/%3E%3C/svg%3E");
-      background-size: auto, auto, 60px 60px;
+      background: linear-gradient(180deg, #02101d 0%, #041525 45%, #061a2e 100%);
       min-height: 100vh;
       font-family: 'Playfair Display', Georgia, serif;
       color: var(--ink);
       padding: 2rem 1rem 4rem;
     }
 
-    .book { max-width: 960px; margin: 0 auto; }
+    .sea {
+      position: fixed; inset: 0;
+      pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .book { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+
+    @keyframes rise {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      8%   { opacity: 0.7; }
+      88%  { opacity: 0.35; }
+      100% { transform: translateY(-108vh) translateX(var(--drift)); opacity: 0; }
+    }
+    .b {
+      position: absolute; border-radius: 50%;
+      border: 1.5px solid rgba(140,220,255,0.5);
+      background: radial-gradient(circle at 32% 28%, rgba(200,240,255,0.38), rgba(60,170,255,0.06));
+      animation: rise var(--dur) ease-in var(--delay) infinite;
+    }
+    @keyframes swim  { 0% { transform:translateX(-150px); opacity:0; } 5% { opacity:0.2; } 93% { opacity:0.15; } 100% { transform:translateX(calc(100vw + 150px)); opacity:0; } }
+    @keyframes swimL { 0% { transform:translateX(calc(100vw + 150px)) scaleX(-1); opacity:0; } 5% { opacity:0.18; } 93% { opacity:0.12; } 100% { transform:translateX(-150px) scaleX(-1); opacity:0; } }
+    .fish { position: absolute; pointer-events: none; }
+    .f1 { bottom: 22%; width: 100px; animation: swim  22s linear 3s  infinite; }
+    .f2 { bottom: 55%; width: 60px;  animation: swimL 28s linear 10s infinite; }
+    .f3 { bottom: 8%;  width: 120px; animation: swim  36s linear 0s  infinite; }
+    .f4 { bottom: 40%; width: 48px;  animation: swimL 20s linear 16s infinite; }
+    .f5 { bottom: 70%; width: 80px;  animation: swim  30s linear 6s  infinite; }
 
     /* ── back link ── */
     .back-link {
@@ -429,6 +449,45 @@
   </style>
 </head>
 <body>
+<div class="sea" aria-hidden="true">
+  <div class="b" style="left:3%;bottom:-5%;width:9px;height:9px;--dur:7s;--delay:0s;--drift:7px"></div>
+  <div class="b" style="left:10%;bottom:-5%;width:5px;height:5px;--dur:5s;--delay:2s;--drift:-5px"></div>
+  <div class="b" style="left:17%;bottom:-5%;width:20px;height:20px;--dur:11s;--delay:1s;--drift:11px"></div>
+  <div class="b" style="left:25%;bottom:-5%;width:7px;height:7px;--dur:6s;--delay:3.5s;--drift:-6px"></div>
+  <div class="b" style="left:32%;bottom:-5%;width:36px;height:36px;--dur:15s;--delay:5s;--drift:15px"></div>
+  <div class="b" style="left:42%;bottom:-5%;width:10px;height:10px;--dur:7.5s;--delay:0.5s;--drift:-8px"></div>
+  <div class="b" style="left:50%;bottom:-5%;width:22px;height:22px;--dur:12s;--delay:2.5s;--drift:10px"></div>
+  <div class="b" style="left:59%;bottom:-5%;width:6px;height:6px;--dur:5.5s;--delay:4s;--drift:-4px"></div>
+  <div class="b" style="left:66%;bottom:-5%;width:16px;height:16px;--dur:9s;--delay:1.5s;--drift:8px"></div>
+  <div class="b" style="left:73%;bottom:-5%;width:28px;height:28px;--dur:13s;--delay:0.3s;--drift:6px"></div>
+  <div class="b" style="left:80%;bottom:-5%;width:8px;height:8px;--dur:6.5s;--delay:6s;--drift:-7px"></div>
+  <div class="b" style="left:88%;bottom:-5%;width:14px;height:14px;--dur:8.5s;--delay:3s;--drift:5px"></div>
+  <div class="b" style="left:94%;bottom:-5%;width:4px;height:4px;--dur:4.5s;--delay:8s;--drift:3px"></div>
+  <div class="b" style="left:20%;bottom:-5%;width:44px;height:44px;--dur:17s;--delay:7s;--drift:18px"></div>
+  <div class="b" style="left:60%;bottom:-5%;width:12px;height:12px;--dur:8s;--delay:9s;--drift:-5px"></div>
+  <svg class="fish f1" viewBox="0 0 90 45" xmlns="http://www.w3.org/2000/svg">
+    <path d="M68,22 Q45,8 12,22 Q45,36 68,22 Z M68,22 L90,11 L90,33 Z" fill="rgba(80,190,255,0.2)"/>
+    <circle cx="16" cy="21" r="2.5" fill="rgba(180,230,255,0.35)"/>
+  </svg>
+  <svg class="fish f2" viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg">
+    <path d="M45,15 Q29,5 8,15 Q29,25 45,15 Z M45,15 L60,8 L60,22 Z" fill="rgba(60,170,240,0.16)"/>
+    <circle cx="11" cy="14" r="2" fill="rgba(160,220,255,0.28)"/>
+  </svg>
+  <svg class="fish f3" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M90,30 Q60,11 16,30 Q60,49 90,30 Z M90,30 L120,15 L120,45 Z" fill="rgba(40,160,230,0.22)"/>
+    <circle cx="20" cy="29" r="4" fill="rgba(180,230,255,0.38)"/>
+    <line x1="40" y1="19" x2="40" y2="41" stroke="rgba(100,200,255,0.14)" stroke-width="1"/>
+    <line x1="58" y1="15" x2="58" y2="45" stroke="rgba(100,200,255,0.14)" stroke-width="1"/>
+  </svg>
+  <svg class="fish f4" viewBox="0 0 48 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M36,12 Q22,4 6,12 Q22,20 36,12 Z M36,12 L48,6 L48,18 Z" fill="rgba(100,200,255,0.15)"/>
+    <circle cx="9" cy="11" r="1.5" fill="rgba(160,225,255,0.28)"/>
+  </svg>
+  <svg class="fish f5" viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg">
+    <path d="M60,20 Q39,7 12,20 Q39,33 60,20 Z M60,20 L80,10 L80,30 Z" fill="rgba(70,185,255,0.18)"/>
+    <circle cx="16" cy="19" r="2.2" fill="rgba(170,225,255,0.32)"/>
+  </svg>
+</div>
 <div class="book">
 
   <a class="back-link" href="index.html">← ログブック一覧に戻る</a>
