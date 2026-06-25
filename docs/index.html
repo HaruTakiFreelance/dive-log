@@ -38,10 +38,12 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #2a2016;
+      background-color: #2a2016;
       background-image:
         radial-gradient(ellipse at 30% 10%, #3d2e1a 0%, transparent 60%),
-        radial-gradient(ellipse at 70% 90%, #1e1608 0%, transparent 60%);
+        radial-gradient(ellipse at 70% 90%, #1e1608 0%, transparent 60%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M0 30 Q15 20 30 30 Q45 40 60 30' fill='none' stroke='rgba(255,255,255,0.025)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: auto, auto, 60px 60px;
       min-height: 100vh;
       font-family: 'Playfair Display', Georgia, serif;
       color: var(--ink);
