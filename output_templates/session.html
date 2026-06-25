@@ -289,22 +289,34 @@
       margin-top: var(--sp-s);
       position: relative;
     }
-    .video-slider {
+    /* ── 無限スライダー共通 ── */
+    .inf-slider {
+      overflow: hidden;
+      position: relative;
+      touch-action: pan-y;
+    }
+    .inf-track {
       display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      gap: var(--sp-s);
-      padding-bottom: var(--sp-xs);
-      scrollbar-width: none;
+      will-change: transform;
     }
-    .video-slider::-webkit-scrollbar { display: none; }
-    .video-slide {
-      flex-shrink: 0;
-      scroll-snap-align: start;
-      width: 100%;
-      max-width: 460px;
+    .inf-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: var(--sp-xs);
     }
+    .inf-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--paper-d);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .inf-dot.active { background: var(--ink-fade); }
+
+    /* 動画スライダー */
+    .video-slide { flex-shrink: 0; }
+    /* 動画スライダー共通 */
     .video-embed {
       border: 2px solid var(--paper-d);
       box-shadow: 2px 3px 8px var(--shadow);
@@ -316,21 +328,6 @@
       width: 100%;
       aspect-ratio: 16 / 9;
     }
-    /* スライドドット */
-    .video-dots {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-top: var(--sp-xs);
-    }
-    .video-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--paper-d);
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .video-dot.active { background: var(--ink-fade); }
     /* 非YouTube動画リンク */
     .video-link a {
       display: inline-flex;
@@ -357,21 +354,9 @@
       color: var(--ink-faint);
       margin-bottom: var(--sp-xs);
     }
-    .fish-slider {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      gap: var(--sp-s);
-      padding-bottom: var(--sp-xs);
-      scrollbar-width: none;
-    }
-    .fish-slider::-webkit-scrollbar { display: none; }
-    .fish-slide {
-      flex-shrink: 0;
-      scroll-snap-align: start;
-      width: 160px;
-    }
+    /* 魚スライダー */
+    .fish-inf-slider .inf-track { gap: var(--sp-s); }
+    .fish-slide { flex-shrink: 0; width: 160px; }
     .fish-card {
       background: rgba(255,255,255,0.28);
       border: 1px solid var(--paper-d);
@@ -397,21 +382,6 @@
     .fish-stars .label { min-width: 3em; }
     .star.filled { color: #b89200; }
     .star.empty  { color: var(--ink-faint); }
-    /* スライドドット（魚） */
-    .fish-dots {
-      display: flex;
-      gap: 5px;
-      margin-top: var(--sp-xs);
-    }
-    .fish-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--paper-d);
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .fish-dot.active { background: var(--ink-fade); }
-
     .build-note {
       text-align: center;
       font-family: 'Special Elite', monospace;
@@ -457,8 +427,8 @@
         {% for ph in s.photos %}
         <div class="photo-item">
           {% if ph.is_local %}
-          {# アップロード済みローカル画像 → <img>で直接表示 #}
-          <a href="{{ ph.url }}" target="_blank" rel="noopener">
+          {# アップロード済みローカル画像 → ライトボックスで表示 #}
+          <a href="#" class="lb-trigger" data-src="{{ ph.url }}" data-caption="{{ ph.caption }}" onclick="openLightbox(this);return false;">
             <img src="{{ ph.url }}" alt="{{ ph.caption }}" loading="lazy">
           </a>
           {% else %}
@@ -514,9 +484,10 @@
         {% if ns.fish_in_dive %}
         <div class="fish-slider-wrap">
           <div class="fish-slider-label">── 見れた魚 ──</div>
-          <div class="fish-slider" id="fslider-{{ loop.index }}">
+          <div class="inf-slider fish-inf-slider">
+            <div class="inf-track">
             {% for f in ns.fish_in_dive %}
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 {% if f.thumbnail %}
                 <img class="fish-thumb" src="{{ f.thumbnail }}" alt="{{ f.name }}" loading="lazy"
@@ -543,76 +514,47 @@
               </div>
             </div>
             {% endfor %}
+            </div>
+            {% if ns.fish_in_dive|length > 1 %}
+            <div class="inf-dots">
+              {% for f in ns.fish_in_dive %}
+              <span class="inf-dot {% if loop.first %}active{% endif %}"></span>
+              {% endfor %}
+            </div>
+            {% endif %}
           </div>
-          {% if ns.fish_in_dive|length > 1 %}
-          <div class="fish-dots" id="fdots-{{ loop.index }}">
-            {% for f in ns.fish_in_dive %}
-            <div class="fish-dot {% if loop.first %}active{% endif %}"></div>
-            {% endfor %}
-          </div>
-          <script>
-          (function() {
-            var slider = document.getElementById('fslider-{{ loop.index }}');
-            var dots   = document.querySelectorAll('#fdots-{{ loop.index }} .fish-dot');
-            slider.addEventListener('scroll', function() {
-              var idx = Math.round(slider.scrollLeft / 168);
-              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
-            });
-            dots.forEach(function(dot, i) {
-              dot.addEventListener('click', function() {
-                slider.scrollTo({ left: 168 * i, behavior: 'smooth' });
-              });
-            });
-          })();
-          </script>
-          {% endif %}
         </div>
         {% endif %}
 
         {% if d.videos %}
         <div class="dive-videos">
-          <div class="video-slider" id="slider-{{ loop.index }}">
-            {% for v in d.videos %}
-            <div class="video-slide">
-              {% if v.embed %}
-              <div class="video-embed">
-                <iframe src="{{ v.embed }}"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
+          <div class="inf-slider video-inf-slider">
+            <div class="inf-track">
+              {% for v in d.videos %}
+              <div class="video-slide inf-slide">
+                {% if v.embed %}
+                <div class="video-embed">
+                  <iframe src="{{ v.embed }}"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                {% else %}
+                <div class="video-link">
+                  <a href="{{ v.url }}" target="_blank" rel="noopener">🎬 動画を見る</a>
+                </div>
+                {% endif %}
               </div>
-              {% else %}
-              <div class="video-link">
-                <a href="{{ v.url }}" target="_blank" rel="noopener">🎬 動画を見る</a>
-              </div>
-              {% endif %}
+              {% endfor %}
             </div>
-            {% endfor %}
-          </div>
-          {% if d.videos|length > 1 %}
-          <div class="video-dots" id="dots-{{ loop.index }}">
-            {% for v in d.videos %}
-            <div class="video-dot {% if loop.first %}active{% endif %}"
-                 onclick="scrollToSlide('slider-{{ loop.index0 }}__{{ loop.index0 }}')">
+            {% if d.videos|length > 1 %}
+            <div class="inf-dots">
+              {% for v in d.videos %}
+              <span class="inf-dot {% if loop.first %}active{% endif %}"></span>
+              {% endfor %}
             </div>
-            {% endfor %}
+            {% endif %}
           </div>
-          <script>
-          (function() {
-            var slider = document.getElementById('slider-{{ loop.index }}');
-            var dots   = document.querySelectorAll('#dots-{{ loop.index }} .video-dot');
-            slider.addEventListener('scroll', function() {
-              var idx = Math.round(slider.scrollLeft / slider.offsetWidth);
-              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
-            });
-            dots.forEach(function(dot, i) {
-              dot.addEventListener('click', function() {
-                slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
-              });
-            });
-          })();
-          </script>
-          {% endif %}
         </div>
         {% endif %}
 
@@ -625,5 +567,138 @@
 
 </div>
 <div class="build-note">Generated {{ build_date }} · Dive Log Book</div>
+
+<!-- 無限スライダー -->
+<script>
+(function() {
+  function initInfinite(wrapper) {
+    var track = wrapper.querySelector('.inf-track');
+    if (!track) return;
+    var orig = Array.from(track.children);
+    var n = orig.length;
+    if (n <= 1) return;
+
+    var isVideo = wrapper.classList.contains('video-inf-slider');
+
+    // 動画スライダーはラッパー幅をスライド幅に設定
+    if (isVideo) {
+      var w = wrapper.offsetWidth;
+      orig.forEach(function(s) { s.style.width = w + 'px'; });
+    }
+
+    // 先頭・末尾をクローンして前後に挿入
+    var firstClone = orig[0].cloneNode(true);
+    var lastClone  = orig[n - 1].cloneNode(true);
+    if (isVideo) {
+      firstClone.style.width = wrapper.offsetWidth + 'px';
+      lastClone.style.width  = wrapper.offsetWidth + 'px';
+    }
+    track.appendChild(firstClone);
+    track.insertBefore(lastClone, orig[0]);
+    // track.children: [lastClone, s0, s1, ..., s(n-1), firstClone]
+
+    var dots = Array.from(wrapper.querySelectorAll('.inf-dot'));
+    var pos = 1;   // 実スライドの先頭インデックス
+    var cur = 0;   // 表示中の実インデックス (0-based)
+
+    function offset(p) { return track.children[p].offsetLeft; }
+
+    function applyPos(animate) {
+      track.style.transition = animate
+        ? 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94)'
+        : 'none';
+      track.style.transform = 'translateX(-' + offset(pos) + 'px)';
+    }
+
+    function updateDots() {
+      dots.forEach(function(d, i) { d.classList.toggle('active', i === cur); });
+    }
+
+    function goNext() {
+      pos++; cur = (cur + 1) % n;
+      applyPos(true); updateDots();
+    }
+    function goPrev() {
+      pos--; cur = (cur - 1 + n) % n;
+      applyPos(true); updateDots();
+    }
+
+    // クローン端に達したら瞬時にリセット
+    track.addEventListener('transitionend', function() {
+      if (pos >= n + 1) { pos = 1; applyPos(false); }
+      else if (pos <= 0) { pos = n; applyPos(false); }
+    });
+
+    // ドットクリック
+    dots.forEach(function(dot, i) {
+      dot.addEventListener('click', function() {
+        pos = i + 1; cur = i;
+        applyPos(true); updateDots();
+      });
+    });
+
+    // スワイプ
+    var sx = 0, sy = 0;
+    wrapper.addEventListener('touchstart', function(e) {
+      sx = e.touches[0].clientX;
+      sy = e.touches[0].clientY;
+    }, { passive: true });
+    wrapper.addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].clientX - sx;
+      var dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+        dx < 0 ? goNext() : goPrev();
+      }
+    }, { passive: true });
+
+    applyPos(false);
+  }
+
+  document.querySelectorAll('.inf-slider').forEach(initInfinite);
+})();
+</script>
+
+<!-- ライトボックス -->
+<div id="lightbox" onclick="closeLightbox(event)" style="
+  display:none;
+  position:fixed; inset:0; z-index:9000;
+  background:rgba(0,0,0,0.88);
+  align-items:center; justify-content:center;
+">
+  <button onclick="closeLightbox()" style="
+    position:fixed; top:1.2rem; right:1.4rem;
+    background:none; border:none; color:#fff;
+    font-size:2rem; line-height:1; cursor:pointer;
+    opacity:0.75; transition:opacity 0.15s;
+    z-index:9001;
+  " onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.75">✕</button>
+  <img id="lb-img" src="" alt="" style="
+    max-width:92vw; max-height:90vh;
+    object-fit:contain;
+    box-shadow:0 8px 40px rgba(0,0,0,0.6);
+    border-radius:1px;
+    display:block;
+  ">
+</div>
+
+<script>
+function openLightbox(el) {
+  var lb = document.getElementById('lightbox');
+  document.getElementById('lb-img').src = el.dataset.src;
+  lb.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox')) return;
+  var lb = document.getElementById('lightbox');
+  lb.style.display = 'none';
+  document.getElementById('lb-img').src = '';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+
 </body>
 </html>

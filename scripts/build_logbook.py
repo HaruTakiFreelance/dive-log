@@ -353,7 +353,19 @@ def build():
         out_path.write_text(session_html, encoding="utf-8")
         print(f"   ✅ {s['date_display']} {s['location']} → docs/sessions/{s['filename']}")
 
-    print(f"\n合計 {1 + len(sessions)} ファイルを生成しました")
+    # ③ お魚図鑑ページ生成
+    fish_list = sorted(fish_index.values(), key=lambda f: (f["category"] or "", f["name"]))
+    categories = sorted({f["category"] for f in fish_list if f["category"]})
+    fish_html = env.get_template("fish.html").render(
+        fish_list=fish_list,
+        categories=categories,
+        total=len(fish_list),
+        build_date=build_date,
+    )
+    (OUTPUT_DIR / "fish.html").write_text(fish_html, encoding="utf-8")
+    print(f"✅ お魚図鑑 → docs/fish.html")
+
+    print(f"\n合計 {2 + len(sessions)} ファイルを生成しました")
     return len(sessions)
 
 

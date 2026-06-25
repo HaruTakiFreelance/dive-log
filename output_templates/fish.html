@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fish Encyclopedia — Dive Log Book</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --phi: 1.618;
+
+      --paper:     #f4ede0;
+      --paper-d:   #e8dbc8;
+      --ink:       #333333;
+      --ink-fade:  #666655;
+      --ink-faint: #999988;
+      --accent:    #3d6b8a;
+      --accent-d:  #2a4f6b;
+      --rust:      #8b3a1e;
+      --shadow:    rgba(51,51,51,0.15);
+
+      --sp-xs:  0.382rem;
+      --sp-s:   0.618rem;
+      --sp-m:   1rem;
+      --sp-l:   1.618rem;
+      --sp-xl:  2.618rem;
+      --sp-xxl: 4.236rem;
+
+      --fs-xs:  0.618rem;
+      --fs-s:   0.764rem;
+      --fs-m:   1rem;
+      --fs-l:   1.272rem;
+      --fs-xl:  1.618rem;
+      --fs-xxl: 2.618rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #2a2016;
+      background-image:
+        radial-gradient(ellipse at 30% 10%, #3d2e1a 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 90%, #1e1608 0%, transparent 60%);
+      min-height: 100vh;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: var(--ink);
+      padding: 2rem 1rem 4rem;
+    }
+
+    .book { max-width: 960px; margin: 0 auto; }
+
+    /* ── back link ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-xs);
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      margin-bottom: var(--sp-l);
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: rgba(255,255,255,0.7); }
+
+    /* ── cover card ── */
+    .cover-card {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 2px 6px var(--shadow), 0 8px 24px rgba(0,0,0,0.35);
+      position: relative; overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .cover-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(44,30,16,0.06) 28px);
+      pointer-events: none;
+    }
+    .cover-inner {
+      padding: 2.5rem 3.5rem;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--sp-l);
+    }
+
+    .cover-text {}
+    .stamp {
+      display: inline-block;
+      border: 3px double var(--rust);
+      padding: 0.4rem 1.2rem;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--rust);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
+    .title {
+      font-family: 'Special Elite', monospace;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: var(--ink);
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: var(--ink-fade);
+    }
+
+    .cover-stats {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--sp-xs);
+    }
+    .stat-total {
+      font-family: 'Special Elite', monospace;
+      font-size: clamp(2.4rem, 5vw, 3.5rem);
+      color: var(--accent-d);
+      line-height: 1;
+    }
+    .stat-total-label {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      color: var(--ink-faint);
+      letter-spacing: 0.15em;
+      text-align: right;
+    }
+
+    .divider {
+      text-align: center;
+      margin: var(--sp-l) 0;
+      color: var(--ink-faint);
+      font-size: var(--fs-s);
+      letter-spacing: 0.5em;
+    }
+    .divider::before, .divider::after { content: '─────'; margin: 0 0.5em; }
+
+    /* ── filter bar ── */
+    .section-title {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      margin-bottom: var(--sp-m);
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-s);
+      margin-bottom: var(--sp-l);
+    }
+    .filter-btn {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.12em;
+      padding: 4px 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: transparent;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      border-radius: 1px;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .filter-btn:hover {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.75);
+      border-color: rgba(255,255,255,0.35);
+    }
+    .filter-btn.active {
+      background: var(--paper);
+      color: var(--ink);
+      border-color: var(--paper);
+    }
+
+    /* ── fish grid ── */
+    .fish-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: var(--sp-m);
+    }
+
+    /* ── fish card ── */
+    .fish-card {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 1px 3px var(--shadow);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+    .fish-card:hover {
+      transform: translateY(-3px) rotate(0.3deg);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+    .fish-card.hidden { display: none; }
+
+    .fish-thumb-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: var(--paper-d);
+      border-bottom: 2px solid var(--paper-d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fish-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: sepia(12%) saturate(88%);
+      transition: filter 0.2s;
+    }
+    .fish-card:hover .fish-thumb-wrap img { filter: sepia(0%) saturate(100%); }
+    .fish-thumb-placeholder {
+      font-size: 2.8rem;
+      opacity: 0.3;
+    }
+
+    .fish-body { padding: var(--sp-s) var(--sp-s) var(--sp-m); }
+
+    .fish-category-badge {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.06em;
+      background: var(--accent);
+      color: #deeaf3;
+      padding: 1px 6px;
+      display: inline-block;
+      margin-bottom: var(--sp-xs);
+    }
+
+    .fish-name-ja {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: var(--fs-m);
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+    .fish-name-en {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      color: var(--ink-fade);
+      letter-spacing: 0.04em;
+    }
+    .fish-rarity {
+      font-size: var(--fs-xs);
+      color: #b89200;
+      margin-top: var(--sp-xs);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20,14,6,0.82);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-l);
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 4px 12px var(--shadow), 0 16px 48px rgba(0,0,0,0.5);
+      max-width: 560px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(44,30,16,0.05) 28px);
+      pointer-events: none;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: var(--sp-m);
+      right: var(--sp-m);
+      background: none;
+      border: none;
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-m);
+      color: var(--ink-faint);
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color 0.15s;
+      z-index: 1;
+    }
+    .modal-close:hover { color: var(--ink); }
+
+    .modal-thumb-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: var(--paper-d);
+      border-bottom: 2px solid var(--paper-d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: sepia(8%) saturate(90%);
+    }
+    .modal-thumb-placeholder { font-size: 4rem; opacity: 0.25; }
+
+    .modal-inner {
+      padding: var(--sp-xl) var(--sp-xl) var(--sp-xxl);
+      position: relative;
+    }
+
+    .modal-category {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.12em;
+      background: var(--accent);
+      color: #deeaf3;
+      padding: 2px 10px;
+      display: inline-block;
+      margin-bottom: var(--sp-s);
+    }
+
+    .modal-name-ja {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-xxl);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: var(--sp-xs);
+    }
+    .modal-name-en {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-m);
+      color: var(--ink-fade);
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+    .modal-name-sci {
+      font-style: italic;
+      font-size: var(--fs-s);
+      color: var(--ink-faint);
+      margin-bottom: var(--sp-l);
+    }
+
+    .modal-divider {
+      border: none;
+      border-top: 1px solid var(--paper-d);
+      margin: var(--sp-m) 0;
+    }
+
+    .modal-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-s) var(--sp-l);
+      margin-bottom: var(--sp-m);
+    }
+    .modal-meta-item {}
+    .modal-meta-label {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.12em;
+      color: var(--ink-faint);
+      margin-bottom: 2px;
+    }
+    .modal-meta-value {
+      font-size: var(--fs-s);
+      color: var(--ink-fade);
+    }
+    .modal-meta-value.stars { color: #b89200; }
+
+    .modal-memo {
+      font-style: italic;
+      font-size: var(--fs-m);
+      color: var(--ink-fade);
+      line-height: var(--phi);
+      border-left: 2px solid var(--paper-d);
+      padding-left: var(--sp-m);
+      margin-top: var(--sp-m);
+    }
+
+    /* ── build note ── */
+    .build-note {
+      text-align: center;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.2);
+      margin-top: 2rem;
+      letter-spacing: 0.15em;
+    }
+
+    @media (max-width: 600px) {
+      .cover-inner { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+      .cover-stats { align-items: flex-start; }
+      .stat-total-label { text-align: left; }
+      .fish-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .modal-inner { padding: var(--sp-l) var(--sp-l) var(--sp-xl); }
+      .modal-meta-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="book">
+
+  <a class="back-link" href="index.html">← ログブック一覧に戻る</a>
+
+  <!-- カバーカード -->
+  <div class="cover-card">
+    <div class="cover-inner">
+      <div class="cover-text">
+        <div class="stamp">Personal Dive Log Book</div>
+        <div class="title">Fish Encyclopedia</div>
+        <div class="subtitle">出会った生き物の記録</div>
+      </div>
+      <div class="cover-stats">
+        <div class="stat-total">{{ total }}</div>
+        <div class="stat-total-label">SPECIES RECORDED</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- カテゴリフィルター -->
+  <div class="section-title">── Filter by Category ──</div>
+  <div class="filter-bar">
+    <button class="filter-btn active" data-category="all">All</button>
+    {% for cat in categories %}
+    <button class="filter-btn" data-category="{{ cat }}">{{ cat }}</button>
+    {% endfor %}
+  </div>
+
+  <!-- 魚グリッド -->
+  <div class="fish-grid" id="fish-grid">
+    {% for f in fish_list %}
+    <div class="fish-card"
+         data-category="{{ f.category }}"
+         data-index="{{ loop.index0 }}"
+         onclick="openModal({{ loop.index0 }})">
+      <div class="fish-thumb-wrap">
+        {% if f.thumbnail %}
+        <img src="{{ f.thumbnail }}" alt="{{ f.name }}" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        {% else %}
+        <div class="fish-thumb-placeholder">🐠</div>
+        {% endif %}
+      </div>
+      <div class="fish-body">
+        {% if f.category %}
+        <div class="fish-category-badge">{{ f.category }}</div>
+        {% endif %}
+        <div class="fish-name-ja">{{ f.name }}</div>
+        {% if f.english_name %}
+        <div class="fish-name-en">{{ f.english_name }}</div>
+        {% endif %}
+        {% if f.rarity %}
+        <div class="fish-rarity">{{ f.rarity }}</div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<div class="build-note">Generated {{ build_date }} · Dive Log Book</div>
+
+<!-- 詳細モーダル -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeOnOverlay(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()" aria-label="閉じる">✕</button>
+    <div class="modal-thumb-wrap" id="modal-thumb-wrap">
+      <div class="modal-thumb-placeholder">🐠</div>
+    </div>
+    <div class="modal-inner">
+      <div id="modal-category" class="modal-category" style="display:none"></div>
+      <div id="modal-name-ja" class="modal-name-ja"></div>
+      <div id="modal-name-en" class="modal-name-en" style="display:none"></div>
+      <div id="modal-name-sci" class="modal-name-sci" style="display:none"></div>
+      <hr class="modal-divider">
+      <div class="modal-meta-grid">
+        <div class="modal-meta-item" id="meta-family-wrap" style="display:none">
+          <div class="modal-meta-label">FAMILY</div>
+          <div class="modal-meta-value" id="meta-family"></div>
+        </div>
+        <div class="modal-meta-item" id="meta-first-wrap" style="display:none">
+          <div class="modal-meta-label">FIRST SEEN</div>
+          <div class="modal-meta-value" id="meta-first"></div>
+        </div>
+        <div class="modal-meta-item" id="meta-rarity-wrap" style="display:none">
+          <div class="modal-meta-label">RARITY</div>
+          <div class="modal-meta-value stars" id="meta-rarity"></div>
+        </div>
+        <div class="modal-meta-item" id="meta-popularity-wrap" style="display:none">
+          <div class="modal-meta-label">POPULARITY</div>
+          <div class="modal-meta-value stars" id="meta-popularity"></div>
+        </div>
+        <div class="modal-meta-item" id="meta-photo-wrap" style="display:none">
+          <div class="modal-meta-label">PHOTO EASE</div>
+          <div class="modal-meta-value stars" id="meta-photo"></div>
+        </div>
+      </div>
+      <div id="modal-memo" class="modal-memo" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── Fish data ── */
+  var FISH = [
+    {% for f in fish_list %}
+    {
+      name:          {{ f.name | tojson }},
+      english_name:  {{ (f.english_name or '') | tojson }},
+      scientific_name: {{ (f.scientific_name or '') | tojson }},
+      category:      {{ (f.category or '') | tojson }},
+      family:        {{ (f.family or '') | tojson }},
+      memo:          {{ (f.memo or '') | tojson }},
+      rarity:        {{ (f.rarity or '') | tojson }},
+      popularity:    {{ (f.popularity or '') | tojson }},
+      photo_ease:    {{ (f.photo_ease or '') | tojson }},
+      first_seen:    {{ (f.first_seen or '') | tojson }},
+      thumbnail:     {{ (f.thumbnail or '') | tojson }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ];
+
+  /* ── Category filter ── */
+  var filterBtns = document.querySelectorAll('.filter-btn');
+  var fishCards  = document.querySelectorAll('.fish-card');
+  var activeCategory = 'all';
+
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      activeCategory = btn.getAttribute('data-category');
+      filterBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      fishCards.forEach(function(card) {
+        var cat = card.getAttribute('data-category');
+        if (activeCategory === 'all' || cat === activeCategory) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  /* ── Modal ── */
+  var overlay = document.getElementById('modal-overlay');
+
+  function setField(id, value, wrapId) {
+    var el = document.getElementById(id);
+    var wrap = wrapId ? document.getElementById(wrapId) : el;
+    if (value) {
+      el.textContent = value;
+      wrap.style.display = '';
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
+  function openModal(index) {
+    var f = FISH[index];
+    if (!f) return;
+
+    /* thumbnail */
+    var thumbWrap = document.getElementById('modal-thumb-wrap');
+    if (f.thumbnail) {
+      thumbWrap.innerHTML = '<img src="' + f.thumbnail + '" alt="' + f.name + '" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=\\\"modal-thumb-placeholder\\\">🐠</div>\'">';
+    } else {
+      thumbWrap.innerHTML = '<div class="modal-thumb-placeholder">🐠</div>';
+    }
+
+    setField('modal-category', f.category);
+    setField('modal-name-ja', f.name);
+    setField('modal-name-en', f.english_name);
+    setField('modal-name-sci', f.scientific_name);
+    setField('meta-family', f.family, 'meta-family-wrap');
+    setField('meta-first', f.first_seen, 'meta-first-wrap');
+    setField('meta-rarity', f.rarity, 'meta-rarity-wrap');
+    setField('meta-popularity', f.popularity, 'meta-popularity-wrap');
+    setField('meta-photo', f.photo_ease, 'meta-photo-wrap');
+    setField('modal-memo', f.memo);
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeOnOverlay(e) {
+    if (e.target === overlay) closeModal();
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+</body>
+</html>

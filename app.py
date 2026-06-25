@@ -120,9 +120,40 @@ def photo_form():
     return resp
 
 
+TARGET_HEIGHT = 1280
+
+def _normalize_photo(path: Path) -> Path:
+    """HEIC→JPEG変換 + 縦1280px統一（アスペクト比維持）。変換後のパスを返す。"""
+    import subprocess, re
+    if path.suffix.lower() in (".heic", ".heif"):
+        jpg_path = path.with_suffix(".jpg")
+        subprocess.run(
+            ["sips", "-s", "format", "jpeg", str(path), "--out", str(jpg_path)],
+            check=True, capture_output=True,
+        )
+        path.unlink()
+        path = jpg_path
+
+    # 元の寸法を取得
+    r = subprocess.run(
+        ["sips", "-g", "pixelHeight", "-g", "pixelWidth", str(path)],
+        capture_output=True, text=True, check=True,
+    )
+    h = int(re.search(r"pixelHeight: (\d+)", r.stdout).group(1))
+    w = int(re.search(r"pixelWidth: (\d+)", r.stdout).group(1))
+
+    if h > TARGET_HEIGHT:
+        new_w = round(w * TARGET_HEIGHT / h)
+        subprocess.run(
+            ["sips", "-z", str(TARGET_HEIGHT), str(new_w), str(path)],
+            check=True, capture_output=True,
+        )
+    return path
+
+
 @app.route("/photo", methods=["POST"])
 def save_photo():
-    import uuid, re
+    import uuid
     f = request.form
     files    = request.files.getlist("photo_file")
     captions = f.getlist("photo_caption")
@@ -134,11 +165,16 @@ def save_photo():
     for file, cap in zip(files, captions):
         if not file or not file.filename:
             continue
-        # 安全なファイル名に変換
         ext = Path(file.filename).suffix.lower()
-        safe_name = f"{f['date']}_{uuid.uuid4().hex[:8]}{ext}"
-        file.save(photos_dir / safe_name)
-        rel_path = f"photos/{safe_name}"
+        stem = f"{f['date']}_{uuid.uuid4().hex[:8]}"
+        tmp_path = photos_dir / f"{stem}{ext}"
+        file.save(tmp_path)
+
+        # HEIC変換 + リサイズ（動画はスキップ）
+        if ext not in (".mp4", ".mov", ".avi", ".m4v"):
+            tmp_path = _normalize_photo(tmp_path)
+
+        rel_path = f"photos/{tmp_path.name}"
         lines.append(f"{rel_path} | {cap.strip()}" if cap.strip() else rel_path)
 
     notion.add_photo_log({

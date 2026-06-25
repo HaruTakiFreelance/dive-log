@@ -289,22 +289,34 @@
       margin-top: var(--sp-s);
       position: relative;
     }
-    .video-slider {
+    /* ── 無限スライダー共通 ── */
+    .inf-slider {
+      overflow: hidden;
+      position: relative;
+      touch-action: pan-y;
+    }
+    .inf-track {
       display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      gap: var(--sp-s);
-      padding-bottom: var(--sp-xs);
-      scrollbar-width: none;
+      will-change: transform;
     }
-    .video-slider::-webkit-scrollbar { display: none; }
-    .video-slide {
-      flex-shrink: 0;
-      scroll-snap-align: start;
-      width: 100%;
-      max-width: 460px;
+    .inf-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: var(--sp-xs);
     }
+    .inf-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--paper-d);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .inf-dot.active { background: var(--ink-fade); }
+
+    /* 動画スライダー */
+    .video-slide { flex-shrink: 0; }
+    /* 動画スライダー共通 */
     .video-embed {
       border: 2px solid var(--paper-d);
       box-shadow: 2px 3px 8px var(--shadow);
@@ -316,21 +328,6 @@
       width: 100%;
       aspect-ratio: 16 / 9;
     }
-    /* スライドドット */
-    .video-dots {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-top: var(--sp-xs);
-    }
-    .video-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--paper-d);
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .video-dot.active { background: var(--ink-fade); }
     /* 非YouTube動画リンク */
     .video-link a {
       display: inline-flex;
@@ -357,21 +354,9 @@
       color: var(--ink-faint);
       margin-bottom: var(--sp-xs);
     }
-    .fish-slider {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      gap: var(--sp-s);
-      padding-bottom: var(--sp-xs);
-      scrollbar-width: none;
-    }
-    .fish-slider::-webkit-scrollbar { display: none; }
-    .fish-slide {
-      flex-shrink: 0;
-      scroll-snap-align: start;
-      width: 160px;
-    }
+    /* 魚スライダー */
+    .fish-inf-slider .inf-track { gap: var(--sp-s); }
+    .fish-slide { flex-shrink: 0; width: 160px; }
     .fish-card {
       background: rgba(255,255,255,0.28);
       border: 1px solid var(--paper-d);
@@ -397,21 +382,6 @@
     .fish-stars .label { min-width: 3em; }
     .star.filled { color: #b89200; }
     .star.empty  { color: var(--ink-faint); }
-    /* スライドドット（魚） */
-    .fish-dots {
-      display: flex;
-      gap: 5px;
-      margin-top: var(--sp-xs);
-    }
-    .fish-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--paper-d);
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .fish-dot.active { background: var(--ink-fade); }
-
     .build-note {
       text-align: center;
       font-family: 'Special Elite', monospace;
@@ -460,7 +430,7 @@
         <div class="photo-item">
           
           
-          <a href="../photos/2026-06-25_547a825b.jpg" target="_blank" rel="noopener">
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-25_547a825b.jpg" data-caption="集合写真" onclick="openLightbox(this);return false;">
             <img src="../photos/2026-06-25_547a825b.jpg" alt="集合写真" loading="lazy">
           </a>
           
@@ -472,7 +442,7 @@
         <div class="photo-item">
           
           
-          <a href="../photos/2026-06-25_614ecde0.jpg" target="_blank" rel="noopener">
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-25_614ecde0.jpg" data-caption="到着" onclick="openLightbox(this);return false;">
             <img src="../photos/2026-06-25_614ecde0.jpg" alt="到着" loading="lazy">
           </a>
           
@@ -484,7 +454,7 @@
         <div class="photo-item">
           
           
-          <a href="../photos/2026-06-25_66ce5cd1.jpg" target="_blank" rel="noopener">
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-25_66ce5cd1.jpg" data-caption="セッティング3本目" onclick="openLightbox(this);return false;">
             <img src="../photos/2026-06-25_66ce5cd1.jpg" alt="セッティング3本目" loading="lazy">
           </a>
           
@@ -496,7 +466,7 @@
         <div class="photo-item">
           
           
-          <a href="../photos/2026-06-25_a057efcc.jpg" target="_blank" rel="noopener">
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-25_a057efcc.jpg" data-caption="爆睡休憩" onclick="openLightbox(this);return false;">
             <img src="../photos/2026-06-25_a057efcc.jpg" alt="爆睡休憩" loading="lazy">
           </a>
           
@@ -508,7 +478,7 @@
         <div class="photo-item">
           
           
-          <a href="../photos/2026-06-25_48e51911.png" target="_blank" rel="noopener">
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-25_48e51911.png" data-caption="ログ交換" onclick="openLightbox(this);return false;">
             <img src="../photos/2026-06-25_48e51911.png" alt="ログ交換" loading="lazy">
           </a>
           
@@ -596,9 +566,10 @@
         
         <div class="fish-slider-wrap">
           <div class="fish-slider-label">── 見れた魚 ──</div>
-          <div class="fish-slider" id="fslider-1">
+          <div class="inf-slider fish-inf-slider">
+            <div class="inf-track">
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg" alt="アオリイカの卵" loading="lazy"
@@ -613,7 +584,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81817cb9e8e0657a0a5ba5.jpg" alt="クマノミ" loading="lazy"
@@ -640,7 +611,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df8181368346f5fe7a08f5b3.jpg" alt="クロホシイシモチ" loading="lazy"
@@ -667,7 +638,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81810595fced342517aeb3.jpg" alt="セトミノカサゴ" loading="lazy"
@@ -694,7 +665,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df8181a2affaecc150d2fbfe.jpg" alt="ネンブツダイ" loading="lazy"
@@ -721,7 +692,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df818105acfbc0356a1e42f1.jpg" alt="ヒフキヨウジ" loading="lazy"
@@ -736,7 +707,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df8181149505e5a95ae62285.jpg" alt="ホウボウ" loading="lazy"
@@ -763,7 +734,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg" alt="ミノカサゴ" loading="lazy"
@@ -790,116 +761,83 @@
               </div>
             </div>
             
+            </div>
+            
+            <div class="inf-dots">
+              
+              <span class="inf-dot active"></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+            </div>
+            
           </div>
-          
-          <div class="fish-dots" id="fdots-1">
-            
-            <div class="fish-dot active"></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-          </div>
-          <script>
-          (function() {
-            var slider = document.getElementById('fslider-1');
-            var dots   = document.querySelectorAll('#fdots-1 .fish-dot');
-            slider.addEventListener('scroll', function() {
-              var idx = Math.round(slider.scrollLeft / 168);
-              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
-            });
-            dots.forEach(function(dot, i) {
-              dot.addEventListener('click', function() {
-                slider.scrollTo({ left: 168 * i, behavior: 'smooth' });
-              });
-            });
-          })();
-          </script>
-          
         </div>
         
 
         
         <div class="dive-videos">
-          <div class="video-slider" id="slider-1">
-            
-            <div class="video-slide">
+          <div class="inf-slider video-inf-slider">
+            <div class="inf-track">
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/cgi9PrpAZhE"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/cgi9PrpAZhE"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/k_mbaN7mVjI"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/olJ1N8qXl2w"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
               </div>
               
             </div>
             
-            <div class="video-slide">
+            <div class="inf-dots">
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/k_mbaN7mVjI"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot active"></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/olJ1N8qXl2w"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
             </div>
             
           </div>
-          
-          <div class="video-dots" id="dots-1">
-            
-            <div class="video-dot active"
-                 onclick="scrollToSlide('slider-0__0')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-1__1')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-2__2')">
-            </div>
-            
-          </div>
-          <script>
-          (function() {
-            var slider = document.getElementById('slider-1');
-            var dots   = document.querySelectorAll('#dots-1 .video-dot');
-            slider.addEventListener('scroll', function() {
-              var idx = Math.round(slider.scrollLeft / slider.offsetWidth);
-              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
-            });
-            dots.forEach(function(dot, i) {
-              dot.addEventListener('click', function() {
-                slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
-              });
-            });
-          })();
-          </script>
-          
         </div>
         
 
@@ -978,9 +916,10 @@
         
         <div class="fish-slider-wrap">
           <div class="fish-slider-label">── 見れた魚 ──</div>
-          <div class="fish-slider" id="fslider-2">
+          <div class="inf-slider fish-inf-slider">
+            <div class="inf-track">
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
@@ -1007,7 +946,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg" alt="ウツボ" loading="lazy"
@@ -1034,7 +973,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df818181b606d9e5ae682a4c.jpg" alt="オトヒメエビ" loading="lazy"
@@ -1049,7 +988,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df8181ca8350dc9cb6d16760.jpg" alt="キビナゴ" loading="lazy"
@@ -1076,7 +1015,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81819f99f6e22434c8f673.jpg" alt="キンギョハナダイ" loading="lazy"
@@ -1103,7 +1042,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81813496d8dddcb15d62dd.jpg" alt="トラウツボ" loading="lazy"
@@ -1130,7 +1069,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81814ea3e7de1441159d84.jpg" alt="ニザダイ" loading="lazy"
@@ -1157,7 +1096,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81814a8936d806185e2970.jpg" alt="マトウダイ" loading="lazy"
@@ -1172,341 +1111,278 @@
               </div>
             </div>
             
+            </div>
+            
+            <div class="inf-dots">
+              
+              <span class="inf-dot active"></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+            </div>
+            
           </div>
-          
-          <div class="fish-dots" id="fdots-2">
-            
-            <div class="fish-dot active"></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-          </div>
-          <script>
-          (function() {
-            var slider = document.getElementById('fslider-2');
-            var dots   = document.querySelectorAll('#fdots-2 .fish-dot');
-            slider.addEventListener('scroll', function() {
-              var idx = Math.round(slider.scrollLeft / 168);
-              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
-            });
-            dots.forEach(function(dot, i) {
-              dot.addEventListener('click', function() {
-                slider.scrollTo({ left: 168 * i, behavior: 'smooth' });
-              });
-            });
-          })();
-          </script>
-          
         </div>
         
 
         
         <div class="dive-videos">
-          <div class="video-slider" id="slider-2">
-            
-            <div class="video-slide">
+          <div class="inf-slider video-inf-slider">
+            <div class="inf-track">
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/QbhnBCNWz8k"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/QbhnBCNWz8k"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/qZPCPr96Kvs"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/ex6xlkx8Lv0"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/WiL_yHKPkbU"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/EeFjhq1eHhQ"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/x17myaDAjBk"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/_224hyMrmkU"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/T-dt2ViO65U"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/5IJ0KFO4zDM"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/guyeJK_AOJ0"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/LqGXXWo5BZU"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/kvMpIhu_86s"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/D5C9uFfnsHk"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/PNWE3dX4Hys"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/xTpWeevRl1c"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/HhRGXk9fuCQ"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/0o2v7NUWjpM"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/mVjxH_Xwt6g"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
               </div>
               
             </div>
             
-            <div class="video-slide">
+            <div class="inf-dots">
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/qZPCPr96Kvs"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot active"></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/ex6xlkx8Lv0"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/WiL_yHKPkbU"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/EeFjhq1eHhQ"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/x17myaDAjBk"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/_224hyMrmkU"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/T-dt2ViO65U"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/5IJ0KFO4zDM"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/guyeJK_AOJ0"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/LqGXXWo5BZU"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
-              
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/kvMpIhu_86s"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
-              
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/D5C9uFfnsHk"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
-              
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/PNWE3dX4Hys"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
-              
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/xTpWeevRl1c"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
-              
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/HhRGXk9fuCQ"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
-              
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/0o2v7NUWjpM"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
-              
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/mVjxH_Xwt6g"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
             </div>
             
           </div>
-          
-          <div class="video-dots" id="dots-2">
-            
-            <div class="video-dot active"
-                 onclick="scrollToSlide('slider-0__0')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-1__1')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-2__2')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-3__3')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-4__4')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-5__5')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-6__6')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-7__7')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-8__8')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-9__9')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-10__10')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-11__11')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-12__12')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-13__13')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-14__14')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-15__15')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-16__16')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-17__17')">
-            </div>
-            
-          </div>
-          <script>
-          (function() {
-            var slider = document.getElementById('slider-2');
-            var dots   = document.querySelectorAll('#dots-2 .video-dot');
-            slider.addEventListener('scroll', function() {
-              var idx = Math.round(slider.scrollLeft / slider.offsetWidth);
-              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
-            });
-            dots.forEach(function(dot, i) {
-              dot.addEventListener('click', function() {
-                slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
-              });
-            });
-          })();
-          </script>
-          
         </div>
         
 
@@ -1591,9 +1467,10 @@
         
         <div class="fish-slider-wrap">
           <div class="fish-slider-label">── 見れた魚 ──</div>
-          <div class="fish-slider" id="fslider-3">
+          <div class="inf-slider fish-inf-slider">
+            <div class="inf-track">
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
@@ -1620,7 +1497,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg" alt="サカタザメ" loading="lazy"
@@ -1635,7 +1512,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81811b9771daf3fb21ca7c.jpg" alt="ボラ" loading="lazy"
@@ -1662,7 +1539,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df81816b9175e88db47473e4.jpg" alt="マツカサウオ" loading="lazy"
@@ -1689,7 +1566,7 @@
               </div>
             </div>
             
-            <div class="fish-slide">
+            <div class="fish-slide inf-slide">
               <div class="fish-card">
                 
                 <img class="fish-thumb" src="../fish_thumbs/389393d9df8181b39778f0d8885915b6.jpg" alt="ミジンベニハゼ" loading="lazy"
@@ -1716,200 +1593,155 @@
               </div>
             </div>
             
+            </div>
+            
+            <div class="inf-dots">
+              
+              <span class="inf-dot active"></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+            </div>
+            
           </div>
-          
-          <div class="fish-dots" id="fdots-3">
-            
-            <div class="fish-dot active"></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-            <div class="fish-dot "></div>
-            
-          </div>
-          <script>
-          (function() {
-            var slider = document.getElementById('fslider-3');
-            var dots   = document.querySelectorAll('#fdots-3 .fish-dot');
-            slider.addEventListener('scroll', function() {
-              var idx = Math.round(slider.scrollLeft / 168);
-              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
-            });
-            dots.forEach(function(dot, i) {
-              dot.addEventListener('click', function() {
-                slider.scrollTo({ left: 168 * i, behavior: 'smooth' });
-              });
-            });
-          })();
-          </script>
-          
         </div>
         
 
         
         <div class="dive-videos">
-          <div class="video-slider" id="slider-3">
-            
-            <div class="video-slide">
+          <div class="inf-slider video-inf-slider">
+            <div class="inf-track">
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/hpyVXZwm3TM"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/hpyVXZwm3TM"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/2pJUGlki5eg"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/7vfPM4sWZSQ"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/m6AyNz-lGbk"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/TNa4pjRh_gc"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/naNNTNlzR-s"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/Tg7rBt74-U0"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/ypk4azUo2VU"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
+              </div>
+              
+              <div class="video-slide inf-slide">
+                
+                <div class="video-embed">
+                  <iframe src="https://www.youtube.com/embed/oya5BWIyxf4"
+                          frameborder="0" allowfullscreen loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                </div>
+                
               </div>
               
             </div>
             
-            <div class="video-slide">
+            <div class="inf-dots">
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/2pJUGlki5eg"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot active"></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/7vfPM4sWZSQ"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/m6AyNz-lGbk"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/TNa4pjRh_gc"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
-            </div>
-            
-            <div class="video-slide">
+              <span class="inf-dot "></span>
               
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/naNNTNlzR-s"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
-              
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/Tg7rBt74-U0"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
-              
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/ypk4azUo2VU"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
-              
-            </div>
-            
-            <div class="video-slide">
-              
-              <div class="video-embed">
-                <iframe src="https://www.youtube.com/embed/oya5BWIyxf4"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                </iframe>
-              </div>
+              <span class="inf-dot "></span>
               
             </div>
             
           </div>
-          
-          <div class="video-dots" id="dots-3">
-            
-            <div class="video-dot active"
-                 onclick="scrollToSlide('slider-0__0')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-1__1')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-2__2')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-3__3')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-4__4')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-5__5')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-6__6')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-7__7')">
-            </div>
-            
-            <div class="video-dot "
-                 onclick="scrollToSlide('slider-8__8')">
-            </div>
-            
-          </div>
-          <script>
-          (function() {
-            var slider = document.getElementById('slider-3');
-            var dots   = document.querySelectorAll('#dots-3 .video-dot');
-            slider.addEventListener('scroll', function() {
-              var idx = Math.round(slider.scrollLeft / slider.offsetWidth);
-              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
-            });
-            dots.forEach(function(dot, i) {
-              dot.addEventListener('click', function() {
-                slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
-              });
-            });
-          })();
-          </script>
-          
         </div>
         
 
@@ -1922,5 +1754,138 @@
 
 </div>
 <div class="build-note">Generated 2026年6月25日 · Dive Log Book</div>
+
+<!-- 無限スライダー -->
+<script>
+(function() {
+  function initInfinite(wrapper) {
+    var track = wrapper.querySelector('.inf-track');
+    if (!track) return;
+    var orig = Array.from(track.children);
+    var n = orig.length;
+    if (n <= 1) return;
+
+    var isVideo = wrapper.classList.contains('video-inf-slider');
+
+    // 動画スライダーはラッパー幅をスライド幅に設定
+    if (isVideo) {
+      var w = wrapper.offsetWidth;
+      orig.forEach(function(s) { s.style.width = w + 'px'; });
+    }
+
+    // 先頭・末尾をクローンして前後に挿入
+    var firstClone = orig[0].cloneNode(true);
+    var lastClone  = orig[n - 1].cloneNode(true);
+    if (isVideo) {
+      firstClone.style.width = wrapper.offsetWidth + 'px';
+      lastClone.style.width  = wrapper.offsetWidth + 'px';
+    }
+    track.appendChild(firstClone);
+    track.insertBefore(lastClone, orig[0]);
+    // track.children: [lastClone, s0, s1, ..., s(n-1), firstClone]
+
+    var dots = Array.from(wrapper.querySelectorAll('.inf-dot'));
+    var pos = 1;   // 実スライドの先頭インデックス
+    var cur = 0;   // 表示中の実インデックス (0-based)
+
+    function offset(p) { return track.children[p].offsetLeft; }
+
+    function applyPos(animate) {
+      track.style.transition = animate
+        ? 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94)'
+        : 'none';
+      track.style.transform = 'translateX(-' + offset(pos) + 'px)';
+    }
+
+    function updateDots() {
+      dots.forEach(function(d, i) { d.classList.toggle('active', i === cur); });
+    }
+
+    function goNext() {
+      pos++; cur = (cur + 1) % n;
+      applyPos(true); updateDots();
+    }
+    function goPrev() {
+      pos--; cur = (cur - 1 + n) % n;
+      applyPos(true); updateDots();
+    }
+
+    // クローン端に達したら瞬時にリセット
+    track.addEventListener('transitionend', function() {
+      if (pos >= n + 1) { pos = 1; applyPos(false); }
+      else if (pos <= 0) { pos = n; applyPos(false); }
+    });
+
+    // ドットクリック
+    dots.forEach(function(dot, i) {
+      dot.addEventListener('click', function() {
+        pos = i + 1; cur = i;
+        applyPos(true); updateDots();
+      });
+    });
+
+    // スワイプ
+    var sx = 0, sy = 0;
+    wrapper.addEventListener('touchstart', function(e) {
+      sx = e.touches[0].clientX;
+      sy = e.touches[0].clientY;
+    }, { passive: true });
+    wrapper.addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].clientX - sx;
+      var dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+        dx < 0 ? goNext() : goPrev();
+      }
+    }, { passive: true });
+
+    applyPos(false);
+  }
+
+  document.querySelectorAll('.inf-slider').forEach(initInfinite);
+})();
+</script>
+
+<!-- ライトボックス -->
+<div id="lightbox" onclick="closeLightbox(event)" style="
+  display:none;
+  position:fixed; inset:0; z-index:9000;
+  background:rgba(0,0,0,0.88);
+  align-items:center; justify-content:center;
+">
+  <button onclick="closeLightbox()" style="
+    position:fixed; top:1.2rem; right:1.4rem;
+    background:none; border:none; color:#fff;
+    font-size:2rem; line-height:1; cursor:pointer;
+    opacity:0.75; transition:opacity 0.15s;
+    z-index:9001;
+  " onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.75">✕</button>
+  <img id="lb-img" src="" alt="" style="
+    max-width:92vw; max-height:90vh;
+    object-fit:contain;
+    box-shadow:0 8px 40px rgba(0,0,0,0.6);
+    border-radius:1px;
+    display:block;
+  ">
+</div>
+
+<script>
+function openLightbox(el) {
+  var lb = document.getElementById('lightbox');
+  document.getElementById('lb-img').src = el.dataset.src;
+  lb.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox')) return;
+  var lb = document.getElementById('lightbox');
+  lb.style.display = 'none';
+  document.getElementById('lb-img').src = '';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+
 </body>
 </html>

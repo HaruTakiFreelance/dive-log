@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fish Encyclopedia — Dive Log Book</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --phi: 1.618;
+
+      --paper:     #f4ede0;
+      --paper-d:   #e8dbc8;
+      --ink:       #333333;
+      --ink-fade:  #666655;
+      --ink-faint: #999988;
+      --accent:    #3d6b8a;
+      --accent-d:  #2a4f6b;
+      --rust:      #8b3a1e;
+      --shadow:    rgba(51,51,51,0.15);
+
+      --sp-xs:  0.382rem;
+      --sp-s:   0.618rem;
+      --sp-m:   1rem;
+      --sp-l:   1.618rem;
+      --sp-xl:  2.618rem;
+      --sp-xxl: 4.236rem;
+
+      --fs-xs:  0.618rem;
+      --fs-s:   0.764rem;
+      --fs-m:   1rem;
+      --fs-l:   1.272rem;
+      --fs-xl:  1.618rem;
+      --fs-xxl: 2.618rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #2a2016;
+      background-image:
+        radial-gradient(ellipse at 30% 10%, #3d2e1a 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 90%, #1e1608 0%, transparent 60%);
+      min-height: 100vh;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: var(--ink);
+      padding: 2rem 1rem 4rem;
+    }
+
+    .book { max-width: 960px; margin: 0 auto; }
+
+    /* ── back link ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-xs);
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      margin-bottom: var(--sp-l);
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: rgba(255,255,255,0.7); }
+
+    /* ── cover card ── */
+    .cover-card {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 2px 6px var(--shadow), 0 8px 24px rgba(0,0,0,0.35);
+      position: relative; overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .cover-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(44,30,16,0.06) 28px);
+      pointer-events: none;
+    }
+    .cover-inner {
+      padding: 2.5rem 3.5rem;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--sp-l);
+    }
+
+    .cover-text {}
+    .stamp {
+      display: inline-block;
+      border: 3px double var(--rust);
+      padding: 0.4rem 1.2rem;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--rust);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
+    .title {
+      font-family: 'Special Elite', monospace;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: var(--ink);
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: var(--ink-fade);
+    }
+
+    .cover-stats {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--sp-xs);
+    }
+    .stat-total {
+      font-family: 'Special Elite', monospace;
+      font-size: clamp(2.4rem, 5vw, 3.5rem);
+      color: var(--accent-d);
+      line-height: 1;
+    }
+    .stat-total-label {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      color: var(--ink-faint);
+      letter-spacing: 0.15em;
+      text-align: right;
+    }
+
+    .divider {
+      text-align: center;
+      margin: var(--sp-l) 0;
+      color: var(--ink-faint);
+      font-size: var(--fs-s);
+      letter-spacing: 0.5em;
+    }
+    .divider::before, .divider::after { content: '─────'; margin: 0 0.5em; }
+
+    /* ── filter bar ── */
+    .section-title {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      margin-bottom: var(--sp-m);
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-s);
+      margin-bottom: var(--sp-l);
+    }
+    .filter-btn {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.12em;
+      padding: 4px 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: transparent;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      border-radius: 1px;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .filter-btn:hover {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.75);
+      border-color: rgba(255,255,255,0.35);
+    }
+    .filter-btn.active {
+      background: var(--paper);
+      color: var(--ink);
+      border-color: var(--paper);
+    }
+
+    /* ── fish grid ── */
+    .fish-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: var(--sp-m);
+    }
+
+    /* ── fish card ── */
+    .fish-card {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 1px 3px var(--shadow);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+    .fish-card:hover {
+      transform: translateY(-3px) rotate(0.3deg);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+    .fish-card.hidden { display: none; }
+
+    .fish-thumb-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: var(--paper-d);
+      border-bottom: 2px solid var(--paper-d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fish-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: sepia(12%) saturate(88%);
+      transition: filter 0.2s;
+    }
+    .fish-card:hover .fish-thumb-wrap img { filter: sepia(0%) saturate(100%); }
+    .fish-thumb-placeholder {
+      font-size: 2.8rem;
+      opacity: 0.3;
+    }
+
+    .fish-body { padding: var(--sp-s) var(--sp-s) var(--sp-m); }
+
+    .fish-category-badge {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.06em;
+      background: var(--accent);
+      color: #deeaf3;
+      padding: 1px 6px;
+      display: inline-block;
+      margin-bottom: var(--sp-xs);
+    }
+
+    .fish-name-ja {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: var(--fs-m);
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+    .fish-name-en {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      color: var(--ink-fade);
+      letter-spacing: 0.04em;
+    }
+    .fish-rarity {
+      font-size: var(--fs-xs);
+      color: #b89200;
+      margin-top: var(--sp-xs);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20,14,6,0.82);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-l);
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 4px 12px var(--shadow), 0 16px 48px rgba(0,0,0,0.5);
+      max-width: 560px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(44,30,16,0.05) 28px);
+      pointer-events: none;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: var(--sp-m);
+      right: var(--sp-m);
+      background: none;
+      border: none;
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-m);
+      color: var(--ink-faint);
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color 0.15s;
+      z-index: 1;
+    }
+    .modal-close:hover { color: var(--ink); }
+
+    .modal-thumb-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: var(--paper-d);
+      border-bottom: 2px solid var(--paper-d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: sepia(8%) saturate(90%);
+    }
+    .modal-thumb-placeholder { font-size: 4rem; opacity: 0.25; }
+
+    .modal-inner {
+      padding: var(--sp-xl) var(--sp-xl) var(--sp-xxl);
+      position: relative;
+    }
+
+    .modal-category {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.12em;
+      background: var(--accent);
+      color: #deeaf3;
+      padding: 2px 10px;
+      display: inline-block;
+      margin-bottom: var(--sp-s);
+    }
+
+    .modal-name-ja {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-xxl);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: var(--sp-xs);
+    }
+    .modal-name-en {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-m);
+      color: var(--ink-fade);
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+    .modal-name-sci {
+      font-style: italic;
+      font-size: var(--fs-s);
+      color: var(--ink-faint);
+      margin-bottom: var(--sp-l);
+    }
+
+    .modal-divider {
+      border: none;
+      border-top: 1px solid var(--paper-d);
+      margin: var(--sp-m) 0;
+    }
+
+    .modal-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-s) var(--sp-l);
+      margin-bottom: var(--sp-m);
+    }
+    .modal-meta-item {}
+    .modal-meta-label {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.12em;
+      color: var(--ink-faint);
+      margin-bottom: 2px;
+    }
+    .modal-meta-value {
+      font-size: var(--fs-s);
+      color: var(--ink-fade);
+    }
+    .modal-meta-value.stars { color: #b89200; }
+
+    .modal-memo {
+      font-style: italic;
+      font-size: var(--fs-m);
+      color: var(--ink-fade);
+      line-height: var(--phi);
+      border-left: 2px solid var(--paper-d);
+      padding-left: var(--sp-m);
+      margin-top: var(--sp-m);
+    }
+
+    /* ── build note ── */
+    .build-note {
+      text-align: center;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.2);
+      margin-top: 2rem;
+      letter-spacing: 0.15em;
+    }
+
+    @media (max-width: 600px) {
+      .cover-inner { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+      .cover-stats { align-items: flex-start; }
+      .stat-total-label { text-align: left; }
+      .fish-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .modal-inner { padding: var(--sp-l) var(--sp-l) var(--sp-xl); }
+      .modal-meta-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="book">
+
+  <a class="back-link" href="index.html">← ログブック一覧に戻る</a>
+
+  <!-- カバーカード -->
+  <div class="cover-card">
+    <div class="cover-inner">
+      <div class="cover-text">
+        <div class="stamp">Personal Dive Log Book</div>
+        <div class="title">Fish Encyclopedia</div>
+        <div class="subtitle">出会った生き物の記録</div>
+      </div>
+      <div class="cover-stats">
+        <div class="stat-total">20</div>
+        <div class="stat-total-label">SPECIES RECORDED</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- カテゴリフィルター -->
+  <div class="section-title">── Filter by Category ──</div>
+  <div class="filter-bar">
+    <button class="filter-btn active" data-category="all">All</button>
+    
+    <button class="filter-btn" data-category="魚類">魚類</button>
+    
+  </div>
+
+  <!-- 魚グリッド -->
+  <div class="fish-grid" id="fish-grid">
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="0"
+         onclick="openModal(0)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg" alt="アオリイカの卵" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">アオリイカの卵</div>
+        
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="1"
+         onclick="openModal(1)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">アカオビハナダイ</div>
+        
+        <div class="fish-name-en">Redbar anthias</div>
+        
+        
+        <div class="fish-rarity">★★★☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="2"
+         onclick="openModal(2)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg" alt="ウツボ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">ウツボ</div>
+        
+        <div class="fish-name-en">Barred moray</div>
+        
+        
+        <div class="fish-rarity">★☆☆☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="3"
+         onclick="openModal(3)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df818181b606d9e5ae682a4c.jpg" alt="オトヒメエビ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">オトヒメエビ</div>
+        
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="4"
+         onclick="openModal(4)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df8181ca8350dc9cb6d16760.jpg" alt="キビナゴ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">キビナゴ</div>
+        
+        <div class="fish-name-en">Silver-stripe round herring</div>
+        
+        
+        <div class="fish-rarity">★★☆☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="5"
+         onclick="openModal(5)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81819f99f6e22434c8f673.jpg" alt="キンギョハナダイ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">キンギョハナダイ</div>
+        
+        <div class="fish-name-en">Scalefin anthias</div>
+        
+        
+        <div class="fish-rarity">★☆☆☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="6"
+         onclick="openModal(6)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81817cb9e8e0657a0a5ba5.jpg" alt="クマノミ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">クマノミ</div>
+        
+        <div class="fish-name-en">Clark&#39;s Anemonefish</div>
+        
+        
+        <div class="fish-rarity">★☆☆☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="7"
+         onclick="openModal(7)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df8181368346f5fe7a08f5b3.jpg" alt="クロホシイシモチ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">クロホシイシモチ</div>
+        
+        <div class="fish-name-en">Blackspotted cardinafish</div>
+        
+        
+        <div class="fish-rarity">★★☆☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="8"
+         onclick="openModal(8)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg" alt="サカタザメ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">サカタザメ</div>
+        
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="9"
+         onclick="openModal(9)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81810595fced342517aeb3.jpg" alt="セトミノカサゴ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">セトミノカサゴ</div>
+        
+        <div class="fish-name-en">Marbled rockfish</div>
+        
+        
+        <div class="fish-rarity">★☆☆☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="10"
+         onclick="openModal(10)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81813496d8dddcb15d62dd.jpg" alt="トラウツボ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">トラウツボ</div>
+        
+        <div class="fish-name-en">Dragon moray</div>
+        
+        
+        <div class="fish-rarity">★★☆☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="11"
+         onclick="openModal(11)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81814ea3e7de1441159d84.jpg" alt="ニザダイ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">ニザダイ</div>
+        
+        <div class="fish-name-en">Scalpel sawtail</div>
+        
+        
+        <div class="fish-rarity">★☆☆☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="12"
+         onclick="openModal(12)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df8181a2affaecc150d2fbfe.jpg" alt="ネンブツダイ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">ネンブツダイ</div>
+        
+        <div class="fish-name-en">Half-lined cardinalfish</div>
+        
+        
+        <div class="fish-rarity">★☆☆☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="13"
+         onclick="openModal(13)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df818105acfbc0356a1e42f1.jpg" alt="ヒフキヨウジ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">ヒフキヨウジ</div>
+        
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="14"
+         onclick="openModal(14)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df8181149505e5a95ae62285.jpg" alt="ホウボウ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">ホウボウ</div>
+        
+        <div class="fish-name-en">Red gurnard</div>
+        
+        
+        <div class="fish-rarity">★★★☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="15"
+         onclick="openModal(15)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81811b9771daf3fb21ca7c.jpg" alt="ボラ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">ボラ</div>
+        
+        <div class="fish-name-en">Flathead mullet</div>
+        
+        
+        <div class="fish-rarity">★★☆☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="16"
+         onclick="openModal(16)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81816b9175e88db47473e4.jpg" alt="マツカサウオ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">マツカサウオ</div>
+        
+        <div class="fish-name-en">Pineconefish</div>
+        
+        
+        <div class="fish-rarity">★★★☆☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="17"
+         onclick="openModal(17)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df81814a8936d806185e2970.jpg" alt="マトウダイ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">マトウダイ</div>
+        
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="18"
+         onclick="openModal(18)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df8181b39778f0d8885915b6.jpg" alt="ミジンベニハゼ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">ミジンベニハゼ</div>
+        
+        <div class="fish-name-en">Caesiura dwarfgoby</div>
+        
+        
+        <div class="fish-rarity">★★★★☆</div>
+        
+      </div>
+    </div>
+    
+    <div class="fish-card"
+         data-category="魚類"
+         data-index="19"
+         onclick="openModal(19)">
+      <div class="fish-thumb-wrap">
+        
+        <img src="../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg" alt="ミノカサゴ" loading="lazy"
+             onerror="this.parentNode.innerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+        
+      </div>
+      <div class="fish-body">
+        
+        <div class="fish-category-badge">魚類</div>
+        
+        <div class="fish-name-ja">ミノカサゴ</div>
+        
+        <div class="fish-name-en">Luna lionfish</div>
+        
+        
+        <div class="fish-rarity">★☆☆☆☆</div>
+        
+      </div>
+    </div>
+    
+  </div>
+
+</div>
+
+<div class="build-note">Generated 2026年6月25日 · Dive Log Book</div>
+
+<!-- 詳細モーダル -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeOnOverlay(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()" aria-label="閉じる">✕</button>
+    <div class="modal-thumb-wrap" id="modal-thumb-wrap">
+      <div class="modal-thumb-placeholder">🐠</div>
+    </div>
+    <div class="modal-inner">
+      <div id="modal-category" class="modal-category" style="display:none"></div>
+      <div id="modal-name-ja" class="modal-name-ja"></div>
+      <div id="modal-name-en" class="modal-name-en" style="display:none"></div>
+      <div id="modal-name-sci" class="modal-name-sci" style="display:none"></div>
+      <hr class="modal-divider">
+      <div class="modal-meta-grid">
+        <div class="modal-meta-item" id="meta-family-wrap" style="display:none">
+          <div class="modal-meta-label">FAMILY</div>
+          <div class="modal-meta-value" id="meta-family"></div>
+        </div>
+        <div class="modal-meta-item" id="meta-first-wrap" style="display:none">
+          <div class="modal-meta-label">FIRST SEEN</div>
+          <div class="modal-meta-value" id="meta-first"></div>
+        </div>
+        <div class="modal-meta-item" id="meta-rarity-wrap" style="display:none">
+          <div class="modal-meta-label">RARITY</div>
+          <div class="modal-meta-value stars" id="meta-rarity"></div>
+        </div>
+        <div class="modal-meta-item" id="meta-popularity-wrap" style="display:none">
+          <div class="modal-meta-label">POPULARITY</div>
+          <div class="modal-meta-value stars" id="meta-popularity"></div>
+        </div>
+        <div class="modal-meta-item" id="meta-photo-wrap" style="display:none">
+          <div class="modal-meta-label">PHOTO EASE</div>
+          <div class="modal-meta-value stars" id="meta-photo"></div>
+        </div>
+      </div>
+      <div id="modal-memo" class="modal-memo" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── Fish data ── */
+  var FISH = [
+    
+    {
+      name:          "\u30a2\u30aa\u30ea\u30a4\u30ab\u306e\u5375",
+      english_name:  "",
+      scientific_name: "",
+      category:      "\u9b5a\u985e",
+      family:        "",
+      memo:          "",
+      rarity:        "",
+      popularity:    "",
+      photo_ease:    "",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg"
+    },
+    
+    {
+      name:          "\u30a2\u30ab\u30aa\u30d3\u30cf\u30ca\u30c0\u30a4",
+      english_name:  "Redbar anthias",
+      scientific_name: "Pseudanthias rubrizonatus",
+      category:      "\u9b5a\u985e",
+      family:        "\u30cf\u30bf\u79d1",
+      memo:          "\u30b5\u30f3\u30b4\u7901\u3001\u5ca9\u7901\u57df\u306b\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u4f0a\u8c46\u534a\u5cf6\u4ee5\u5357\u3001\u592a\u5e73\u6d0b\u57df\u306b\u5206\u5e03\u3059\u308b\u3002",
+      rarity:        "\u2605\u2605\u2605\u2606\u2606",
+      popularity:    "\u2605\u2605\u2605\u2605\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg"
+    },
+    
+    {
+      name:          "\u30a6\u30c4\u30dc",
+      english_name:  "Barred moray",
+      scientific_name: "Gymnothorax kidako",
+      category:      "\u9b5a\u985e",
+      family:        "\u30a6\u30c4\u30dc\u79d1",
+      memo:          "\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5357\u65e5\u672c\u3001\u53f0\u6e7e",
+      rarity:        "\u2605\u2606\u2606\u2606\u2606",
+      popularity:    "\u2605\u2605\u2606\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg"
+    },
+    
+    {
+      name:          "\u30aa\u30c8\u30d2\u30e1\u30a8\u30d3",
+      english_name:  "",
+      scientific_name: "",
+      category:      "\u9b5a\u985e",
+      family:        "",
+      memo:          "",
+      rarity:        "",
+      popularity:    "",
+      photo_ease:    "",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df818181b606d9e5ae682a4c.jpg"
+    },
+    
+    {
+      name:          "\u30ad\u30d3\u30ca\u30b4",
+      english_name:  "Silver-stripe round herring",
+      scientific_name: "Spratelloides gracilis",
+      category:      "\u9b5a\u985e",
+      family:        "\u30cb\u30b7\u30f3\u79d1",
+      memo:          "\u6cbf\u5cb8\u57df\u3092\u7fa4\u308c\u3067\u904a\u6cf3\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u5343\u8449\u770c\u4ee5\u5357\u3001\u30a4\u30f3\u30c9\u6d0b\u304b\u3089\u897f\u592a\u5e73\u6d0b\u306b\u5206\u5e03\u3059\u308b\u3002",
+      rarity:        "\u2605\u2605\u2606\u2606\u2606",
+      popularity:    "\u2605\u2605\u2605\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2606\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df8181ca8350dc9cb6d16760.jpg"
+    },
+    
+    {
+      name:          "\u30ad\u30f3\u30ae\u30e7\u30cf\u30ca\u30c0\u30a4",
+      english_name:  "Scalefin anthias",
+      scientific_name: "Pseudanthias squamipinnis",
+      category:      "\u9b5a\u985e",
+      family:        "\u30cf\u30bf\u79d1",
+      memo:          "\u5ca9\u7901\u3084\u6839\u306e\u8fd1\u304f\u3067\u5927\u304d\u306a\u7fa4\u308c\u3067\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u95a2\u6771\u4ee5\u5357\u3001\u7d05\u6d77\u304b\u3089\u30a4\u30f3\u30c9\u3001\u592a\u5e73\u6d0b\u3002",
+      rarity:        "\u2605\u2606\u2606\u2606\u2606",
+      popularity:    "\u2605\u2605\u2605\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81819f99f6e22434c8f673.jpg"
+    },
+    
+    {
+      name:          "\u30af\u30de\u30ce\u30df",
+      english_name:  "Clark\u0027s Anemonefish",
+      scientific_name: "Amphiprion clarkii",
+      category:      "\u9b5a\u985e",
+      family:        "\u30b9\u30ba\u30e1\u30c0\u30a4\u79d1",
+      memo:          "\u5ca9\u7901\u5e2f\u306e\u30a4\u30bd\u30ae\u30f3\u30c1\u30e3\u30af\u3068\u5171\u751f\u3057\u3066\u3044\u308b\u3002\u6c34\u6df1\uff11\uff10\uff5e\uff15\uff10 \uff4d\u3000\u5206\u5e03\uff1a\u5343\u8449\u770c\u4ee5\u5357\u3001\u30a4\u30f3\u30c9\u6d0b\u304b\u3089\u592a\u5e73\u6d0b\u3002",
+      rarity:        "\u2605\u2606\u2606\u2606\u2606",
+      popularity:    "\u2605\u2605\u2605\u2605\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2605\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81817cb9e8e0657a0a5ba5.jpg"
+    },
+    
+    {
+      name:          "\u30af\u30ed\u30db\u30b7\u30a4\u30b7\u30e2\u30c1",
+      english_name:  "Blackspotted cardinafish",
+      scientific_name: "Apogon notatus",
+      category:      "\u9b5a\u985e",
+      family:        "\u30c6\u30f3\u30b8\u30af\u30c0\u30a4\u79d1",
+      memo:          "\u5ca9\u7901\u5468\u8fba\u306b\u7fa4\u308c\u3067\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u672c\u5dde\u4ee5\u5357\u3001\u53f0\u6e7e\u3001\u30d5\u30a3\u30ea\u30d4\u30f3\u306b\u5206\u5e03\u3002",
+      rarity:        "\u2605\u2605\u2606\u2606\u2606",
+      popularity:    "\u2605\u2605\u2606\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df8181368346f5fe7a08f5b3.jpg"
+    },
+    
+    {
+      name:          "\u30b5\u30ab\u30bf\u30b6\u30e1",
+      english_name:  "",
+      scientific_name: "",
+      category:      "\u9b5a\u985e",
+      family:        "",
+      memo:          "",
+      rarity:        "",
+      popularity:    "",
+      photo_ease:    "",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg"
+    },
+    
+    {
+      name:          "\u30bb\u30c8\u30df\u30ce\u30ab\u30b5\u30b4",
+      english_name:  "Marbled rockfish",
+      scientific_name: "Sabastiscus marmoratus",
+      category:      "\u9b5a\u985e",
+      family:        "\u30d5\u30b5\u30ab\u30b5\u30b4\u79d1",
+      memo:          "\u6cbf\u5cb8\u306e\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5317\u6d77\u9053\u5357\u90e8\u4ee5\u5357\u3001\u6771\u30b7\u30ca\u6d77\u306b\u5206\u5e03\u3059\u308b\u3002",
+      rarity:        "\u2605\u2606\u2606\u2606\u2606",
+      popularity:    "\u2605\u2605\u2606\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2605\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81810595fced342517aeb3.jpg"
+    },
+    
+    {
+      name:          "\u30c8\u30e9\u30a6\u30c4\u30dc",
+      english_name:  "Dragon moray",
+      scientific_name: "Muraena pardalis",
+      category:      "\u9b5a\u985e",
+      family:        "\u30a6\u30c4\u30dc\u79d1",
+      memo:          "\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5357\u65e5\u672c\u3001\u30a4\u30f3\u30c9\u6d0b\u304b\u3089\u592a\u5e73\u6d0b",
+      rarity:        "\u2605\u2605\u2606\u2606\u2606",
+      popularity:    "\u2605\u2605\u2605\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81813496d8dddcb15d62dd.jpg"
+    },
+    
+    {
+      name:          "\u30cb\u30b6\u30c0\u30a4",
+      english_name:  "Scalpel sawtail",
+      scientific_name: "Prionurus scalprus",
+      category:      "\u9b5a\u985e",
+      family:        "\u30cb\u30b6\u30c0\u30a4\u79d1",
+      memo:          "\u6d45\u3044\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5bae\u57ce\u770c\u4ee5\u5357\u3001\u53f0\u6e7e\u306a\u3069",
+      rarity:        "\u2605\u2606\u2606\u2606\u2606",
+      popularity:    "\u2605\u2606\u2606\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2606\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81814ea3e7de1441159d84.jpg"
+    },
+    
+    {
+      name:          "\u30cd\u30f3\u30d6\u30c4\u30c0\u30a4",
+      english_name:  "Half-lined cardinalfish",
+      scientific_name: "Apogon semilineatus",
+      category:      "\u9b5a\u985e",
+      family:        "\u30c6\u30f3\u30b8\u30af\u30c0\u30a4\u79d1",
+      memo:          "\u5ca9\u7901\u5468\u8fba\u306b\u7fa4\u308c\u3067\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u672c\u5dde\u4ee5\u5357\u3001\u53f0\u6e7e\u3001\u30d5\u30a3\u30ea\u30d4\u30f3\u306b\u5206\u5e03\u3002",
+      rarity:        "\u2605\u2606\u2606\u2606\u2606",
+      popularity:    "\u2605\u2605\u2606\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df8181a2affaecc150d2fbfe.jpg"
+    },
+    
+    {
+      name:          "\u30d2\u30d5\u30ad\u30e8\u30a6\u30b8",
+      english_name:  "",
+      scientific_name: "",
+      category:      "\u9b5a\u985e",
+      family:        "",
+      memo:          "",
+      rarity:        "",
+      popularity:    "",
+      photo_ease:    "",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df818105acfbc0356a1e42f1.jpg"
+    },
+    
+    {
+      name:          "\u30db\u30a6\u30dc\u30a6",
+      english_name:  "Red gurnard",
+      scientific_name: "Chelidonichthys spinosus",
+      category:      "\u9b5a\u985e",
+      family:        "\u30db\u30a6\u30dc\u30a6\u79d1",
+      memo:          "\u7802\u6ce5\u5e95\u306b\u751f\u606f\u3059\u308b\u3002\u6307\u306e\u3088\u3046\u306b\u898b\u3048\u308b3\u672c\u306e\u80f8\u9c2d\u8edf\u6761\u3092\u52d5\u304b\u3057\u3066\u990c\u3092\u63a2\u3059\u3002\u3000\u5206\u5e03\uff1a\u5317\u6d77\u9053\u5357\u90e8\u304b\u3089\u5357\u30b7\u30ca\u6d77",
+      rarity:        "\u2605\u2605\u2605\u2606\u2606",
+      popularity:    "\u2605\u2605\u2605\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df8181149505e5a95ae62285.jpg"
+    },
+    
+    {
+      name:          "\u30dc\u30e9",
+      english_name:  "Flathead mullet",
+      scientific_name: "Mugil cephalus",
+      category:      "\u9b5a\u985e",
+      family:        "\u30dc\u30e9\u79d1",
+      memo:          "\u6cbf\u5cb8\u6d45\u6240\u3084\u6c7d\u6c34\u57df\u3001\u6cb3\u5ddd\u306b\u7fa4\u308c\u3067\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u5317\u6d77\u9053\u4ee5\u5357\u3001\u6771\u30a2\u30d5\u30ea\u30ab\u304b\u3089\u592a\u5e73\u6d0b\u306b\u5206\u5e03\u3059\u308b\u3002",
+      rarity:        "\u2605\u2605\u2606\u2606\u2606",
+      popularity:    "\u2605\u2606\u2606\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2606\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81811b9771daf3fb21ca7c.jpg"
+    },
+    
+    {
+      name:          "\u30de\u30c4\u30ab\u30b5\u30a6\u30aa",
+      english_name:  "Pineconefish",
+      scientific_name: "Monocentris japonica",
+      category:      "\u9b5a\u985e",
+      family:        "\u30de\u30c4\u30ab\u30b5\u30a6\u30aa\u79d1",
+      memo:          "\u6d45\u6d77\u306e\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u7d05\u6d77\u3001\u5357\u30a2\u30d5\u30ea\u30ab\u304b\u3089\u897f\u592a\u5e73\u6d0b\u3001\u30aa\u30fc\u30b9\u30c8\u30e9\u30ea\u30a2\u5357\u90e8\u306b\u5206\u5e03",
+      rarity:        "\u2605\u2605\u2605\u2606\u2606",
+      popularity:    "\u2605\u2605\u2605\u2605\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2605\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81816b9175e88db47473e4.jpg"
+    },
+    
+    {
+      name:          "\u30de\u30c8\u30a6\u30c0\u30a4",
+      english_name:  "",
+      scientific_name: "",
+      category:      "\u9b5a\u985e",
+      family:        "",
+      memo:          "",
+      rarity:        "",
+      popularity:    "",
+      photo_ease:    "",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df81814a8936d806185e2970.jpg"
+    },
+    
+    {
+      name:          "\u30df\u30b8\u30f3\u30d9\u30cb\u30cf\u30bc",
+      english_name:  "Caesiura dwarfgoby",
+      scientific_name: "Trimma caesiura",
+      category:      "\u9b5a\u985e",
+      family:        "\u30cf\u30bc\u79d1",
+      memo:          "\u5ca9\u7901\u57df\u3001\u30b5\u30f3\u30b4\u7901\u57df\u306e\u7901\u659c\u9762\u3002\u6c34\u6df1 3-20m\u3002\u3000\u5206\u5e03\uff1a\u516b\u4e08\u5cf6\u4ee5\u5357\u306e\u5357\u65e5\u672c\u3001\u30a4\u30f3\u30c9\u304b\u3089\u592a\u5e73\u6d0b",
+      rarity:        "\u2605\u2605\u2605\u2605\u2606",
+      popularity:    "\u2605\u2605\u2605\u2605\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2606\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df8181b39778f0d8885915b6.jpg"
+    },
+    
+    {
+      name:          "\u30df\u30ce\u30ab\u30b5\u30b4",
+      english_name:  "Luna lionfish",
+      scientific_name: "Pterois lunulata",
+      category:      "\u9b5a\u985e",
+      family:        "\u30d5\u30b5\u30ab\u30b5\u30b4\u79d1",
+      memo:          "\u6cbf\u5cb8\u306e\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5317\u6d77\u9053\u5357\u90e8\u4ee5\u5357\u3001\u30a4\u30f3\u30c9\u304b\u3089\u592a\u5e73\u6d0b\u897f\u90e8",
+      rarity:        "\u2605\u2606\u2606\u2606\u2606",
+      popularity:    "\u2605\u2605\u2605\u2606\u2606",
+      photo_ease:    "\u2605\u2605\u2605\u2605\u2606",
+      first_seen:    "2026-06-21",
+      thumbnail:     "../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg"
+    }
+    
+  ];
+
+  /* ── Category filter ── */
+  var filterBtns = document.querySelectorAll('.filter-btn');
+  var fishCards  = document.querySelectorAll('.fish-card');
+  var activeCategory = 'all';
+
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      activeCategory = btn.getAttribute('data-category');
+      filterBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      fishCards.forEach(function(card) {
+        var cat = card.getAttribute('data-category');
+        if (activeCategory === 'all' || cat === activeCategory) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  /* ── Modal ── */
+  var overlay = document.getElementById('modal-overlay');
+
+  function setField(id, value, wrapId) {
+    var el = document.getElementById(id);
+    var wrap = wrapId ? document.getElementById(wrapId) : el;
+    if (value) {
+      el.textContent = value;
+      wrap.style.display = '';
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
+  function openModal(index) {
+    var f = FISH[index];
+    if (!f) return;
+
+    /* thumbnail */
+    var thumbWrap = document.getElementById('modal-thumb-wrap');
+    if (f.thumbnail) {
+      thumbWrap.innerHTML = '<img src="' + f.thumbnail + '" alt="' + f.name + '" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=\\\"modal-thumb-placeholder\\\">🐠</div>\'">';
+    } else {
+      thumbWrap.innerHTML = '<div class="modal-thumb-placeholder">🐠</div>';
+    }
+
+    setField('modal-category', f.category);
+    setField('modal-name-ja', f.name);
+    setField('modal-name-en', f.english_name);
+    setField('modal-name-sci', f.scientific_name);
+    setField('meta-family', f.family, 'meta-family-wrap');
+    setField('meta-first', f.first_seen, 'meta-first-wrap');
+    setField('meta-rarity', f.rarity, 'meta-rarity-wrap');
+    setField('meta-popularity', f.popularity, 'meta-popularity-wrap');
+    setField('meta-photo', f.photo_ease, 'meta-photo-wrap');
+    setField('modal-memo', f.memo);
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeOnOverlay(e) {
+    if (e.target === overlay) closeModal();
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+</body>
+</html>
