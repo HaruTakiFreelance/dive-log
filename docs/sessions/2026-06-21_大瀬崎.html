@@ -332,32 +332,41 @@
     }
     .video-link a:hover { background: var(--accent); color: #fff; }
 
-    /* ── 魚図鑑 ── */
-    .fish-section { margin-top: var(--sp-xl); }
-    .fish-section-title {
+    /* ── ダイブ内 魚スライダー ── */
+    .fish-slider-wrap {
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-top: var(--sp-s);
+    }
+    .fish-slider-label {
       font-family: 'Special Elite', monospace;
       font-size: var(--fs-xs);
-      letter-spacing: 0.3em;
+      letter-spacing: 0.2em;
       color: var(--ink-faint);
-      text-transform: uppercase;
-      margin-bottom: var(--sp-m);
-      border-bottom: 1px dashed var(--paper-d);
-      padding-bottom: var(--sp-xs);
+      margin-bottom: var(--sp-xs);
     }
-    .fish-grid {
-      display: grid;
-      /* 黄金比: カード幅 180px, gap = 180/phi^2 ≒ 69 → 約 var(--sp-l) */
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: var(--sp-l);
+    .fish-slider {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: var(--sp-s);
+      padding-bottom: var(--sp-xs);
+      scrollbar-width: none;
+    }
+    .fish-slider::-webkit-scrollbar { display: none; }
+    .fish-slide {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      width: 160px;
     }
     .fish-card {
       background: rgba(255,255,255,0.28);
       border: 1px solid var(--paper-d);
       padding: var(--sp-s);
+      height: 100%;
     }
     .fish-thumb {
       width: 100%;
-      /* 黄金比: 幅:高さ = phi:1 → aspect-ratio phi */
       aspect-ratio: 1.618 / 1;
       object-fit: cover;
       display: block;
@@ -365,16 +374,30 @@
       border: 1px solid var(--paper-d);
       filter: sepia(10%) saturate(88%);
     }
-    .fish-name-ja { font-weight: 700; font-size: var(--fs-m); color: var(--ink); margin-bottom: var(--sp-xs); }
-    .fish-name-en { font-size: var(--fs-s); color: var(--ink-fade); margin-bottom: 2px; }
+    .fish-name-ja { font-weight: 700; font-size: var(--fs-s); color: var(--ink); margin-bottom: 2px; }
+    .fish-name-en { font-size: var(--fs-xs); color: var(--ink-fade); margin-bottom: 2px; }
     .fish-name-sci { font-style: italic; font-size: var(--fs-xs); color: var(--ink-faint); margin-bottom: var(--sp-xs); }
     .fish-taxonomy { font-size: var(--fs-xs); color: var(--ink-faint); margin-bottom: var(--sp-xs); }
-    .fish-memo { font-size: var(--fs-s); color: var(--ink-fade); line-height: var(--phi); margin-top: var(--sp-xs); }
-    .fish-stars { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--sp-s); }
-    .fish-stars .row { display: flex; gap: var(--sp-s); align-items: center; margin-bottom: 2px; }
-    .fish-stars .label { min-width: 3.5em; }
+    .fish-memo { font-size: var(--fs-xs); color: var(--ink-fade); line-height: var(--phi); }
+    .fish-stars { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--sp-xs); }
+    .fish-stars .row { display: flex; gap: var(--sp-xs); align-items: center; margin-bottom: 2px; }
+    .fish-stars .label { min-width: 3em; }
     .star.filled { color: #b89200; }
     .star.empty  { color: var(--ink-faint); }
+    /* スライドドット（魚） */
+    .fish-dots {
+      display: flex;
+      gap: 5px;
+      margin-top: var(--sp-xs);
+    }
+    .fish-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--paper-d);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .fish-dot.active { background: var(--ink-fade); }
 
     .build-note {
       text-align: center;
@@ -554,8 +577,239 @@
           
         
         
-        <div class="dive-fish-list">
-          <span class="fish-tag">アオリイカの卵</span><span class="fish-tag">クマノミ</span><span class="fish-tag">クロホシイシモチ</span><span class="fish-tag">セトミノカサゴ</span><span class="fish-tag">ネンブツダイ</span><span class="fish-tag">ヒフキヨウジ</span><span class="fish-tag">ホウボウ</span><span class="fish-tag">ミノカサゴ</span>
+        <div class="fish-slider-wrap">
+          <div class="fish-slider-label">── 見れた魚 ──</div>
+          <div class="fish-slider" id="fslider-1">
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg" alt="アオリイカの卵" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">アオリイカの卵</div>
+                
+                
+                
+                
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81817cb9e8e0657a0a5ba5.jpg" alt="クマノミ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">クマノミ</div>
+                <div class="fish-name-en">Clark&#39;s Anemonefish</div>
+                <div class="fish-name-sci">Amphiprion clarkii</div>
+                
+                <div class="fish-taxonomy">
+                  スズキ目
+                   / スズメダイ科
+                   / クマノミ属
+                </div>
+                
+                <div class="fish-memo">岩礁帯のイソギンチャクと共生している。水深１０～５０ ｍ　分布：千葉県以南、インド洋から太平洋。</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df8181368346f5fe7a08f5b3.jpg" alt="クロホシイシモチ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">クロホシイシモチ</div>
+                <div class="fish-name-en">Blackspotted cardinafish</div>
+                <div class="fish-name-sci">Apogon notatus</div>
+                
+                <div class="fish-taxonomy">
+                  スズキ目
+                   / テンジクダイ科
+                   / テンジクダイ属
+                </div>
+                
+                <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81810595fced342517aeb3.jpg" alt="セトミノカサゴ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">セトミノカサゴ</div>
+                <div class="fish-name-en">Marbled rockfish</div>
+                <div class="fish-name-sci">Sabastiscus marmoratus</div>
+                
+                <div class="fish-taxonomy">
+                  カサゴ目
+                   / フサカサゴ科
+                   / カサゴ属
+                </div>
+                
+                <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、東シナ海に分布する。</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df8181a2affaecc150d2fbfe.jpg" alt="ネンブツダイ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">ネンブツダイ</div>
+                <div class="fish-name-en">Half-lined cardinalfish</div>
+                <div class="fish-name-sci">Apogon semilineatus</div>
+                
+                <div class="fish-taxonomy">
+                  スズキ目
+                   / テンジクダイ科
+                   / テンジクダイ属
+                </div>
+                
+                <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df818105acfbc0356a1e42f1.jpg" alt="ヒフキヨウジ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">ヒフキヨウジ</div>
+                
+                
+                
+                
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df8181149505e5a95ae62285.jpg" alt="ホウボウ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">ホウボウ</div>
+                <div class="fish-name-en">Red gurnard</div>
+                <div class="fish-name-sci">Chelidonichthys spinosus</div>
+                
+                <div class="fish-taxonomy">
+                  カサゴ目
+                   / ホウボウ科
+                   / ホウボウ属
+                </div>
+                
+                <div class="fish-memo">砂泥底に生息する。指のように見える3本の胸鰭軟条を動かして餌を探す。　分布：北海道南部から南シナ海</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg" alt="ミノカサゴ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">ミノカサゴ</div>
+                <div class="fish-name-en">Luna lionfish</div>
+                <div class="fish-name-sci">Pterois lunulata</div>
+                
+                <div class="fish-taxonomy">
+                  カサゴ目
+                   / フサカサゴ科
+                   / ミノカサゴ属
+                </div>
+                
+                <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、インドから太平洋西部</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="fish-dots" id="fdots-1">
+            
+            <div class="fish-dot active"></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+          </div>
+          <script>
+          (function() {
+            var slider = document.getElementById('fslider-1');
+            var dots   = document.querySelectorAll('#fdots-1 .fish-dot');
+            slider.addEventListener('scroll', function() {
+              var idx = Math.round(slider.scrollLeft / 168);
+              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            });
+            dots.forEach(function(dot, i) {
+              dot.addEventListener('click', function() {
+                slider.scrollTo({ left: 168 * i, behavior: 'smooth' });
+              });
+            });
+          })();
+          </script>
+          
         </div>
         
 
@@ -705,8 +959,239 @@
           
         
         
-        <div class="dive-fish-list">
-          <span class="fish-tag">アカオビハナダイ</span><span class="fish-tag">ウツボ</span><span class="fish-tag">オトヒメエビ</span><span class="fish-tag">キビナゴ</span><span class="fish-tag">キンギョハナダイ</span><span class="fish-tag">トラウツボ</span><span class="fish-tag">ニザダイ</span><span class="fish-tag">マトウダイ</span>
+        <div class="fish-slider-wrap">
+          <div class="fish-slider-label">── 見れた魚 ──</div>
+          <div class="fish-slider" id="fslider-2">
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">アカオビハナダイ</div>
+                <div class="fish-name-en">Redbar anthias</div>
+                <div class="fish-name-sci">Pseudanthias rubrizonatus</div>
+                
+                <div class="fish-taxonomy">
+                  スズキ目
+                   / ハタ科
+                   / ナガハナダイ属
+                </div>
+                
+                <div class="fish-memo">サンゴ礁、岩礁域に生息する。　分布：伊豆半島以南、太平洋域に分布する。</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg" alt="ウツボ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">ウツボ</div>
+                <div class="fish-name-en">Barred moray</div>
+                <div class="fish-name-sci">Gymnothorax kidako</div>
+                
+                <div class="fish-taxonomy">
+                  ウナギ目
+                   / ウツボ科
+                   / ウツボ属
+                </div>
+                
+                <div class="fish-memo">岩礁域　分布：南日本、台湾</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df818181b606d9e5ae682a4c.jpg" alt="オトヒメエビ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">オトヒメエビ</div>
+                
+                
+                
+                
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df8181ca8350dc9cb6d16760.jpg" alt="キビナゴ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">キビナゴ</div>
+                <div class="fish-name-en">Silver-stripe round herring</div>
+                <div class="fish-name-sci">Spratelloides gracilis</div>
+                
+                <div class="fish-taxonomy">
+                  ニシン目
+                   / ニシン科
+                   / キビナゴ属
+                </div>
+                
+                <div class="fish-memo">沿岸域を群れで遊泳する。　分布：千葉県以南、インド洋から西太平洋に分布する。</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81819f99f6e22434c8f673.jpg" alt="キンギョハナダイ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">キンギョハナダイ</div>
+                <div class="fish-name-en">Scalefin anthias</div>
+                <div class="fish-name-sci">Pseudanthias squamipinnis</div>
+                
+                <div class="fish-taxonomy">
+                  スズキ目
+                   / ハタ科
+                   / ナガハナダイ属
+                </div>
+                
+                <div class="fish-memo">岩礁や根の近くで大きな群れで生息する。　分布：関東以南、紅海からインド、太平洋。</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81813496d8dddcb15d62dd.jpg" alt="トラウツボ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">トラウツボ</div>
+                <div class="fish-name-en">Dragon moray</div>
+                <div class="fish-name-sci">Muraena pardalis</div>
+                
+                <div class="fish-taxonomy">
+                  ウナギ目
+                   / ウツボ科
+                   / トラウツボ属
+                </div>
+                
+                <div class="fish-memo">岩礁域　分布：南日本、インド洋から太平洋</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81814ea3e7de1441159d84.jpg" alt="ニザダイ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">ニザダイ</div>
+                <div class="fish-name-en">Scalpel sawtail</div>
+                <div class="fish-name-sci">Prionurus scalprus</div>
+                
+                <div class="fish-taxonomy">
+                  スズキ目
+                   / ニザダイ科
+                   / ニザダイ属
+                </div>
+                
+                <div class="fish-memo">浅い岩礁域　分布：宮城県以南、台湾など</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81814a8936d806185e2970.jpg" alt="マトウダイ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">マトウダイ</div>
+                
+                
+                
+                
+                
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="fish-dots" id="fdots-2">
+            
+            <div class="fish-dot active"></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+          </div>
+          <script>
+          (function() {
+            var slider = document.getElementById('fslider-2');
+            var dots   = document.querySelectorAll('#fdots-2 .fish-dot');
+            slider.addEventListener('scroll', function() {
+              var idx = Math.round(slider.scrollLeft / 168);
+              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            });
+            dots.forEach(function(dot, i) {
+              dot.addEventListener('click', function() {
+                slider.scrollTo({ left: 168 * i, behavior: 'smooth' });
+              });
+            });
+          })();
+          </script>
+          
         </div>
         
 
@@ -1087,8 +1572,164 @@
           
         
         
-        <div class="dive-fish-list">
-          <span class="fish-tag">アカオビハナダイ</span><span class="fish-tag">サカタザメ</span><span class="fish-tag">ボラ</span><span class="fish-tag">マツカサウオ</span><span class="fish-tag">ミジンベニハゼ</span>
+        <div class="fish-slider-wrap">
+          <div class="fish-slider-label">── 見れた魚 ──</div>
+          <div class="fish-slider" id="fslider-3">
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">アカオビハナダイ</div>
+                <div class="fish-name-en">Redbar anthias</div>
+                <div class="fish-name-sci">Pseudanthias rubrizonatus</div>
+                
+                <div class="fish-taxonomy">
+                  スズキ目
+                   / ハタ科
+                   / ナガハナダイ属
+                </div>
+                
+                <div class="fish-memo">サンゴ礁、岩礁域に生息する。　分布：伊豆半島以南、太平洋域に分布する。</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg" alt="サカタザメ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">サカタザメ</div>
+                
+                
+                
+                
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81811b9771daf3fb21ca7c.jpg" alt="ボラ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">ボラ</div>
+                <div class="fish-name-en">Flathead mullet</div>
+                <div class="fish-name-sci">Mugil cephalus</div>
+                
+                <div class="fish-taxonomy">
+                  ボラ目
+                   / ボラ科
+                   / ボラ属
+                </div>
+                
+                <div class="fish-memo">沿岸浅所や汽水域、河川に群れで生息する。　分布：北海道以南、東アフリカから太平洋に分布する。</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df81816b9175e88db47473e4.jpg" alt="マツカサウオ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">マツカサウオ</div>
+                <div class="fish-name-en">Pineconefish</div>
+                <div class="fish-name-sci">Monocentris japonica</div>
+                
+                <div class="fish-taxonomy">
+                  キンメダイ目
+                   / マツカサウオ科
+                   / マツカサウオ属
+                </div>
+                
+                <div class="fish-memo">浅海の岩礁域　分布：紅海、南アフリカから西太平洋、オーストラリア南部に分布</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="fish-slide">
+              <div class="fish-card">
+                
+                <img class="fish-thumb" src="../fish_thumbs/389393d9df8181b39778f0d8885915b6.jpg" alt="ミジンベニハゼ" loading="lazy"
+                     onerror="this.style.display='none'">
+                
+                <div class="fish-name-ja">ミジンベニハゼ</div>
+                <div class="fish-name-en">Caesiura dwarfgoby</div>
+                <div class="fish-name-sci">Trimma caesiura</div>
+                
+                <div class="fish-taxonomy">
+                  スズキ目
+                   / ハゼ科
+                   / ベニハゼ属
+                </div>
+                
+                <div class="fish-memo">岩礁域、サンゴ礁域の礁斜面。水深 3-20m。　分布：八丈島以南の南日本、インドから太平洋</div>
+                
+                <div class="fish-stars">
+                  <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
+                  <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="fish-dots" id="fdots-3">
+            
+            <div class="fish-dot active"></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+            <div class="fish-dot "></div>
+            
+          </div>
+          <script>
+          (function() {
+            var slider = document.getElementById('fslider-3');
+            var dots   = document.querySelectorAll('#fdots-3 .fish-dot');
+            slider.addEventListener('scroll', function() {
+              var idx = Math.round(slider.scrollLeft / 168);
+              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            });
+            dots.forEach(function(dot, i) {
+              dot.addEventListener('click', function() {
+                slider.scrollTo({ left: 168 * i, behavior: 'smooth' });
+              });
+            });
+          })();
+          </script>
+          
         </div>
         
 
@@ -1258,454 +1899,6 @@
       </div>
       
 
-      
-      <div class="fish-section">
-        <div class="fish-section-title">── Encountered Species ──</div>
-        <div class="fish-grid">
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg" alt="アオリイカの卵" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">アオリイカの卵</div>
-            
-            
-            
-            
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">アカオビハナダイ</div>
-            <div class="fish-name-en">Redbar anthias</div>
-            <div class="fish-name-sci">Pseudanthias rubrizonatus</div>
-            
-            <div class="fish-taxonomy">
-              スズキ目
-               / ハタ科
-               / ナガハナダイ属
-            </div>
-            
-            <div class="fish-memo">サンゴ礁、岩礁域に生息する。　分布：伊豆半島以南、太平洋域に分布する。</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg" alt="ウツボ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">ウツボ</div>
-            <div class="fish-name-en">Barred moray</div>
-            <div class="fish-name-sci">Gymnothorax kidako</div>
-            
-            <div class="fish-taxonomy">
-              ウナギ目
-               / ウツボ科
-               / ウツボ属
-            </div>
-            
-            <div class="fish-memo">岩礁域　分布：南日本、台湾</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df818181b606d9e5ae682a4c.jpg" alt="オトヒメエビ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">オトヒメエビ</div>
-            
-            
-            
-            
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df8181ca8350dc9cb6d16760.jpg" alt="キビナゴ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">キビナゴ</div>
-            <div class="fish-name-en">Silver-stripe round herring</div>
-            <div class="fish-name-sci">Spratelloides gracilis</div>
-            
-            <div class="fish-taxonomy">
-              ニシン目
-               / ニシン科
-               / キビナゴ属
-            </div>
-            
-            <div class="fish-memo">沿岸域を群れで遊泳する。　分布：千葉県以南、インド洋から西太平洋に分布する。</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81819f99f6e22434c8f673.jpg" alt="キンギョハナダイ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">キンギョハナダイ</div>
-            <div class="fish-name-en">Scalefin anthias</div>
-            <div class="fish-name-sci">Pseudanthias squamipinnis</div>
-            
-            <div class="fish-taxonomy">
-              スズキ目
-               / ハタ科
-               / ナガハナダイ属
-            </div>
-            
-            <div class="fish-memo">岩礁や根の近くで大きな群れで生息する。　分布：関東以南、紅海からインド、太平洋。</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81817cb9e8e0657a0a5ba5.jpg" alt="クマノミ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">クマノミ</div>
-            <div class="fish-name-en">Clark&#39;s Anemonefish</div>
-            <div class="fish-name-sci">Amphiprion clarkii</div>
-            
-            <div class="fish-taxonomy">
-              スズキ目
-               / スズメダイ科
-               / クマノミ属
-            </div>
-            
-            <div class="fish-memo">岩礁帯のイソギンチャクと共生している。水深１０～５０ ｍ　分布：千葉県以南、インド洋から太平洋。</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df8181368346f5fe7a08f5b3.jpg" alt="クロホシイシモチ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">クロホシイシモチ</div>
-            <div class="fish-name-en">Blackspotted cardinafish</div>
-            <div class="fish-name-sci">Apogon notatus</div>
-            
-            <div class="fish-taxonomy">
-              スズキ目
-               / テンジクダイ科
-               / テンジクダイ属
-            </div>
-            
-            <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg" alt="サカタザメ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">サカタザメ</div>
-            
-            
-            
-            
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81810595fced342517aeb3.jpg" alt="セトミノカサゴ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">セトミノカサゴ</div>
-            <div class="fish-name-en">Marbled rockfish</div>
-            <div class="fish-name-sci">Sabastiscus marmoratus</div>
-            
-            <div class="fish-taxonomy">
-              カサゴ目
-               / フサカサゴ科
-               / カサゴ属
-            </div>
-            
-            <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、東シナ海に分布する。</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81813496d8dddcb15d62dd.jpg" alt="トラウツボ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">トラウツボ</div>
-            <div class="fish-name-en">Dragon moray</div>
-            <div class="fish-name-sci">Muraena pardalis</div>
-            
-            <div class="fish-taxonomy">
-              ウナギ目
-               / ウツボ科
-               / トラウツボ属
-            </div>
-            
-            <div class="fish-memo">岩礁域　分布：南日本、インド洋から太平洋</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81814ea3e7de1441159d84.jpg" alt="ニザダイ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">ニザダイ</div>
-            <div class="fish-name-en">Scalpel sawtail</div>
-            <div class="fish-name-sci">Prionurus scalprus</div>
-            
-            <div class="fish-taxonomy">
-              スズキ目
-               / ニザダイ科
-               / ニザダイ属
-            </div>
-            
-            <div class="fish-memo">浅い岩礁域　分布：宮城県以南、台湾など</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df8181a2affaecc150d2fbfe.jpg" alt="ネンブツダイ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">ネンブツダイ</div>
-            <div class="fish-name-en">Half-lined cardinalfish</div>
-            <div class="fish-name-sci">Apogon semilineatus</div>
-            
-            <div class="fish-taxonomy">
-              スズキ目
-               / テンジクダイ科
-               / テンジクダイ属
-            </div>
-            
-            <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df818105acfbc0356a1e42f1.jpg" alt="ヒフキヨウジ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">ヒフキヨウジ</div>
-            
-            
-            
-            
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df8181149505e5a95ae62285.jpg" alt="ホウボウ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">ホウボウ</div>
-            <div class="fish-name-en">Red gurnard</div>
-            <div class="fish-name-sci">Chelidonichthys spinosus</div>
-            
-            <div class="fish-taxonomy">
-              カサゴ目
-               / ホウボウ科
-               / ホウボウ属
-            </div>
-            
-            <div class="fish-memo">砂泥底に生息する。指のように見える3本の胸鰭軟条を動かして餌を探す。　分布：北海道南部から南シナ海</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81811b9771daf3fb21ca7c.jpg" alt="ボラ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">ボラ</div>
-            <div class="fish-name-en">Flathead mullet</div>
-            <div class="fish-name-sci">Mugil cephalus</div>
-            
-            <div class="fish-taxonomy">
-              ボラ目
-               / ボラ科
-               / ボラ属
-            </div>
-            
-            <div class="fish-memo">沿岸浅所や汽水域、河川に群れで生息する。　分布：北海道以南、東アフリカから太平洋に分布する。</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81816b9175e88db47473e4.jpg" alt="マツカサウオ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">マツカサウオ</div>
-            <div class="fish-name-en">Pineconefish</div>
-            <div class="fish-name-sci">Monocentris japonica</div>
-            
-            <div class="fish-taxonomy">
-              キンメダイ目
-               / マツカサウオ科
-               / マツカサウオ属
-            </div>
-            
-            <div class="fish-memo">浅海の岩礁域　分布：紅海、南アフリカから西太平洋、オーストラリア南部に分布</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df81814a8936d806185e2970.jpg" alt="マトウダイ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">マトウダイ</div>
-            
-            
-            
-            
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df8181b39778f0d8885915b6.jpg" alt="ミジンベニハゼ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">ミジンベニハゼ</div>
-            <div class="fish-name-en">Caesiura dwarfgoby</div>
-            <div class="fish-name-sci">Trimma caesiura</div>
-            
-            <div class="fish-taxonomy">
-              スズキ目
-               / ハゼ科
-               / ベニハゼ属
-            </div>
-            
-            <div class="fish-memo">岩礁域、サンゴ礁域の礁斜面。水深 3-20m。　分布：八丈島以南の南日本、インドから太平洋</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-          <div class="fish-card">
-            
-            <img class="fish-thumb" src="../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg" alt="ミノカサゴ" loading="lazy"
-                 onerror="this.style.display='none'">
-            
-            <div class="fish-name-ja">ミノカサゴ</div>
-            <div class="fish-name-en">Luna lionfish</div>
-            <div class="fish-name-sci">Pterois lunulata</div>
-            
-            <div class="fish-taxonomy">
-              カサゴ目
-               / フサカサゴ科
-               / ミノカサゴ属
-            </div>
-            
-            <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、インドから太平洋西部</div>
-            
-            <div class="fish-stars">
-              <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-              <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-            </div>
-            
-          </div>
-          
-        </div>
-      </div>
-      
 
     </div>
   </div>

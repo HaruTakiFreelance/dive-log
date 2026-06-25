@@ -332,32 +332,41 @@
     }
     .video-link a:hover { background: var(--accent); color: #fff; }
 
-    /* ── 魚図鑑 ── */
-    .fish-section { margin-top: var(--sp-xl); }
-    .fish-section-title {
+    /* ── ダイブ内 魚スライダー ── */
+    .fish-slider-wrap {
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-top: var(--sp-s);
+    }
+    .fish-slider-label {
       font-family: 'Special Elite', monospace;
       font-size: var(--fs-xs);
-      letter-spacing: 0.3em;
+      letter-spacing: 0.2em;
       color: var(--ink-faint);
-      text-transform: uppercase;
-      margin-bottom: var(--sp-m);
-      border-bottom: 1px dashed var(--paper-d);
-      padding-bottom: var(--sp-xs);
+      margin-bottom: var(--sp-xs);
     }
-    .fish-grid {
-      display: grid;
-      /* 黄金比: カード幅 180px, gap = 180/phi^2 ≒ 69 → 約 var(--sp-l) */
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: var(--sp-l);
+    .fish-slider {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: var(--sp-s);
+      padding-bottom: var(--sp-xs);
+      scrollbar-width: none;
+    }
+    .fish-slider::-webkit-scrollbar { display: none; }
+    .fish-slide {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      width: 160px;
     }
     .fish-card {
       background: rgba(255,255,255,0.28);
       border: 1px solid var(--paper-d);
       padding: var(--sp-s);
+      height: 100%;
     }
     .fish-thumb {
       width: 100%;
-      /* 黄金比: 幅:高さ = phi:1 → aspect-ratio phi */
       aspect-ratio: 1.618 / 1;
       object-fit: cover;
       display: block;
@@ -365,16 +374,30 @@
       border: 1px solid var(--paper-d);
       filter: sepia(10%) saturate(88%);
     }
-    .fish-name-ja { font-weight: 700; font-size: var(--fs-m); color: var(--ink); margin-bottom: var(--sp-xs); }
-    .fish-name-en { font-size: var(--fs-s); color: var(--ink-fade); margin-bottom: 2px; }
+    .fish-name-ja { font-weight: 700; font-size: var(--fs-s); color: var(--ink); margin-bottom: 2px; }
+    .fish-name-en { font-size: var(--fs-xs); color: var(--ink-fade); margin-bottom: 2px; }
     .fish-name-sci { font-style: italic; font-size: var(--fs-xs); color: var(--ink-faint); margin-bottom: var(--sp-xs); }
     .fish-taxonomy { font-size: var(--fs-xs); color: var(--ink-faint); margin-bottom: var(--sp-xs); }
-    .fish-memo { font-size: var(--fs-s); color: var(--ink-fade); line-height: var(--phi); margin-top: var(--sp-xs); }
-    .fish-stars { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--sp-s); }
-    .fish-stars .row { display: flex; gap: var(--sp-s); align-items: center; margin-bottom: 2px; }
-    .fish-stars .label { min-width: 3.5em; }
+    .fish-memo { font-size: var(--fs-xs); color: var(--ink-fade); line-height: var(--phi); }
+    .fish-stars { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--sp-xs); }
+    .fish-stars .row { display: flex; gap: var(--sp-xs); align-items: center; margin-bottom: 2px; }
+    .fish-stars .label { min-width: 3em; }
     .star.filled { color: #b89200; }
     .star.empty  { color: var(--ink-faint); }
+    /* スライドドット（魚） */
+    .fish-dots {
+      display: flex;
+      gap: 5px;
+      margin-top: var(--sp-xs);
+    }
+    .fish-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--paper-d);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .fish-dot.active { background: var(--ink-fade); }
 
     .build-note {
       text-align: center;
@@ -472,8 +495,60 @@
           {% if f.id in d.fish_ids %}{% set ns.fish_in_dive = ns.fish_in_dive + [f] %}{% endif %}
         {% endfor %}
         {% if ns.fish_in_dive %}
-        <div class="dive-fish-list">
-          {% for f in ns.fish_in_dive %}<span class="fish-tag">{{ f.name }}</span>{% endfor %}
+        <div class="fish-slider-wrap">
+          <div class="fish-slider-label">── 見れた魚 ──</div>
+          <div class="fish-slider" id="fslider-{{ loop.index }}">
+            {% for f in ns.fish_in_dive %}
+            <div class="fish-slide">
+              <div class="fish-card">
+                {% if f.thumbnail %}
+                <img class="fish-thumb" src="{{ f.thumbnail }}" alt="{{ f.name }}" loading="lazy"
+                     onerror="this.style.display='none'">
+                {% endif %}
+                <div class="fish-name-ja">{{ f.name }}</div>
+                {% if f.english_name %}<div class="fish-name-en">{{ f.english_name }}</div>{% endif %}
+                {% if f.scientific_name %}<div class="fish-name-sci">{{ f.scientific_name }}</div>{% endif %}
+                {% if f.order or f.family %}
+                <div class="fish-taxonomy">
+                  {% if f.order %}{{ f.order }}{% endif %}
+                  {% if f.family %} / {{ f.family }}{% endif %}
+                  {% if f.genus %} / {{ f.genus }}{% endif %}
+                </div>
+                {% endif %}
+                {% if f.memo %}<div class="fish-memo">{{ f.memo }}</div>{% endif %}
+                {% if f.rarity or f.popularity or f.photo_ease %}
+                <div class="fish-stars">
+                  {% if f.rarity %}<div class="row"><span class="label">レア度</span>{{ f.rarity | stars_html }}</div>{% endif %}
+                  {% if f.popularity %}<div class="row"><span class="label">人気</span>{{ f.popularity | stars_html }}</div>{% endif %}
+                  {% if f.photo_ease %}<div class="row"><span class="label">撮影</span>{{ f.photo_ease | stars_html }}</div>{% endif %}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% if ns.fish_in_dive|length > 1 %}
+          <div class="fish-dots" id="fdots-{{ loop.index }}">
+            {% for f in ns.fish_in_dive %}
+            <div class="fish-dot {% if loop.first %}active{% endif %}"></div>
+            {% endfor %}
+          </div>
+          <script>
+          (function() {
+            var slider = document.getElementById('fslider-{{ loop.index }}');
+            var dots   = document.querySelectorAll('#fdots-{{ loop.index }} .fish-dot');
+            slider.addEventListener('scroll', function() {
+              var idx = Math.round(slider.scrollLeft / 168);
+              dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            });
+            dots.forEach(function(dot, i) {
+              dot.addEventListener('click', function() {
+                slider.scrollTo({ left: 168 * i, behavior: 'smooth' });
+              });
+            });
+          })();
+          </script>
+          {% endif %}
         </div>
         {% endif %}
 
@@ -527,39 +602,6 @@
       </div>
       {% endfor %}
 
-      {% if s.fish %}
-      <div class="fish-section">
-        <div class="fish-section-title">── Encountered Species ──</div>
-        <div class="fish-grid">
-          {% for f in s.fish %}
-          <div class="fish-card">
-            {% if f.thumbnail %}
-            <img class="fish-thumb" src="{{ f.thumbnail }}" alt="{{ f.name }}" loading="lazy"
-                 onerror="this.style.display='none'">
-            {% endif %}
-            <div class="fish-name-ja">{{ f.name }}</div>
-            {% if f.english_name %}<div class="fish-name-en">{{ f.english_name }}</div>{% endif %}
-            {% if f.scientific_name %}<div class="fish-name-sci">{{ f.scientific_name }}</div>{% endif %}
-            {% if f.order or f.family %}
-            <div class="fish-taxonomy">
-              {% if f.order %}{{ f.order }}{% endif %}
-              {% if f.family %} / {{ f.family }}{% endif %}
-              {% if f.genus %} / {{ f.genus }}{% endif %}
-            </div>
-            {% endif %}
-            {% if f.memo %}<div class="fish-memo">{{ f.memo }}</div>{% endif %}
-            {% if f.rarity or f.popularity or f.photo_ease %}
-            <div class="fish-stars">
-              {% if f.rarity %}<div class="row"><span class="label">レア度</span>{{ f.rarity | stars_html }}</div>{% endif %}
-              {% if f.popularity %}<div class="row"><span class="label">人気</span>{{ f.popularity | stars_html }}</div>{% endif %}
-              {% if f.photo_ease %}<div class="row"><span class="label">撮影</span>{{ f.photo_ease | stars_html }}</div>{% endif %}
-            </div>
-            {% endif %}
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-      {% endif %}
 
     </div>
   </div>
