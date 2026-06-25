@@ -1767,10 +1767,10 @@
 
     var isVideo = wrapper.classList.contains('video-inf-slider');
 
-    // 動画スライダーはラッパー幅をスライド幅に設定
+    // 動画スライダー: ラッパー幅をスライド幅に設定
     if (isVideo) {
-      var w = wrapper.offsetWidth;
-      orig.forEach(function(s) { s.style.width = w + 'px'; });
+      var vw = wrapper.offsetWidth;
+      orig.forEach(function(s) { s.style.width = vw + 'px'; });
     }
 
     // 先頭・末尾をクローンして前後に挿入
@@ -1782,19 +1782,25 @@
     }
     track.appendChild(firstClone);
     track.insertBefore(lastClone, orig[0]);
-    // track.children: [lastClone, s0, s1, ..., s(n-1), firstClone]
+    // children: [lastClone, s0, s1, ..., s(n-1), firstClone]
 
     var dots = Array.from(wrapper.querySelectorAll('.inf-dot'));
-    var pos = 1;   // 実スライドの先頭インデックス
-    var cur = 0;   // 表示中の実インデックス (0-based)
+    var pos = 1;
+    var cur = 0;
+    var busy = false;
 
-    function offset(p) { return track.children[p].offsetLeft; }
+    // スライド幅 = offsetLeft差分（gapを含む）
+    function slideStep() {
+      var c = track.children;
+      return c.length > 2 ? c[2].offsetLeft - c[1].offsetLeft : c[1].offsetWidth;
+    }
 
     function applyPos(animate) {
+      var x = track.children[1].offsetLeft + (pos - 1) * slideStep();
       track.style.transition = animate
         ? 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94)'
         : 'none';
-      track.style.transform = 'translateX(-' + offset(pos) + 'px)';
+      track.style.transform = 'translateX(-' + x + 'px)';
     }
 
     function updateDots() {
@@ -1802,16 +1808,20 @@
     }
 
     function goNext() {
+      if (busy) return; busy = true;
       pos++; cur = (cur + 1) % n;
       applyPos(true); updateDots();
     }
     function goPrev() {
+      if (busy) return; busy = true;
       pos--; cur = (cur - 1 + n) % n;
       applyPos(true); updateDots();
     }
 
-    // クローン端に達したら瞬時にリセット
-    track.addEventListener('transitionend', function() {
+    // アニメーション完了後にクローン境界をリセット
+    track.addEventListener('transitionend', function(e) {
+      if (e.propertyName !== 'transform') return;
+      busy = false;
       if (pos >= n + 1) { pos = 1; applyPos(false); }
       else if (pos <= 0) { pos = n; applyPos(false); }
     });
@@ -1819,24 +1829,31 @@
     // ドットクリック
     dots.forEach(function(dot, i) {
       dot.addEventListener('click', function() {
+        if (busy) return;
         pos = i + 1; cur = i;
         applyPos(true); updateDots();
       });
     });
 
-    // スワイプ
-    var sx = 0, sy = 0;
+    // タッチ & マウスドラッグ
+    var dragStart = null;
+    function onDragStart(x) { dragStart = x; }
+    function onDragEnd(x) {
+      if (dragStart === null) return;
+      var dx = x - dragStart;
+      dragStart = null;
+      if (Math.abs(dx) > 40) { dx < 0 ? goNext() : goPrev(); }
+    }
+
     wrapper.addEventListener('touchstart', function(e) {
-      sx = e.touches[0].clientX;
-      sy = e.touches[0].clientY;
+      onDragStart(e.touches[0].clientX);
     }, { passive: true });
     wrapper.addEventListener('touchend', function(e) {
-      var dx = e.changedTouches[0].clientX - sx;
-      var dy = e.changedTouches[0].clientY - sy;
-      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-        dx < 0 ? goNext() : goPrev();
-      }
+      onDragEnd(e.changedTouches[0].clientX);
     }, { passive: true });
+    wrapper.addEventListener('mousedown', function(e) { onDragStart(e.clientX); });
+    wrapper.addEventListener('mouseup',   function(e) { onDragEnd(e.clientX); });
+    wrapper.addEventListener('mouseleave',function()  { dragStart = null; });
 
     applyPos(false);
   }

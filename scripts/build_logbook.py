@@ -356,8 +356,13 @@ def build():
     # ③ お魚図鑑ページ生成
     fish_list = sorted(fish_index.values(), key=lambda f: (f["category"] or "", f["name"]))
     categories = sorted({f["category"] for f in fish_list if f["category"]})
+    # fish.html は docs/ 直下なので ../fish_thumbs/ → fish_thumbs/ に修正
+    fish_list_enc = [
+        {**f, "thumbnail": f["thumbnail"].replace("../fish_thumbs/", "fish_thumbs/")}
+        for f in fish_list
+    ]
     fish_html = env.get_template("fish.html").render(
-        fish_list=fish_list,
+        fish_list=fish_list_enc,
         categories=categories,
         total=len(fish_list),
         build_date=build_date,
