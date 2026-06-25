@@ -422,10 +422,10 @@
         <option value="">— 選択 —</option>
         <option>魚類</option>
         <option>甲殻類</option>
-        <option>頭足類</option>
-        <option>棘皮動物</option>
         <option>軟体動物</option>
-        <option>その他</option>
+        <option>棘皮動物</option>
+        <option>爬虫類</option>
+        <option>哺乳類</option>
       </select>
     </div>
     <div class="field">
@@ -437,6 +437,12 @@
       <button class="btn btn-primary" onclick="addNewFish()" id="btn-fish-add">追加する</button>
     </div>
     <div class="msg" id="fish-modal-msg" style="margin-top:0.5rem;"></div>
+    <input type="hidden" id="new-fish-order">
+    <input type="hidden" id="new-fish-family">
+    <input type="hidden" id="new-fish-genus">
+    <input type="hidden" id="new-fish-rarity">
+    <input type="hidden" id="new-fish-popularity">
+    <input type="hidden" id="new-fish-photo-ease">
   </div>
 </div>
 
@@ -684,7 +690,13 @@ async function openFishModal(name) {
     if (data.scientific_name) document.getElementById('new-fish-sci').value = data.scientific_name;
     if (data.category)        document.getElementById('new-fish-cat').value = data.category;
     if (data.memo)            document.getElementById('new-fish-memo').value = data.memo;
-    setMsg('fish-modal-msg', 'AIが入力しました（修正できます）', 'ok');
+    document.getElementById('new-fish-order').value      = data.order || '';
+    document.getElementById('new-fish-family').value     = data.family || '';
+    document.getElementById('new-fish-genus').value      = data.genus || '';
+    document.getElementById('new-fish-rarity').value     = data.rarity || '';
+    document.getElementById('new-fish-popularity').value = data.popularity || '';
+    document.getElementById('new-fish-photo-ease').value = data.photo_ease || '';
+    setMsg('fish-modal-msg', data.english_name ? '図鑑から取得しました（修正できます）' : '図鑑に見つかりませんでした。手動で入力してください', data.english_name ? 'ok' : '');
   } catch (e) {
     setMsg('fish-modal-msg', '手動で入力してください', '');
   }
@@ -713,6 +725,12 @@ async function addNewFish() {
         scientific_name: document.getElementById('new-fish-sci').value.trim(),
         category:        document.getElementById('new-fish-cat').value,
         memo:            document.getElementById('new-fish-memo').value.trim(),
+        order:           document.getElementById('new-fish-order').value,
+        family:          document.getElementById('new-fish-family').value,
+        genus:           document.getElementById('new-fish-genus').value,
+        rarity:          document.getElementById('new-fish-rarity').value,
+        popularity:      document.getElementById('new-fish-popularity').value,
+        photo_ease:      document.getElementById('new-fish-photo-ease').value,
       }),
     });
     const data = await res.json();
