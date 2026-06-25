@@ -774,8 +774,16 @@ function openFishModal(fishId) {
   var f = SESSION_FISH[fishId];
   if (!f) return;
   var thumbWrap = document.getElementById('fm-thumb-wrap');
+  thumbWrap.innerHTML = '';
   if (f.thumbnail) {
-    thumbWrap.innerHTML = '<img src="' + f.thumbnail + '" alt="' + f.name + '" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=\\\"fish-modal-thumb-placeholder\\\">🐠</div>\'">';
+    var img = document.createElement('img');
+    img.src = f.thumbnail;
+    img.alt = f.name;
+    img.loading = 'lazy';
+    img.addEventListener('error', function() {
+      thumbWrap.innerHTML = '<div class="fish-modal-thumb-placeholder">🐠</div>';
+    });
+    thumbWrap.appendChild(img);
   } else {
     thumbWrap.innerHTML = '<div class="fish-modal-thumb-placeholder">🐠</div>';
   }
