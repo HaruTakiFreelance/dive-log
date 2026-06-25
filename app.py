@@ -241,6 +241,23 @@ def build_logbook():
     return jsonify({"ok": False, "message": result.stderr.strip()[-400:]}), 500
 
 
+@app.route("/push", methods=["POST"])
+def git_push():
+    import subprocess
+    repo = str(Path(__file__).parent)
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    cmds = [
+        ["git", "-C", repo, "add", "docs/"],
+        ["git", "-C", repo, "commit", "--allow-empty", "-m", f"update logbook {now}"],
+        ["git", "-C", repo, "push"],
+    ]
+    for cmd in cmds:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        if r.returncode != 0 and "nothing to commit" not in r.stdout:
+            return jsonify({"ok": False, "message": r.stderr.strip()[-400:]}), 500
+    return jsonify({"ok": True, "message": "GitHub Pages に公開しました"})
+
+
 if __name__ == "__main__":
     print("🤿 Dive Log App — http://localhost:5001")
     print("   スマホからは http://<あなたのMacのIP>:5001 でアクセス可")

@@ -53,15 +53,13 @@
       <div class="step-num">4</div>
       <div class="step-body">
         <div class="step-title">🚀 GitHub Pages に公開する</div>
-        <div class="step-desc">ターミナルで以下を実行して反映</div>
-        <div class="code-block">
-          <code>cd "/Users/harutakizawa/Desktop/claude code/dive-log"</code>
-          <code>git add docs/</code>
-          <code>git commit -m "update logbook"</code>
-          <code>git push</code>
-        </div>
+        <div class="step-desc">docs/ を git push してウェブ公開</div>
+        <button class="btn btn-secondary btn-full" style="margin-top:10px;" id="btn-push" onclick="pushToGitHub()">
+          Push して公開 →
+        </button>
+        <p id="push-msg" style="font-size:.78rem; color:var(--sub); margin-top:6px; display:none;"></p>
         <a href="https://harutakifreelance.github.io/dive-log/" target="_blank" rel="noopener"
-           class="btn btn-secondary btn-full" style="margin-top:10px;">
+           class="btn btn-secondary btn-full" style="margin-top:8px;">
           ログブックを見る 🔗
         </a>
       </div>
@@ -71,6 +69,31 @@
 </div>
 
 <script>
+async function pushToGitHub() {
+  const btn = document.getElementById('btn-push');
+  const msg = document.getElementById('push-msg');
+  btn.disabled = true;
+  btn.textContent = '⏳ Push中...';
+  msg.style.display = 'none';
+  try {
+    const res = await fetch('/push', { method: 'POST' });
+    const data = await res.json();
+    if (data.ok) {
+      btn.textContent = '✅ 公開完了！';
+      msg.style.display = 'block';
+      msg.textContent = data.message;
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Push して公開 →';
+      alert('エラー: ' + data.message);
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Push して公開 →';
+    alert('通信エラー: ' + e.message);
+  }
+}
+
 async function buildLogbook() {
   const btn = document.getElementById('btn-build');
   const msg = document.getElementById('build-msg');
