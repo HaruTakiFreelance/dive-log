@@ -58,7 +58,7 @@
       background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(51,51,51,0.05) 28px);
       pointer-events: none;
     }
-    .card-inner { padding: 2rem 2rem; position: relative; }
+    .card-inner { padding: 2rem; position: relative; }
 
     .stamp {
       display: inline-block;
@@ -82,6 +82,13 @@
       font-family: 'Caveat', cursive;
       font-size: 1rem;
       color: var(--ink-fade);
+      margin-bottom: 0.5rem;
+    }
+    .version-line {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--ink-faint);
       margin-bottom: 2rem;
     }
 
@@ -181,6 +188,55 @@
     }
     .divider::before, .divider::after { content: '───'; margin: 0 0.3em; }
 
+    /* 機能一覧 */
+    .section-label {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+    }
+    .feature-item {
+      background: rgba(255,255,255,0.35);
+      border: 1px solid var(--paper-d);
+      border-radius: 2px;
+      padding: 0.7rem 0.9rem;
+    }
+    .feature-icon {
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+    .feature-name {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--ink);
+      margin-bottom: 0.2rem;
+    }
+    .feature-desc {
+      font-size: 0.75rem;
+      color: var(--ink-fade);
+      line-height: 1.5;
+    }
+    .feature-env {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      margin-top: 0.3rem;
+    }
+    .env-online { color: #2e7d4f; }
+    .env-local  { color: var(--rust); }
+
+    @media (max-width: 500px) {
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+
     .build-note {
       text-align: center;
       font-family: 'Special Elite', monospace;
@@ -195,11 +251,13 @@
 <div class="book">
   <a class="back-link" href="../index.html">← Logbook Home</a>
 
+  <!-- メインカード -->
   <div class="card">
     <div class="card-inner">
       <div class="stamp">Dive Log Book</div>
       <div class="page-title">How to Use</div>
       <div class="page-sub">ダイビングログの記録から公開まで</div>
+      <div class="version-line">v1.3 &nbsp;·&nbsp; Updated 2026-06-25</div>
 
       <div class="steps">
 
@@ -209,11 +267,12 @@
           <div class="step-body">
             <div class="step-title">
               RECORD YOUR DIVE
-              <span class="badge badge-online">どこでも可</span>
+              <span class="badge badge-online">スマホ可</span>
             </div>
             <div class="step-desc">
               ダイビング当日、スマホやPCから記録フォームを開いて潜水データを入力します。<br>
-              日付・場所・時刻・深度・見た魚を登録すると、Notionデータベースに自動で保存されます。
+              日付・場所・ポイント・開始〜終了時刻・深度・ウェイト・見た魚などを登録すると、Cloudflare Worker 経由で Notion に自動保存されます。<br>
+              天気・波高は Open-Meteo から自動取得されます。
             </div>
             <a href="../record/index.html" class="step-action step-action-primary">
               記録フォームを開く →
@@ -228,18 +287,16 @@
           <div class="step-num">2</div>
           <div class="step-body">
             <div class="step-title">
-              UPLOAD PHOTOS
-              <span class="badge badge-local">Mac必要</span>
+              ADD FISH TO ENCYCLOPEDIA
+              <span class="badge badge-online">スマホ可</span>
             </div>
             <div class="step-desc">
-              帰宅後、Macでローカルアプリを起動して写真・動画をアップロードします。<br>
-              HEIC は自動で JPEG に変換され、縦1280pxにリサイズして保存されます。
+              記録フォームで魚を検索し、未登録の場合は「新しい魚を登録」ボタンから追加できます。<br>
+              魚名を入力して「図鑑から取得」を押すと、<strong>shiny-ace.com</strong> から英名・学名・分類（目・科・属）・生息域・レア度・人気・撮りやすさを自動入力します。
             </div>
-            <div class="code-block">
-              <code>cd "/Users/harutakizawa/Desktop/claude code/dive-log"</code>
-              <code>python3 app.py</code>
-            </div>
-            <p class="note">起動後 → http://localhost:5001/photo でアップロード</p>
+            <a href="../record/index.html" class="step-action step-action-secondary">
+              記録フォームへ →
+            </a>
           </div>
         </div>
 
@@ -250,17 +307,16 @@
           <div class="step-num">3</div>
           <div class="step-body">
             <div class="step-title">
-              BUILD LOGBOOK
+              UPLOAD PHOTOS &amp; VIDEOS
               <span class="badge badge-local">Mac必要</span>
             </div>
             <div class="step-desc">
-              Notionのデータと写真を元に、静的HTMLのログブックを生成します。<br>
-              ローカルアプリのホーム画面から「ログブックを生成」ボタンを押すか、ターミナルで実行します。
+              帰宅後、Mac の「記録する」ボタン（http://localhost:5001）からローカルアプリにアクセスして写真・動画をアップロードします。<br>
+              HEIC は自動で JPEG に変換され、縦1280px にリサイズして <code>docs/photos/</code> に保存されます。動画（MP4・MOV）はそのまま保存されます。
             </div>
-            <div class="code-block">
-              <code>python3 scripts/build_logbook.py</code>
-            </div>
-            <p class="note">docs/ フォルダに index.html・セッションページ・魚図鑑が生成されます</p>
+            <a href="http://localhost:5001/photo" class="step-action step-action-primary">
+              写真アップロードへ →
+            </a>
           </div>
         </div>
 
@@ -271,17 +327,33 @@
           <div class="step-num">4</div>
           <div class="step-body">
             <div class="step-title">
+              BUILD LOGBOOK
+              <span class="badge badge-local">Mac必要</span>
+            </div>
+            <div class="step-desc">
+              Notion のデータと写真を元に、静的 HTML のログブックを生成します。<br>
+              ローカルアプリのホーム画面（localhost:5001）から「ログブックを生成」を押すだけです。<br>
+              <strong>毎回全件再生成</strong>します（Notion API 使用、AI は不使用）。
+            </div>
+            <a href="http://localhost:5001/" class="step-action step-action-primary">
+              ローカルアプリへ →
+            </a>
+            <p class="note">生成物: docs/index.html · sessions/ · fish.html · workflow/</p>
+          </div>
+        </div>
+
+        <div class="divider">↓</div>
+
+        <!-- Step 5 -->
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-title">
               PUBLISH TO GITHUB PAGES
               <span class="badge badge-local">Mac必要</span>
             </div>
             <div class="step-desc">
-              生成した docs/ フォルダを GitHub にプッシュすると、自動でウェブ公開されます。
-            </div>
-            <div class="code-block">
-              <code>cd "/Users/harutakizawa/Desktop/claude code/dive-log"</code>
-              <code>git add docs/</code>
-              <code>git commit -m "update logbook"</code>
-              <code>git push</code>
+              ローカルアプリのホーム画面から「Push して公開」を押すと、docs/ を git push して自動でウェブ公開されます。
             </div>
             <a href="https://harutakifreelance.github.io/dive-log/" target="_blank" rel="noopener"
                class="step-action step-action-secondary" style="margin-top:0.6rem; display:inline-block;">
@@ -294,20 +366,88 @@
     </div>
   </div>
 
+  <!-- 全機能一覧 -->
+  <div class="card">
+    <div class="card-inner">
+      <div class="section-label">All Features</div>
+      <div class="feature-grid">
+
+        <div class="feature-item">
+          <div class="feature-icon">🤿</div>
+          <div class="feature-name">ダイブ記録</div>
+          <div class="feature-desc">日付・場所・ポイント・時刻・深度・ウェイト・見た魚・コスト・コメント・動画リンクを Notion に保存</div>
+          <div class="feature-env env-online">● スマホ・PC どこでも可</div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">🐠</div>
+          <div class="feature-name">魚図鑑</div>
+          <div class="feature-desc">登録済み魚を一覧・フィルタ・検索。カードをタップで詳細（英名・学名・分類・生息域・レア度など）を表示</div>
+          <div class="feature-env env-online">● スマホ・PC どこでも可</div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">✨</div>
+          <div class="feature-name">魚情報自動取得</div>
+          <div class="feature-desc">shiny-ace.com をスクレイプして英名・学名・目・科・属・生息域・レア度・人気・撮りやすさを自動入力</div>
+          <div class="feature-env env-online">● スマホ・PC どこでも可</div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">📷</div>
+          <div class="feature-name">写真・動画アップロード</div>
+          <div class="feature-desc">HEIC→JPEG 変換・縦1280pxリサイズを自動実行。動画（MP4/MOV）はそのまま保存。キャプション付き</div>
+          <div class="feature-env env-local">● Mac（localhost:5001）</div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">🌤</div>
+          <div class="feature-name">天気・波高の自動取得</div>
+          <div class="feature-desc">ダイブ記録保存時に Open-Meteo API から気象・海況データを自動取得してログに記録</div>
+          <div class="feature-env env-online">● スマホ・PC どこでも可</div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">📖</div>
+          <div class="feature-name">ログブック生成</div>
+          <div class="feature-desc">Notion の全データから静的 HTML を生成。ホーム・セッション詳細・スライダー・魚図鑑を一括出力（AI 不使用）</div>
+          <div class="feature-env env-local">● Mac（localhost:5001）</div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">🚀</div>
+          <div class="feature-name">GitHub Pages 公開</div>
+          <div class="feature-desc">ローカルアプリの Push ボタン1つで docs/ を git push、GitHub Pages に自動デプロイ</div>
+          <div class="feature-env env-local">● Mac（localhost:5001）</div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">🎬</div>
+          <div class="feature-name">動画スライダー</div>
+          <div class="feature-desc">セッションページの写真・YouTube 動画をスワイプで閲覧。ドット表示で現在位置を確認</div>
+          <div class="feature-env env-online">● スマホ・PC どこでも可</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <!-- クイックリンク -->
   <div class="card">
     <div class="card-inner" style="padding:1.2rem 2rem;">
       <div style="font-family:'Special Elite',monospace; font-size:0.65rem; letter-spacing:0.25em; color:var(--ink-faint); margin-bottom:0.8rem;">QUICK LINKS</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
-        <a href="../record/index.html" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ ダイブ記録</a>
+        <a href="../record/index.html" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ ダイブ記録フォーム</a>
         <a href="../fish.html" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ 魚図鑑</a>
         <a href="../index.html" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ ログブック一覧</a>
         <a href="https://www.notion.so/389393d9df818033be93fd6d046d9fc4" target="_blank" rel="noopener" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ Notion DB</a>
+        <a href="http://localhost:5001/" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ ローカルアプリ</a>
+        <a href="http://localhost:5001/photo" style="font-family:'Caveat',cursive; font-size:1rem; color:var(--accent); text-decoration:none;">→ 写真アップロード</a>
       </div>
     </div>
   </div>
 
 </div>
-<div class="build-note">Dive Log Book — Workflow Guide</div>
+<div class="build-note">Dive Log Book v1.3 — Workflow Guide · Updated 2026-06-25</div>
 </body>
 </html>
