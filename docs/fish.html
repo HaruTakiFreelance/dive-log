@@ -511,7 +511,7 @@
     el.setAttribute('viewBox',f[0]);
     el.setAttribute('xmlns','http://www.w3.org/2000/svg');
     el.classList.add('fish-sea');
-    el.style.cssText='bottom:'+bottom+'%;width:'+width+'px;animation:'+(goRight?'swim-right':'swim-left')+' '+dur+'s linear '+delay+'s infinite';
+    el.style.cssText='bottom:'+bottom+'%;width:'+width+'px;opacity:0;animation:'+(goRight?'swim-right':'swim-left')+' '+dur+'s linear '+delay+'s infinite normal backwards';
     el.innerHTML=f[1];
     sea.appendChild(el);
   });
