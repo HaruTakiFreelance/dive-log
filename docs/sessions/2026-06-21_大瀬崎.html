@@ -362,32 +362,115 @@
     }
     /* 魚スライダー */
     .fish-inf-slider .inf-track { gap: var(--sp-s); }
-    .fish-slide { flex-shrink: 0; width: 160px; }
+    .fish-slide { flex-shrink: 0; width: 140px; }
     .fish-card {
       background: rgba(255,255,255,0.28);
       border: 1px solid var(--paper-d);
       padding: var(--sp-s);
-      height: 100%;
+      cursor: pointer;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .fish-card:hover {
+      box-shadow: 0 4px 12px var(--shadow);
+      transform: translateY(-2px);
     }
     .fish-thumb {
       width: 100%;
       aspect-ratio: 1.618 / 1;
       object-fit: cover;
       display: block;
-      margin-bottom: var(--sp-s);
+      margin-bottom: var(--sp-xs);
       border: 1px solid var(--paper-d);
       filter: sepia(10%) saturate(88%);
     }
-    .fish-name-ja { font-weight: 700; font-size: var(--fs-s); color: var(--ink); margin-bottom: 2px; }
-    .fish-name-en { font-size: var(--fs-xs); color: var(--ink-fade); margin-bottom: 2px; }
-    .fish-name-sci { font-style: italic; font-size: var(--fs-xs); color: var(--ink-faint); margin-bottom: var(--sp-xs); }
-    .fish-taxonomy { font-size: var(--fs-xs); color: var(--ink-faint); margin-bottom: var(--sp-xs); }
-    .fish-memo { font-size: var(--fs-xs); color: var(--ink-fade); line-height: var(--phi); }
-    .fish-stars { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--sp-xs); }
-    .fish-stars .row { display: flex; gap: var(--sp-xs); align-items: center; margin-bottom: 2px; }
-    .fish-stars .label { min-width: 3em; }
+    .fish-thumb-placeholder {
+      width: 100%;
+      aspect-ratio: 1.618 / 1;
+      background: var(--paper-d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: var(--sp-xs);
+      opacity: 0.4;
+    }
+    .fish-name-ja { font-weight: 700; font-size: var(--fs-s); color: var(--ink); margin-bottom: 1px; }
+    .fish-name-en { font-size: var(--fs-xs); color: var(--ink-fade); }
     .star.filled { color: #b89200; }
     .star.empty  { color: var(--ink-faint); }
+
+    /* 魚詳細モーダル */
+    .fish-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20,14,6,0.82);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-l);
+    }
+    .fish-modal-overlay.open { display: flex; }
+    .fish-modal {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 4px 12px var(--shadow), 0 16px 48px rgba(0,0,0,0.5);
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .fish-modal::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(44,30,16,0.05) 28px);
+      pointer-events: none;
+    }
+    .fish-modal-close {
+      position: absolute; top: var(--sp-m); right: var(--sp-m);
+      background: none; border: none;
+      font-size: var(--fs-m); color: var(--ink-faint);
+      cursor: pointer; padding: 4px 8px; z-index: 1;
+      transition: color 0.15s;
+    }
+    .fish-modal-close:hover { color: var(--ink); }
+    .fish-modal-thumb-wrap {
+      width: 100%; aspect-ratio: 16/9;
+      overflow: hidden; background: var(--paper-d);
+      border-bottom: 2px solid var(--paper-d);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .fish-modal-thumb-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: sepia(8%) saturate(90%);
+    }
+    .fish-modal-thumb-placeholder { font-size: 4rem; opacity: 0.25; }
+    .fish-modal-inner { padding: var(--sp-xl); position: relative; }
+    .fish-modal-category {
+      font-family: 'Special Elite', monospace; font-size: var(--fs-xs);
+      letter-spacing: 0.12em; background: var(--accent); color: #deeaf3;
+      padding: 2px 10px; display: inline-block; margin-bottom: var(--sp-s);
+    }
+    .fish-modal-name-ja {
+      font-size: var(--fs-xxl); font-weight: 700; color: var(--ink);
+      line-height: 1.1; margin-bottom: var(--sp-xs);
+    }
+    .fish-modal-name-en {
+      font-family: 'Special Elite', monospace; font-size: var(--fs-m);
+      color: var(--ink-fade); letter-spacing: 0.06em; margin-bottom: 2px;
+    }
+    .fish-modal-name-sci { font-style: italic; font-size: var(--fs-s); color: var(--ink-faint); margin-bottom: var(--sp-l); }
+    .fish-modal-divider { border: none; border-top: 1px solid var(--paper-d); margin: var(--sp-m) 0; }
+    .fish-modal-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-s) var(--sp-l); margin-bottom: var(--sp-m); }
+    .fish-modal-meta-label { font-family: 'Special Elite', monospace; font-size: var(--fs-xs); letter-spacing: 0.12em; color: var(--ink-faint); margin-bottom: 2px; }
+    .fish-modal-meta-value { font-size: var(--fs-s); color: var(--ink-fade); }
+    .fish-modal-meta-value.stars { color: #b89200; }
+    .fish-modal-memo { font-style: italic; font-size: var(--fs-m); color: var(--ink-fade); line-height: var(--phi); border-left: 2px solid var(--paper-d); padding-left: var(--sp-m); margin-top: var(--sp-m); }
+    @media (max-width: 600px) {
+      .fish-modal-meta-grid { grid-template-columns: 1fr; }
+      .fish-modal-inner { padding: var(--sp-l); }
+    }
     .build-note {
       text-align: center;
       font-family: 'Special Elite', monospace;
@@ -593,194 +676,90 @@
               <div class="inf-track">
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-813a-b333-c86c280dc14a')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg" alt="アオリイカの卵" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">アオリイカの卵</div>
                   
-                  
-                  
-                  
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-817c-b9e8-e0657a0a5ba5')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81817cb9e8e0657a0a5ba5.jpg" alt="クマノミ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">クマノミ</div>
                   <div class="fish-name-en">Clark&#39;s Anemonefish</div>
-                  <div class="fish-name-sci">Amphiprion clarkii</div>
-                  
-                  <div class="fish-taxonomy">
-                    スズキ目
-                     / スズメダイ科
-                     / クマノミ属
-                  </div>
-                  
-                  <div class="fish-memo">岩礁帯のイソギンチャクと共生している。水深１０～５０ ｍ　分布：千葉県以南、インド洋から太平洋。</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8136-8346-f5fe7a08f5b3')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df8181368346f5fe7a08f5b3.jpg" alt="クロホシイシモチ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">クロホシイシモチ</div>
                   <div class="fish-name-en">Blackspotted cardinafish</div>
-                  <div class="fish-name-sci">Apogon notatus</div>
-                  
-                  <div class="fish-taxonomy">
-                    スズキ目
-                     / テンジクダイ科
-                     / テンジクダイ属
-                  </div>
-                  
-                  <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8105-95fc-ed342517aeb3')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81810595fced342517aeb3.jpg" alt="セトミノカサゴ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">セトミノカサゴ</div>
                   <div class="fish-name-en">Marbled rockfish</div>
-                  <div class="fish-name-sci">Sabastiscus marmoratus</div>
-                  
-                  <div class="fish-taxonomy">
-                    カサゴ目
-                     / フサカサゴ科
-                     / カサゴ属
-                  </div>
-                  
-                  <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、東シナ海に分布する。</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-81a2-affa-ecc150d2fbfe')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df8181a2affaecc150d2fbfe.jpg" alt="ネンブツダイ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">ネンブツダイ</div>
                   <div class="fish-name-en">Half-lined cardinalfish</div>
-                  <div class="fish-name-sci">Apogon semilineatus</div>
-                  
-                  <div class="fish-taxonomy">
-                    スズキ目
-                     / テンジクダイ科
-                     / テンジクダイ属
-                  </div>
-                  
-                  <div class="fish-memo">岩礁周辺に群れで生息する。　分布：本州以南、台湾、フィリピンに分布。</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8105-acfb-c0356a1e42f1')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df818105acfbc0356a1e42f1.jpg" alt="ヒフキヨウジ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">ヒフキヨウジ</div>
                   
-                  
-                  
-                  
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8114-9505-e5a95ae62285')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df8181149505e5a95ae62285.jpg" alt="ホウボウ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">ホウボウ</div>
                   <div class="fish-name-en">Red gurnard</div>
-                  <div class="fish-name-sci">Chelidonichthys spinosus</div>
-                  
-                  <div class="fish-taxonomy">
-                    カサゴ目
-                     / ホウボウ科
-                     / ホウボウ属
-                  </div>
-                  
-                  <div class="fish-memo">砂泥底に生息する。指のように見える3本の胸鰭軟条を動かして餌を探す。　分布：北海道南部から南シナ海</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8163-b983-e2b877ba35bb')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg" alt="ミノカサゴ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">ミノカサゴ</div>
                   <div class="fish-name-en">Luna lionfish</div>
-                  <div class="fish-name-sci">Pterois lunulata</div>
-                  
-                  <div class="fish-taxonomy">
-                    カサゴ目
-                     / フサカサゴ科
-                     / ミノカサゴ属
-                  </div>
-                  
-                  <div class="fish-memo">沿岸の岩礁域　分布：北海道南部以南、インドから太平洋西部</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
@@ -947,193 +926,89 @@
               <div class="inf-track">
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-814e-87d1-d85f4cc67000')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">アカオビハナダイ</div>
                   <div class="fish-name-en">Redbar anthias</div>
-                  <div class="fish-name-sci">Pseudanthias rubrizonatus</div>
-                  
-                  <div class="fish-taxonomy">
-                    スズキ目
-                     / ハタ科
-                     / ナガハナダイ属
-                  </div>
-                  
-                  <div class="fish-memo">サンゴ礁、岩礁域に生息する。　分布：伊豆半島以南、太平洋域に分布する。</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8188-a3a2-fd1d3ae8cdec')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg" alt="ウツボ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">ウツボ</div>
                   <div class="fish-name-en">Barred moray</div>
-                  <div class="fish-name-sci">Gymnothorax kidako</div>
-                  
-                  <div class="fish-taxonomy">
-                    ウナギ目
-                     / ウツボ科
-                     / ウツボ属
-                  </div>
-                  
-                  <div class="fish-memo">岩礁域　分布：南日本、台湾</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8181-b606-d9e5ae682a4c')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df818181b606d9e5ae682a4c.jpg" alt="オトヒメエビ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">オトヒメエビ</div>
                   
-                  
-                  
-                  
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-81ca-8350-dc9cb6d16760')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df8181ca8350dc9cb6d16760.jpg" alt="キビナゴ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">キビナゴ</div>
                   <div class="fish-name-en">Silver-stripe round herring</div>
-                  <div class="fish-name-sci">Spratelloides gracilis</div>
-                  
-                  <div class="fish-taxonomy">
-                    ニシン目
-                     / ニシン科
-                     / キビナゴ属
-                  </div>
-                  
-                  <div class="fish-memo">沿岸域を群れで遊泳する。　分布：千葉県以南、インド洋から西太平洋に分布する。</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-819f-99f6-e22434c8f673')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81819f99f6e22434c8f673.jpg" alt="キンギョハナダイ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">キンギョハナダイ</div>
                   <div class="fish-name-en">Scalefin anthias</div>
-                  <div class="fish-name-sci">Pseudanthias squamipinnis</div>
-                  
-                  <div class="fish-taxonomy">
-                    スズキ目
-                     / ハタ科
-                     / ナガハナダイ属
-                  </div>
-                  
-                  <div class="fish-memo">岩礁や根の近くで大きな群れで生息する。　分布：関東以南、紅海からインド、太平洋。</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8134-96d8-dddcb15d62dd')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81813496d8dddcb15d62dd.jpg" alt="トラウツボ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">トラウツボ</div>
                   <div class="fish-name-en">Dragon moray</div>
-                  <div class="fish-name-sci">Muraena pardalis</div>
-                  
-                  <div class="fish-taxonomy">
-                    ウナギ目
-                     / ウツボ科
-                     / トラウツボ属
-                  </div>
-                  
-                  <div class="fish-memo">岩礁域　分布：南日本、インド洋から太平洋</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-814e-a3e7-de1441159d84')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81814ea3e7de1441159d84.jpg" alt="ニザダイ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">ニザダイ</div>
                   <div class="fish-name-en">Scalpel sawtail</div>
-                  <div class="fish-name-sci">Prionurus scalprus</div>
-                  
-                  <div class="fish-taxonomy">
-                    スズキ目
-                     / ニザダイ科
-                     / ニザダイ属
-                  </div>
-                  
-                  <div class="fish-memo">浅い岩礁域　分布：宮城県以南、台湾など</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-814a-8936-d806185e2970')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81814a8936d806185e2970.jpg" alt="マトウダイ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">マトウダイ</div>
-                  
-                  
-                  
-                  
                   
                 </div>
               </div>
@@ -1502,125 +1377,57 @@
               <div class="inf-track">
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-814e-87d1-d85f4cc67000')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg" alt="アカオビハナダイ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">アカオビハナダイ</div>
                   <div class="fish-name-en">Redbar anthias</div>
-                  <div class="fish-name-sci">Pseudanthias rubrizonatus</div>
-                  
-                  <div class="fish-taxonomy">
-                    スズキ目
-                     / ハタ科
-                     / ナガハナダイ属
-                  </div>
-                  
-                  <div class="fish-memo">サンゴ礁、岩礁域に生息する。　分布：伊豆半島以南、太平洋域に分布する。</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-814c-9f89-ff489b48ebf4')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg" alt="サカタザメ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">サカタザメ</div>
                   
-                  
-                  
-                  
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-811b-9771-daf3fb21ca7c')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81811b9771daf3fb21ca7c.jpg" alt="ボラ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">ボラ</div>
                   <div class="fish-name-en">Flathead mullet</div>
-                  <div class="fish-name-sci">Mugil cephalus</div>
-                  
-                  <div class="fish-taxonomy">
-                    ボラ目
-                     / ボラ科
-                     / ボラ属
-                  </div>
-                  
-                  <div class="fish-memo">沿岸浅所や汽水域、河川に群れで生息する。　分布：北海道以南、東アフリカから太平洋に分布する。</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-816b-9175-e88db47473e4')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df81816b9175e88db47473e4.jpg" alt="マツカサウオ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">マツカサウオ</div>
                   <div class="fish-name-en">Pineconefish</div>
-                  <div class="fish-name-sci">Monocentris japonica</div>
-                  
-                  <div class="fish-taxonomy">
-                    キンメダイ目
-                     / マツカサウオ科
-                     / マツカサウオ属
-                  </div>
-                  
-                  <div class="fish-memo">浅海の岩礁域　分布：紅海、南アフリカから西太平洋、オーストラリア南部に分布</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-81b3-9778-f0d8885915b6')">
                   
                   <img class="fish-thumb" src="../fish_thumbs/389393d9df8181b39778f0d8885915b6.jpg" alt="ミジンベニハゼ" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
                   
                   <div class="fish-name-ja">ミジンベニハゼ</div>
                   <div class="fish-name-en">Caesiura dwarfgoby</div>
-                  <div class="fish-name-sci">Trimma caesiura</div>
-                  
-                  <div class="fish-taxonomy">
-                    スズキ目
-                     / ハゼ科
-                     / ベニハゼ属
-                  </div>
-                  
-                  <div class="fish-memo">岩礁域、サンゴ礁域の礁斜面。水深 3-20m。　分布：八丈島以南の南日本、インドから太平洋</div>
-                  
-                  <div class="fish-stars">
-                    <div class="row"><span class="label">レア度</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">人気</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span></div>
-                    <div class="row"><span class="label">撮影</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">☆</span><span class="star empty">☆</span></div>
-                  </div>
-                  
                 </div>
               </div>
               
@@ -1827,6 +1634,420 @@
 })();
 </script>
 
+<!-- 魚詳細モーダル -->
+<div class="fish-modal-overlay" id="fish-modal-overlay" onclick="closeFishOnOverlay(event)">
+  <div class="fish-modal" id="fish-modal">
+    <button class="fish-modal-close" onclick="closeFishModal()">✕</button>
+    <div class="fish-modal-thumb-wrap" id="fm-thumb-wrap">
+      <div class="fish-modal-thumb-placeholder">🐠</div>
+    </div>
+    <div class="fish-modal-inner">
+      <div id="fm-category" class="fish-modal-category" style="display:none"></div>
+      <div id="fm-name-ja" class="fish-modal-name-ja"></div>
+      <div id="fm-name-en" class="fish-modal-name-en" style="display:none"></div>
+      <div id="fm-name-sci" class="fish-modal-name-sci" style="display:none"></div>
+      <hr class="fish-modal-divider">
+      <div class="fish-modal-meta-grid">
+        <div id="fm-order-wrap" style="display:none">
+          <div class="fish-modal-meta-label">ORDER / FAMILY</div>
+          <div class="fish-modal-meta-value" id="fm-order"></div>
+        </div>
+        <div id="fm-first-wrap" style="display:none">
+          <div class="fish-modal-meta-label">FIRST SEEN</div>
+          <div class="fish-modal-meta-value" id="fm-first"></div>
+        </div>
+        <div id="fm-rarity-wrap" style="display:none">
+          <div class="fish-modal-meta-label">RARITY</div>
+          <div class="fish-modal-meta-value stars" id="fm-rarity"></div>
+        </div>
+        <div id="fm-popularity-wrap" style="display:none">
+          <div class="fish-modal-meta-label">POPULARITY</div>
+          <div class="fish-modal-meta-value stars" id="fm-popularity"></div>
+        </div>
+        <div id="fm-photo-wrap" style="display:none">
+          <div class="fish-modal-meta-label">PHOTO EASE</div>
+          <div class="fish-modal-meta-value stars" id="fm-photo"></div>
+        </div>
+      </div>
+      <div id="fm-memo" class="fish-modal-memo" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── 魚データ（セッション全魚） ── */
+var SESSION_FISH = {
+  
+  "389393d9-df81-813a-b333-c86c280dc14a": {
+    name:           "\u30a2\u30aa\u30ea\u30a4\u30ab\u306e\u5375",
+    english_name:   "",
+    scientific_name:"",
+    category:       "\u305d\u306e\u4ed6",
+    order:          "",
+    family:         "",
+    genus:          "",
+    memo:           "",
+    rarity:         "",
+    popularity:     "",
+    photo_ease:     "",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg"
+  },
+  
+  "389393d9-df81-814e-87d1-d85f4cc67000": {
+    name:           "\u30a2\u30ab\u30aa\u30d3\u30cf\u30ca\u30c0\u30a4",
+    english_name:   "Redbar anthias",
+    scientific_name:"Pseudanthias rubrizonatus",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30cf\u30bf\u79d1",
+    genus:          "\u30ca\u30ac\u30cf\u30ca\u30c0\u30a4\u5c5e",
+    memo:           "\u30b5\u30f3\u30b4\u7901\u3001\u5ca9\u7901\u57df\u306b\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u4f0a\u8c46\u534a\u5cf6\u4ee5\u5357\u3001\u592a\u5e73\u6d0b\u57df\u306b\u5206\u5e03\u3059\u308b\u3002",
+    rarity:         "\u2605\u2605\u2605\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2605\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81814e87d1d85f4cc67000.jpg"
+  },
+  
+  "389393d9-df81-8188-a3a2-fd1d3ae8cdec": {
+    name:           "\u30a6\u30c4\u30dc",
+    english_name:   "Barred moray",
+    scientific_name:"Gymnothorax kidako",
+    category:       "\u9b5a\u985e",
+    order:          "\u30a6\u30ca\u30ae\u76ee",
+    family:         "\u30a6\u30c4\u30dc\u79d1",
+    genus:          "\u30a6\u30c4\u30dc\u5c5e",
+    memo:           "\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5357\u65e5\u672c\u3001\u53f0\u6e7e",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg"
+  },
+  
+  "389393d9-df81-8181-b606-d9e5ae682a4c": {
+    name:           "\u30aa\u30c8\u30d2\u30e1\u30a8\u30d3",
+    english_name:   "",
+    scientific_name:"",
+    category:       "\u9b5a\u985e",
+    order:          "",
+    family:         "",
+    genus:          "",
+    memo:           "",
+    rarity:         "",
+    popularity:     "",
+    photo_ease:     "",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df818181b606d9e5ae682a4c.jpg"
+  },
+  
+  "389393d9-df81-81ca-8350-dc9cb6d16760": {
+    name:           "\u30ad\u30d3\u30ca\u30b4",
+    english_name:   "Silver-stripe round herring",
+    scientific_name:"Spratelloides gracilis",
+    category:       "\u9b5a\u985e",
+    order:          "\u30cb\u30b7\u30f3\u76ee",
+    family:         "\u30cb\u30b7\u30f3\u79d1",
+    genus:          "\u30ad\u30d3\u30ca\u30b4\u5c5e",
+    memo:           "\u6cbf\u5cb8\u57df\u3092\u7fa4\u308c\u3067\u904a\u6cf3\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u5343\u8449\u770c\u4ee5\u5357\u3001\u30a4\u30f3\u30c9\u6d0b\u304b\u3089\u897f\u592a\u5e73\u6d0b\u306b\u5206\u5e03\u3059\u308b\u3002",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2606\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df8181ca8350dc9cb6d16760.jpg"
+  },
+  
+  "389393d9-df81-819f-99f6-e22434c8f673": {
+    name:           "\u30ad\u30f3\u30ae\u30e7\u30cf\u30ca\u30c0\u30a4",
+    english_name:   "Scalefin anthias",
+    scientific_name:"Pseudanthias squamipinnis",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30cf\u30bf\u79d1",
+    genus:          "\u30ca\u30ac\u30cf\u30ca\u30c0\u30a4\u5c5e",
+    memo:           "\u5ca9\u7901\u3084\u6839\u306e\u8fd1\u304f\u3067\u5927\u304d\u306a\u7fa4\u308c\u3067\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u95a2\u6771\u4ee5\u5357\u3001\u7d05\u6d77\u304b\u3089\u30a4\u30f3\u30c9\u3001\u592a\u5e73\u6d0b\u3002",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81819f99f6e22434c8f673.jpg"
+  },
+  
+  "389393d9-df81-817c-b9e8-e0657a0a5ba5": {
+    name:           "\u30af\u30de\u30ce\u30df",
+    english_name:   "Clark\u0027s Anemonefish",
+    scientific_name:"Amphiprion clarkii",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30b9\u30ba\u30e1\u30c0\u30a4\u79d1",
+    genus:          "\u30af\u30de\u30ce\u30df\u5c5e",
+    memo:           "\u5ca9\u7901\u5e2f\u306e\u30a4\u30bd\u30ae\u30f3\u30c1\u30e3\u30af\u3068\u5171\u751f\u3057\u3066\u3044\u308b\u3002\u6c34\u6df1\uff11\uff10\uff5e\uff15\uff10 \uff4d\u3000\u5206\u5e03\uff1a\u5343\u8449\u770c\u4ee5\u5357\u3001\u30a4\u30f3\u30c9\u6d0b\u304b\u3089\u592a\u5e73\u6d0b\u3002",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2605\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2605\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81817cb9e8e0657a0a5ba5.jpg"
+  },
+  
+  "389393d9-df81-8136-8346-f5fe7a08f5b3": {
+    name:           "\u30af\u30ed\u30db\u30b7\u30a4\u30b7\u30e2\u30c1",
+    english_name:   "Blackspotted cardinafish",
+    scientific_name:"Apogon notatus",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30c6\u30f3\u30b8\u30af\u30c0\u30a4\u79d1",
+    genus:          "\u30c6\u30f3\u30b8\u30af\u30c0\u30a4\u5c5e",
+    memo:           "\u5ca9\u7901\u5468\u8fba\u306b\u7fa4\u308c\u3067\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u672c\u5dde\u4ee5\u5357\u3001\u53f0\u6e7e\u3001\u30d5\u30a3\u30ea\u30d4\u30f3\u306b\u5206\u5e03\u3002",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df8181368346f5fe7a08f5b3.jpg"
+  },
+  
+  "389393d9-df81-814c-9f89-ff489b48ebf4": {
+    name:           "\u30b5\u30ab\u30bf\u30b6\u30e1",
+    english_name:   "",
+    scientific_name:"",
+    category:       "\u9b5a\u985e",
+    order:          "",
+    family:         "",
+    genus:          "",
+    memo:           "",
+    rarity:         "",
+    popularity:     "",
+    photo_ease:     "",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg"
+  },
+  
+  "389393d9-df81-8105-95fc-ed342517aeb3": {
+    name:           "\u30bb\u30c8\u30df\u30ce\u30ab\u30b5\u30b4",
+    english_name:   "Marbled rockfish",
+    scientific_name:"Sabastiscus marmoratus",
+    category:       "\u9b5a\u985e",
+    order:          "\u30ab\u30b5\u30b4\u76ee",
+    family:         "\u30d5\u30b5\u30ab\u30b5\u30b4\u79d1",
+    genus:          "\u30ab\u30b5\u30b4\u5c5e",
+    memo:           "\u6cbf\u5cb8\u306e\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5317\u6d77\u9053\u5357\u90e8\u4ee5\u5357\u3001\u6771\u30b7\u30ca\u6d77\u306b\u5206\u5e03\u3059\u308b\u3002",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2605\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81810595fced342517aeb3.jpg"
+  },
+  
+  "389393d9-df81-8134-96d8-dddcb15d62dd": {
+    name:           "\u30c8\u30e9\u30a6\u30c4\u30dc",
+    english_name:   "Dragon moray",
+    scientific_name:"Muraena pardalis",
+    category:       "\u9b5a\u985e",
+    order:          "\u30a6\u30ca\u30ae\u76ee",
+    family:         "\u30a6\u30c4\u30dc\u79d1",
+    genus:          "\u30c8\u30e9\u30a6\u30c4\u30dc\u5c5e",
+    memo:           "\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5357\u65e5\u672c\u3001\u30a4\u30f3\u30c9\u6d0b\u304b\u3089\u592a\u5e73\u6d0b",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81813496d8dddcb15d62dd.jpg"
+  },
+  
+  "389393d9-df81-814e-a3e7-de1441159d84": {
+    name:           "\u30cb\u30b6\u30c0\u30a4",
+    english_name:   "Scalpel sawtail",
+    scientific_name:"Prionurus scalprus",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30cb\u30b6\u30c0\u30a4\u79d1",
+    genus:          "\u30cb\u30b6\u30c0\u30a4\u5c5e",
+    memo:           "\u6d45\u3044\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5bae\u57ce\u770c\u4ee5\u5357\u3001\u53f0\u6e7e\u306a\u3069",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2606\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2606\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81814ea3e7de1441159d84.jpg"
+  },
+  
+  "389393d9-df81-81a2-affa-ecc150d2fbfe": {
+    name:           "\u30cd\u30f3\u30d6\u30c4\u30c0\u30a4",
+    english_name:   "Half-lined cardinalfish",
+    scientific_name:"Apogon semilineatus",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30c6\u30f3\u30b8\u30af\u30c0\u30a4\u79d1",
+    genus:          "\u30c6\u30f3\u30b8\u30af\u30c0\u30a4\u5c5e",
+    memo:           "\u5ca9\u7901\u5468\u8fba\u306b\u7fa4\u308c\u3067\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u672c\u5dde\u4ee5\u5357\u3001\u53f0\u6e7e\u3001\u30d5\u30a3\u30ea\u30d4\u30f3\u306b\u5206\u5e03\u3002",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df8181a2affaecc150d2fbfe.jpg"
+  },
+  
+  "389393d9-df81-8105-acfb-c0356a1e42f1": {
+    name:           "\u30d2\u30d5\u30ad\u30e8\u30a6\u30b8",
+    english_name:   "",
+    scientific_name:"",
+    category:       "\u9b5a\u985e",
+    order:          "",
+    family:         "",
+    genus:          "",
+    memo:           "",
+    rarity:         "",
+    popularity:     "",
+    photo_ease:     "",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df818105acfbc0356a1e42f1.jpg"
+  },
+  
+  "389393d9-df81-8114-9505-e5a95ae62285": {
+    name:           "\u30db\u30a6\u30dc\u30a6",
+    english_name:   "Red gurnard",
+    scientific_name:"Chelidonichthys spinosus",
+    category:       "\u9b5a\u985e",
+    order:          "\u30ab\u30b5\u30b4\u76ee",
+    family:         "\u30db\u30a6\u30dc\u30a6\u79d1",
+    genus:          "\u30db\u30a6\u30dc\u30a6\u5c5e",
+    memo:           "\u7802\u6ce5\u5e95\u306b\u751f\u606f\u3059\u308b\u3002\u6307\u306e\u3088\u3046\u306b\u898b\u3048\u308b3\u672c\u306e\u80f8\u9c2d\u8edf\u6761\u3092\u52d5\u304b\u3057\u3066\u990c\u3092\u63a2\u3059\u3002\u3000\u5206\u5e03\uff1a\u5317\u6d77\u9053\u5357\u90e8\u304b\u3089\u5357\u30b7\u30ca\u6d77",
+    rarity:         "\u2605\u2605\u2605\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df8181149505e5a95ae62285.jpg"
+  },
+  
+  "389393d9-df81-811b-9771-daf3fb21ca7c": {
+    name:           "\u30dc\u30e9",
+    english_name:   "Flathead mullet",
+    scientific_name:"Mugil cephalus",
+    category:       "\u9b5a\u985e",
+    order:          "\u30dc\u30e9\u76ee",
+    family:         "\u30dc\u30e9\u79d1",
+    genus:          "\u30dc\u30e9\u5c5e",
+    memo:           "\u6cbf\u5cb8\u6d45\u6240\u3084\u6c7d\u6c34\u57df\u3001\u6cb3\u5ddd\u306b\u7fa4\u308c\u3067\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u5317\u6d77\u9053\u4ee5\u5357\u3001\u6771\u30a2\u30d5\u30ea\u30ab\u304b\u3089\u592a\u5e73\u6d0b\u306b\u5206\u5e03\u3059\u308b\u3002",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2606\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2606\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81811b9771daf3fb21ca7c.jpg"
+  },
+  
+  "389393d9-df81-816b-9175-e88db47473e4": {
+    name:           "\u30de\u30c4\u30ab\u30b5\u30a6\u30aa",
+    english_name:   "Pineconefish",
+    scientific_name:"Monocentris japonica",
+    category:       "\u9b5a\u985e",
+    order:          "\u30ad\u30f3\u30e1\u30c0\u30a4\u76ee",
+    family:         "\u30de\u30c4\u30ab\u30b5\u30a6\u30aa\u79d1",
+    genus:          "\u30de\u30c4\u30ab\u30b5\u30a6\u30aa\u5c5e",
+    memo:           "\u6d45\u6d77\u306e\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u7d05\u6d77\u3001\u5357\u30a2\u30d5\u30ea\u30ab\u304b\u3089\u897f\u592a\u5e73\u6d0b\u3001\u30aa\u30fc\u30b9\u30c8\u30e9\u30ea\u30a2\u5357\u90e8\u306b\u5206\u5e03",
+    rarity:         "\u2605\u2605\u2605\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2605\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2605\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81816b9175e88db47473e4.jpg"
+  },
+  
+  "389393d9-df81-814a-8936-d806185e2970": {
+    name:           "\u30de\u30c8\u30a6\u30c0\u30a4",
+    english_name:   "",
+    scientific_name:"",
+    category:       "\u9b5a\u985e",
+    order:          "",
+    family:         "",
+    genus:          "",
+    memo:           "",
+    rarity:         "",
+    popularity:     "",
+    photo_ease:     "",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81814a8936d806185e2970.jpg"
+  },
+  
+  "389393d9-df81-81b3-9778-f0d8885915b6": {
+    name:           "\u30df\u30b8\u30f3\u30d9\u30cb\u30cf\u30bc",
+    english_name:   "Caesiura dwarfgoby",
+    scientific_name:"Trimma caesiura",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30cf\u30bc\u79d1",
+    genus:          "\u30d9\u30cb\u30cf\u30bc\u5c5e",
+    memo:           "\u5ca9\u7901\u57df\u3001\u30b5\u30f3\u30b4\u7901\u57df\u306e\u7901\u659c\u9762\u3002\u6c34\u6df1 3-20m\u3002\u3000\u5206\u5e03\uff1a\u516b\u4e08\u5cf6\u4ee5\u5357\u306e\u5357\u65e5\u672c\u3001\u30a4\u30f3\u30c9\u304b\u3089\u592a\u5e73\u6d0b",
+    rarity:         "\u2605\u2605\u2605\u2605\u2606",
+    popularity:     "\u2605\u2605\u2605\u2605\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df8181b39778f0d8885915b6.jpg"
+  },
+  
+  "389393d9-df81-8163-b983-e2b877ba35bb": {
+    name:           "\u30df\u30ce\u30ab\u30b5\u30b4",
+    english_name:   "Luna lionfish",
+    scientific_name:"Pterois lunulata",
+    category:       "\u9b5a\u985e",
+    order:          "\u30ab\u30b5\u30b4\u76ee",
+    family:         "\u30d5\u30b5\u30ab\u30b5\u30b4\u79d1",
+    genus:          "\u30df\u30ce\u30ab\u30b5\u30b4\u5c5e",
+    memo:           "\u6cbf\u5cb8\u306e\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5317\u6d77\u9053\u5357\u90e8\u4ee5\u5357\u3001\u30a4\u30f3\u30c9\u304b\u3089\u592a\u5e73\u6d0b\u897f\u90e8",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2605\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg"
+  }
+  
+};
+
+function fmSet(id, value, wrapId) {
+  var el = document.getElementById(id);
+  var wrap = wrapId ? document.getElementById(wrapId) : el;
+  if (value) { el.textContent = value; wrap.style.display = ''; }
+  else { wrap.style.display = 'none'; }
+}
+
+function openFishModal(fishId) {
+  var f = SESSION_FISH[fishId];
+  if (!f) return;
+  var thumbWrap = document.getElementById('fm-thumb-wrap');
+  if (f.thumbnail) {
+    thumbWrap.innerHTML = '<img src="' + f.thumbnail + '" alt="' + f.name + '" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=\\\"fish-modal-thumb-placeholder\\\">🐠</div>\'">';
+  } else {
+    thumbWrap.innerHTML = '<div class="fish-modal-thumb-placeholder">🐠</div>';
+  }
+  fmSet('fm-category', f.category);
+  fmSet('fm-name-ja', f.name);
+  fmSet('fm-name-en', f.english_name);
+  fmSet('fm-name-sci', f.scientific_name);
+  var taxon = [f.order, f.family, f.genus].filter(Boolean).join(' / ');
+  fmSet('fm-order', taxon, 'fm-order-wrap');
+  fmSet('fm-first', f.first_seen, 'fm-first-wrap');
+  fmSet('fm-rarity', f.rarity, 'fm-rarity-wrap');
+  fmSet('fm-popularity', f.popularity, 'fm-popularity-wrap');
+  fmSet('fm-photo', f.photo_ease, 'fm-photo-wrap');
+  fmSet('fm-memo', f.memo);
+  document.getElementById('fish-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFishModal() {
+  document.getElementById('fish-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeFishOnOverlay(e) {
+  if (e.target === document.getElementById('fish-modal-overlay')) closeFishModal();
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeFishModal();
+    closeLightbox();
+  }
+});
+</script>
+
 <!-- ライトボックス -->
 <div id="lightbox" onclick="closeLightbox(event)" style="
   display:none;
@@ -1864,9 +2085,6 @@ function closeLightbox(e) {
   document.getElementById('lb-img').src = '';
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeLightbox();
-});
 </script>
 
 </body>

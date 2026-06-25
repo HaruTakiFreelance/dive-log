@@ -362,32 +362,115 @@
     }
     /* 魚スライダー */
     .fish-inf-slider .inf-track { gap: var(--sp-s); }
-    .fish-slide { flex-shrink: 0; width: 160px; }
+    .fish-slide { flex-shrink: 0; width: 140px; }
     .fish-card {
       background: rgba(255,255,255,0.28);
       border: 1px solid var(--paper-d);
       padding: var(--sp-s);
-      height: 100%;
+      cursor: pointer;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .fish-card:hover {
+      box-shadow: 0 4px 12px var(--shadow);
+      transform: translateY(-2px);
     }
     .fish-thumb {
       width: 100%;
       aspect-ratio: 1.618 / 1;
       object-fit: cover;
       display: block;
-      margin-bottom: var(--sp-s);
+      margin-bottom: var(--sp-xs);
       border: 1px solid var(--paper-d);
       filter: sepia(10%) saturate(88%);
     }
-    .fish-name-ja { font-weight: 700; font-size: var(--fs-s); color: var(--ink); margin-bottom: 2px; }
-    .fish-name-en { font-size: var(--fs-xs); color: var(--ink-fade); margin-bottom: 2px; }
-    .fish-name-sci { font-style: italic; font-size: var(--fs-xs); color: var(--ink-faint); margin-bottom: var(--sp-xs); }
-    .fish-taxonomy { font-size: var(--fs-xs); color: var(--ink-faint); margin-bottom: var(--sp-xs); }
-    .fish-memo { font-size: var(--fs-xs); color: var(--ink-fade); line-height: var(--phi); }
-    .fish-stars { font-size: var(--fs-xs); color: var(--ink-faint); margin-top: var(--sp-xs); }
-    .fish-stars .row { display: flex; gap: var(--sp-xs); align-items: center; margin-bottom: 2px; }
-    .fish-stars .label { min-width: 3em; }
+    .fish-thumb-placeholder {
+      width: 100%;
+      aspect-ratio: 1.618 / 1;
+      background: var(--paper-d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: var(--sp-xs);
+      opacity: 0.4;
+    }
+    .fish-name-ja { font-weight: 700; font-size: var(--fs-s); color: var(--ink); margin-bottom: 1px; }
+    .fish-name-en { font-size: var(--fs-xs); color: var(--ink-fade); }
     .star.filled { color: #b89200; }
     .star.empty  { color: var(--ink-faint); }
+
+    /* 魚詳細モーダル */
+    .fish-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20,14,6,0.82);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-l);
+    }
+    .fish-modal-overlay.open { display: flex; }
+    .fish-modal {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 4px 12px var(--shadow), 0 16px 48px rgba(0,0,0,0.5);
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .fish-modal::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(44,30,16,0.05) 28px);
+      pointer-events: none;
+    }
+    .fish-modal-close {
+      position: absolute; top: var(--sp-m); right: var(--sp-m);
+      background: none; border: none;
+      font-size: var(--fs-m); color: var(--ink-faint);
+      cursor: pointer; padding: 4px 8px; z-index: 1;
+      transition: color 0.15s;
+    }
+    .fish-modal-close:hover { color: var(--ink); }
+    .fish-modal-thumb-wrap {
+      width: 100%; aspect-ratio: 16/9;
+      overflow: hidden; background: var(--paper-d);
+      border-bottom: 2px solid var(--paper-d);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .fish-modal-thumb-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: sepia(8%) saturate(90%);
+    }
+    .fish-modal-thumb-placeholder { font-size: 4rem; opacity: 0.25; }
+    .fish-modal-inner { padding: var(--sp-xl); position: relative; }
+    .fish-modal-category {
+      font-family: 'Special Elite', monospace; font-size: var(--fs-xs);
+      letter-spacing: 0.12em; background: var(--accent); color: #deeaf3;
+      padding: 2px 10px; display: inline-block; margin-bottom: var(--sp-s);
+    }
+    .fish-modal-name-ja {
+      font-size: var(--fs-xxl); font-weight: 700; color: var(--ink);
+      line-height: 1.1; margin-bottom: var(--sp-xs);
+    }
+    .fish-modal-name-en {
+      font-family: 'Special Elite', monospace; font-size: var(--fs-m);
+      color: var(--ink-fade); letter-spacing: 0.06em; margin-bottom: 2px;
+    }
+    .fish-modal-name-sci { font-style: italic; font-size: var(--fs-s); color: var(--ink-faint); margin-bottom: var(--sp-l); }
+    .fish-modal-divider { border: none; border-top: 1px solid var(--paper-d); margin: var(--sp-m) 0; }
+    .fish-modal-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-s) var(--sp-l); margin-bottom: var(--sp-m); }
+    .fish-modal-meta-label { font-family: 'Special Elite', monospace; font-size: var(--fs-xs); letter-spacing: 0.12em; color: var(--ink-faint); margin-bottom: 2px; }
+    .fish-modal-meta-value { font-size: var(--fs-s); color: var(--ink-fade); }
+    .fish-modal-meta-value.stars { color: #b89200; }
+    .fish-modal-memo { font-style: italic; font-size: var(--fs-m); color: var(--ink-fade); line-height: var(--phi); border-left: 2px solid var(--paper-d); padding-left: var(--sp-m); margin-top: var(--sp-m); }
+    @media (max-width: 600px) {
+      .fish-modal-meta-grid { grid-template-columns: 1fr; }
+      .fish-modal-inner { padding: var(--sp-l); }
+    }
     .build-note {
       text-align: center;
       font-family: 'Special Elite', monospace;
@@ -511,29 +594,15 @@
               <div class="inf-track">
               {% for f in ns.fish_in_dive %}
               <div class="fish-slide inf-slide">
-                <div class="fish-card">
+                <div class="fish-card" onclick="openFishModal('{{ f.id }}')">
                   {% if f.thumbnail %}
                   <img class="fish-thumb" src="{{ f.thumbnail }}" alt="{{ f.name }}" loading="lazy"
-                       onerror="this.style.display='none'">
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+                  {% else %}
+                  <div class="fish-thumb-placeholder">🐠</div>
                   {% endif %}
                   <div class="fish-name-ja">{{ f.name }}</div>
                   {% if f.english_name %}<div class="fish-name-en">{{ f.english_name }}</div>{% endif %}
-                  {% if f.scientific_name %}<div class="fish-name-sci">{{ f.scientific_name }}</div>{% endif %}
-                  {% if f.order or f.family %}
-                  <div class="fish-taxonomy">
-                    {% if f.order %}{{ f.order }}{% endif %}
-                    {% if f.family %} / {{ f.family }}{% endif %}
-                    {% if f.genus %} / {{ f.genus }}{% endif %}
-                  </div>
-                  {% endif %}
-                  {% if f.memo %}<div class="fish-memo">{{ f.memo }}</div>{% endif %}
-                  {% if f.rarity or f.popularity or f.photo_ease %}
-                  <div class="fish-stars">
-                    {% if f.rarity %}<div class="row"><span class="label">レア度</span>{{ f.rarity | stars_html }}</div>{% endif %}
-                    {% if f.popularity %}<div class="row"><span class="label">人気</span>{{ f.popularity | stars_html }}</div>{% endif %}
-                    {% if f.photo_ease %}<div class="row"><span class="label">撮影</span>{{ f.photo_ease | stars_html }}</div>{% endif %}
-                  </div>
-                  {% endif %}
                 </div>
               </div>
               {% endfor %}
@@ -632,6 +701,116 @@
 })();
 </script>
 
+<!-- 魚詳細モーダル -->
+<div class="fish-modal-overlay" id="fish-modal-overlay" onclick="closeFishOnOverlay(event)">
+  <div class="fish-modal" id="fish-modal">
+    <button class="fish-modal-close" onclick="closeFishModal()">✕</button>
+    <div class="fish-modal-thumb-wrap" id="fm-thumb-wrap">
+      <div class="fish-modal-thumb-placeholder">🐠</div>
+    </div>
+    <div class="fish-modal-inner">
+      <div id="fm-category" class="fish-modal-category" style="display:none"></div>
+      <div id="fm-name-ja" class="fish-modal-name-ja"></div>
+      <div id="fm-name-en" class="fish-modal-name-en" style="display:none"></div>
+      <div id="fm-name-sci" class="fish-modal-name-sci" style="display:none"></div>
+      <hr class="fish-modal-divider">
+      <div class="fish-modal-meta-grid">
+        <div id="fm-order-wrap" style="display:none">
+          <div class="fish-modal-meta-label">ORDER / FAMILY</div>
+          <div class="fish-modal-meta-value" id="fm-order"></div>
+        </div>
+        <div id="fm-first-wrap" style="display:none">
+          <div class="fish-modal-meta-label">FIRST SEEN</div>
+          <div class="fish-modal-meta-value" id="fm-first"></div>
+        </div>
+        <div id="fm-rarity-wrap" style="display:none">
+          <div class="fish-modal-meta-label">RARITY</div>
+          <div class="fish-modal-meta-value stars" id="fm-rarity"></div>
+        </div>
+        <div id="fm-popularity-wrap" style="display:none">
+          <div class="fish-modal-meta-label">POPULARITY</div>
+          <div class="fish-modal-meta-value stars" id="fm-popularity"></div>
+        </div>
+        <div id="fm-photo-wrap" style="display:none">
+          <div class="fish-modal-meta-label">PHOTO EASE</div>
+          <div class="fish-modal-meta-value stars" id="fm-photo"></div>
+        </div>
+      </div>
+      <div id="fm-memo" class="fish-modal-memo" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── 魚データ（セッション全魚） ── */
+var SESSION_FISH = {
+  {% for f in s.fish %}
+  {{ f.id | tojson }}: {
+    name:           {{ f.name | tojson }},
+    english_name:   {{ (f.english_name or '') | tojson }},
+    scientific_name:{{ (f.scientific_name or '') | tojson }},
+    category:       {{ (f.category or '') | tojson }},
+    order:          {{ (f.order or '') | tojson }},
+    family:         {{ (f.family or '') | tojson }},
+    genus:          {{ (f.genus or '') | tojson }},
+    memo:           {{ (f.memo or '') | tojson }},
+    rarity:         {{ (f.rarity or '') | tojson }},
+    popularity:     {{ (f.popularity or '') | tojson }},
+    photo_ease:     {{ (f.photo_ease or '') | tojson }},
+    first_seen:     {{ (f.first_seen or '') | tojson }},
+    thumbnail:      {{ (f.thumbnail or '') | tojson }}
+  }{% if not loop.last %},{% endif %}
+  {% endfor %}
+};
+
+function fmSet(id, value, wrapId) {
+  var el = document.getElementById(id);
+  var wrap = wrapId ? document.getElementById(wrapId) : el;
+  if (value) { el.textContent = value; wrap.style.display = ''; }
+  else { wrap.style.display = 'none'; }
+}
+
+function openFishModal(fishId) {
+  var f = SESSION_FISH[fishId];
+  if (!f) return;
+  var thumbWrap = document.getElementById('fm-thumb-wrap');
+  if (f.thumbnail) {
+    thumbWrap.innerHTML = '<img src="' + f.thumbnail + '" alt="' + f.name + '" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=\\\"fish-modal-thumb-placeholder\\\">🐠</div>\'">';
+  } else {
+    thumbWrap.innerHTML = '<div class="fish-modal-thumb-placeholder">🐠</div>';
+  }
+  fmSet('fm-category', f.category);
+  fmSet('fm-name-ja', f.name);
+  fmSet('fm-name-en', f.english_name);
+  fmSet('fm-name-sci', f.scientific_name);
+  var taxon = [f.order, f.family, f.genus].filter(Boolean).join(' / ');
+  fmSet('fm-order', taxon, 'fm-order-wrap');
+  fmSet('fm-first', f.first_seen, 'fm-first-wrap');
+  fmSet('fm-rarity', f.rarity, 'fm-rarity-wrap');
+  fmSet('fm-popularity', f.popularity, 'fm-popularity-wrap');
+  fmSet('fm-photo', f.photo_ease, 'fm-photo-wrap');
+  fmSet('fm-memo', f.memo);
+  document.getElementById('fish-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFishModal() {
+  document.getElementById('fish-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeFishOnOverlay(e) {
+  if (e.target === document.getElementById('fish-modal-overlay')) closeFishModal();
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeFishModal();
+    closeLightbox();
+  }
+});
+</script>
+
 <!-- ライトボックス -->
 <div id="lightbox" onclick="closeLightbox(event)" style="
   display:none;
@@ -669,9 +848,6 @@ function closeLightbox(e) {
   document.getElementById('lb-img').src = '';
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeLightbox();
-});
 </script>
 
 </body>
