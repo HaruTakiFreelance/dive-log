@@ -1,0 +1,10 @@
+name = "dive-log-worker"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+DIVE_LOG_DB = "389393d9df818033be93fd6d046d9fc4"
+FISH_DB = "389393d9-df81-81c6-a3fe-f32ed1c62d4d"
+
+# NOTION_TOKEN は秘密変数として登録する:
+# wrangler secret put NOTION_TOKEN

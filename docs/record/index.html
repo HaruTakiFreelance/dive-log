@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ダイブ記録 — Dive Log</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:wght@400;700&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper:    #f4ede0;
+      --paper-d:  #e8dbc8;
+      --ink:      #333333;
+      --ink-fade: #666655;
+      --ink-faint:#999988;
+      --accent:   #3d6b8a;
+      --accent-d: #2a4f6b;
+      --rust:     #8b3a1e;
+      --ok:       #2e7d4f;
+      --shadow:   rgba(51,51,51,0.15);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #2a2016;
+      background-image:
+        radial-gradient(ellipse at 30% 10%, #3d2e1a 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 90%, #1e1608 0%, transparent 60%);
+      min-height: 100vh;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: var(--ink);
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    .book { max-width: 540px; margin: 0 auto; }
+
+    .card {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 2px 6px var(--shadow), 0 8px 24px rgba(0,0,0,0.35);
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(51,51,51,0.05) 28px);
+      pointer-events: none;
+    }
+    .card-inner { padding: 1.8rem 1.6rem; position: relative; }
+
+    .stamp {
+      display: inline-block;
+      border: 2px double var(--rust);
+      padding: 0.3rem 0.9rem;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--rust);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
+    .card-title {
+      font-family: 'Special Elite', monospace;
+      font-size: 1.5rem;
+      color: var(--ink);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.2rem;
+    }
+    .card-sub {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--ink-fade);
+      margin-bottom: 1.4rem;
+    }
+
+    /* フォーム */
+    .field { margin-bottom: 1rem; }
+    label {
+      display: block;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--ink-faint);
+      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+    }
+    input[type=text], input[type=date], input[type=time],
+    input[type=number], textarea, select {
+      width: 100%;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid var(--paper-d);
+      border-radius: 1px;
+      padding: 0.55rem 0.7rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+      background: rgba(255,255,255,0.8);
+    }
+    textarea { resize: vertical; min-height: 72px; }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; }
+
+    .divider {
+      text-align: center;
+      margin: 1.2rem 0;
+      color: var(--ink-faint);
+      font-size: 0.75rem;
+      letter-spacing: 0.4em;
+    }
+    .divider::before, .divider::after { content: '───'; margin: 0 0.4em; }
+
+    /* ボタン */
+    .btn {
+      display: block; width: 100%;
+      padding: 0.65rem 1rem;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-align: center;
+      border: none; border-radius: 1px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:disabled { opacity: 0.45; cursor: default; }
+    .btn-primary  { background: var(--accent-d); color: #deeaf3; }
+    .btn-secondary{ background: var(--paper-d);  color: var(--ink-fade); }
+    .btn-ok       { background: var(--ok);        color: #d6f0e0; }
+    .btn-sm {
+      display: inline-block; width: auto;
+      padding: 0.3rem 0.7rem; font-size: 0.68rem;
+    }
+
+    /* 魚タグ */
+    .fish-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      margin-top: 0.4rem; min-height: 1.4rem;
+    }
+    .fish-tag {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: var(--accent-d); color: #deeaf3;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.7rem; letter-spacing: 0.05em;
+      padding: 2px 8px; border-radius: 1px;
+    }
+    .fish-tag button {
+      background: none; border: none; color: inherit;
+      cursor: pointer; font-size: 0.85rem; line-height: 1; padding: 0;
+      opacity: 0.7;
+    }
+    .fish-tag button:hover { opacity: 1; }
+
+    /* 魚検索ドロップダウン */
+    .fish-search-wrap { position: relative; }
+    .fish-dropdown {
+      display: none;
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+      background: var(--paper);
+      border: 1px solid var(--paper-d);
+      box-shadow: 0 4px 12px var(--shadow);
+      max-height: 200px; overflow-y: auto;
+    }
+    .fish-dropdown.open { display: block; }
+    .fish-option {
+      padding: 0.5rem 0.7rem;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--paper-d);
+    }
+    .fish-option:hover { background: var(--paper-d); }
+    .fish-option-new {
+      padding: 0.5rem 0.7rem;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      cursor: pointer;
+      letter-spacing: 0.05em;
+    }
+    .fish-option-new:hover { background: var(--paper-d); }
+
+    /* ステップ表示 */
+    .step-indicator {
+      display: flex; gap: 0.5rem; align-items: center;
+      margin-bottom: 1.2rem;
+    }
+    .step-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--paper-d);
+    }
+    .step-dot.active { background: var(--accent-d); }
+
+    /* メッセージ */
+    .msg {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      margin-top: 0.5rem;
+      min-height: 1.2em;
+    }
+    .msg.ok  { color: var(--ok); }
+    .msg.err { color: var(--rust); }
+
+    /* セクション区切り */
+    .section-label {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      margin-bottom: 1rem;
+    }
+    .back-link:hover { color: rgba(255,255,255,0.7); }
+
+    /* 新規魚モーダル */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7);
+      align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-card {
+      background: var(--paper);
+      border-radius: 2px;
+      width: 100%; max-width: 400px;
+      padding: 1.4rem 1.4rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-title {
+      font-family: 'Special Elite', monospace;
+      font-size: 0.9rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+    .modal-actions { display: flex; gap: 0.6rem; margin-top: 1rem; }
+    .modal-actions .btn { flex: 1; }
+  </style>
+</head>
+<body>
+<div class="book">
+  <a class="back-link" href="../index.html">← Logbook Home</a>
+
+  <!-- ステップ1: セッション設定 -->
+  <div class="card" id="step-session">
+    <div class="card-inner">
+      <div class="stamp">Dive Log Record</div>
+      <div class="card-title">🤿 セッション設定</div>
+      <div class="card-sub">今日のダイビング情報を入力</div>
+
+      <div class="step-indicator">
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+      </div>
+
+      <div class="field">
+        <label>日付</label>
+        <input type="date" id="sess-date">
+      </div>
+      <div class="field">
+        <label>場所</label>
+        <input type="text" id="sess-location" placeholder="例: 大瀬崎">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>開始本数（何本目から）</label>
+          <input type="number" id="sess-dive-num" min="1" value="1">
+        </div>
+        <div class="field">
+          <label>ウェイト (kg)</label>
+          <input type="number" id="sess-weight" step="0.5" placeholder="例: 5">
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="startSession()" id="btn-start">
+        ダイビングを記録する →
+      </button>
+      <div class="msg" id="sess-msg"></div>
+    </div>
+  </div>
+
+  <!-- ステップ2: ダイブ記録 -->
+  <div class="card" id="step-dive" style="display:none;">
+    <div class="card-inner">
+      <div class="stamp">Dive Log Record</div>
+      <div class="card-title" id="dive-heading">🌊 1本目</div>
+      <div class="card-sub" id="dive-location-label"></div>
+
+      <div class="step-indicator">
+        <div class="step-dot"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+      </div>
+
+      <div class="field">
+        <label>ポイント名（任意）</label>
+        <input type="text" id="dive-point" placeholder="例: 湾内">
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>開始時刻</label>
+          <input type="time" id="dive-start">
+        </div>
+        <div class="field">
+          <label>終了時刻</label>
+          <input type="time" id="dive-end">
+        </div>
+      </div>
+
+      <div class="row3">
+        <div class="field">
+          <label>最大深度 (m)</label>
+          <input type="number" id="dive-depth" step="0.1" placeholder="18.5">
+        </div>
+        <div class="field">
+          <label>費用 (円)</label>
+          <input type="number" id="dive-cost" placeholder="0">
+        </div>
+        <div class="field">
+          <label>ウェイト (kg)</label>
+          <input type="number" id="dive-weight" step="0.5">
+        </div>
+      </div>
+
+      <div class="divider">✦</div>
+
+      <!-- 魚 -->
+      <div class="section-label">見れた魚</div>
+      <div class="fish-tags" id="fish-tags"></div>
+      <div class="field fish-search-wrap" style="margin-top:0.5rem;">
+        <input type="text" id="fish-input" placeholder="魚の名前で検索..." autocomplete="off"
+               oninput="onFishInput()" onblur="hideFishDropdown()">
+        <div class="fish-dropdown" id="fish-dropdown"></div>
+      </div>
+
+      <div class="divider">✦</div>
+
+      <div class="field">
+        <label>コメント</label>
+        <textarea id="dive-comment" placeholder="気づいたこと・感想など"></textarea>
+      </div>
+      <div class="field">
+        <label>動画リンク（YouTube等）</label>
+        <input type="text" id="dive-videos" placeholder="URLをカンマ区切りで">
+      </div>
+
+      <div style="display:flex; gap:0.6rem; margin-top:1.2rem;">
+        <button class="btn btn-secondary" onclick="saveDive('more')" id="btn-more">
+          保存して次のダイブ →
+        </button>
+        <button class="btn btn-ok" onclick="saveDive('done')" id="btn-done">
+          保存して終了
+        </button>
+      </div>
+      <div class="msg" id="dive-msg"></div>
+    </div>
+  </div>
+
+  <!-- ステップ3: 完了 -->
+  <div class="card" id="step-done" style="display:none;">
+    <div class="card-inner" style="text-align:center; padding:2.5rem 1.6rem;">
+      <div style="font-size:2.5rem; margin-bottom:1rem;">🤿</div>
+      <div class="card-title" style="margin-bottom:0.4rem;">記録完了！</div>
+      <div class="card-sub" id="done-summary" style="margin-bottom:1.8rem;"></div>
+      <button class="btn btn-secondary" onclick="resetToSession()" style="margin-bottom:0.6rem;">
+        続けて記録する
+      </button>
+      <a class="btn btn-primary" href="../index.html" style="display:block; text-decoration:none; padding:0.65rem; font-family:'Special Elite',monospace; font-size:0.78rem; letter-spacing:0.15em; color:#deeaf3;">
+        Logbook Homeへ →
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<!-- 新規魚追加モーダル -->
+<div class="modal-overlay" id="fish-modal">
+  <div class="modal-card">
+    <div class="modal-title">🐠 新しい魚を追加</div>
+    <div class="field">
+      <label>名前（必須）</label>
+      <input type="text" id="new-fish-name" placeholder="例: カワハギ">
+    </div>
+    <div class="field">
+      <label>英名</label>
+      <input type="text" id="new-fish-en" placeholder="例: Filefish">
+    </div>
+    <div class="field">
+      <label>学名</label>
+      <input type="text" id="new-fish-sci" placeholder="例: Stephanolepis cirrhifer">
+    </div>
+    <div class="field">
+      <label>分類</label>
+      <select id="new-fish-cat">
+        <option value="">— 選択 —</option>
+        <option>魚類</option>
+        <option>甲殻類</option>
+        <option>頭足類</option>
+        <option>棘皮動物</option>
+        <option>軟体動物</option>
+        <option>その他</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>メモ</label>
+      <textarea id="new-fish-memo" rows="2" placeholder="特徴・習性など"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeFishModal()">キャンセル</button>
+      <button class="btn btn-primary" onclick="addNewFish()" id="btn-fish-add">追加する</button>
+    </div>
+    <div class="msg" id="fish-modal-msg" style="margin-top:0.5rem;"></div>
+  </div>
+</div>
+
+<script>
+// ── 設定 ──────────────────────────────────────────────────────────────
+// デプロイ後にWorkerのURLに書き換えてください
+const WORKER = 'https://dive-log-worker.divelog-register.workers.dev';
+
+// ── 状態 ──────────────────────────────────────────────────────────────
+let sessDate = '';
+let sessLocation = '';
+let sessDiveNum = 1;
+let sessWeight = 5;
+let savedCount = 0;
+
+let selectedFish = []; // [{id, name}]
+let fishSearchTimer = null;
+let pendingNewFishName = '';
+
+// ── 初期化 ────────────────────────────────────────────────────────────
+(async function init() {
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('sess-date').value = today;
+
+  try {
+    const res = await fetch(`${WORKER}/dive/last`);
+    const data = await res.json();
+    if (data.dive_number) document.getElementById('sess-dive-num').value = data.dive_number;
+    if (data.weight)      document.getElementById('sess-weight').value = data.weight;
+    if (data.location)    document.getElementById('sess-location').value = data.location;
+  } catch (e) {
+    // 取得失敗は無視（初回など）
+  }
+})();
+
+// ── ステップ1: セッション開始 ─────────────────────────────────────────
+function startSession() {
+  sessDate     = document.getElementById('sess-date').value;
+  sessLocation = document.getElementById('sess-location').value.trim();
+  sessDiveNum  = parseInt(document.getElementById('sess-dive-num').value) || 1;
+  sessWeight   = parseFloat(document.getElementById('sess-weight').value) || 0;
+
+  if (!sessDate || !sessLocation) {
+    setMsg('sess-msg', '日付と場所は必須です', 'err');
+    return;
+  }
+  savedCount = 0;
+  showDiveForm();
+}
+
+function showDiveForm() {
+  document.getElementById('step-session').style.display = 'none';
+  document.getElementById('step-dive').style.display = 'block';
+  document.getElementById('step-done').style.display = 'none';
+
+  document.getElementById('dive-heading').textContent = `🌊 ${sessDiveNum}本目`;
+  document.getElementById('dive-location-label').textContent = `${sessDate} · ${sessLocation}`;
+  document.getElementById('dive-weight').value = sessWeight || '';
+
+  // フォームリセット
+  ['dive-point','dive-start','dive-end','dive-depth','dive-cost','dive-comment','dive-videos']
+    .forEach(id => document.getElementById(id).value = '');
+  selectedFish = [];
+  renderFishTags();
+  setMsg('dive-msg', '', '');
+}
+
+// ── ステップ2: ダイブ保存 ─────────────────────────────────────────────
+async function saveDive(action) {
+  const startTime = document.getElementById('dive-start').value;
+  const endTime   = document.getElementById('dive-end').value;
+  const maxDepth  = parseFloat(document.getElementById('dive-depth').value);
+
+  if (!startTime || !endTime || !maxDepth) {
+    setMsg('dive-msg', '開始時刻・終了時刻・最大深度は必須です', 'err');
+    return;
+  }
+
+  const [sh, sm] = startTime.split(':').map(Number);
+  const [eh, em] = endTime.split(':').map(Number);
+  const duration = (eh * 60 + em) - (sh * 60 + sm);
+
+  setBtnsLoading(true);
+  setMsg('dive-msg', '保存中...', '');
+
+  const body = {
+    date:        sessDate,
+    location:    sessLocation,
+    point:       document.getElementById('dive-point').value.trim(),
+    dive_number: sessDiveNum,
+    weight:      parseFloat(document.getElementById('dive-weight').value) || sessWeight,
+    start_time:  startTime,
+    end_time:    endTime,
+    duration:    duration,
+    max_depth:   maxDepth,
+    cost:        parseInt(document.getElementById('dive-cost').value) || 0,
+    comment:     document.getElementById('dive-comment').value.trim(),
+    video_links: document.getElementById('dive-videos').value.trim(),
+    fish_ids:    selectedFish.map(f => f.id),
+  };
+
+  try {
+    const res  = await fetch(`${WORKER}/dive/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Unknown error');
+
+    savedCount++;
+    sessDiveNum++;
+
+    if (action === 'more') {
+      setMsg('dive-msg', '✓ 保存しました！次のダイブを入力してください', 'ok');
+      setTimeout(showDiveForm, 800);
+    } else {
+      showDone();
+    }
+  } catch (e) {
+    setMsg('dive-msg', `エラー: ${e.message}`, 'err');
+    setBtnsLoading(false);
+  }
+}
+
+function setBtnsLoading(loading) {
+  document.getElementById('btn-more').disabled = loading;
+  document.getElementById('btn-done').disabled = loading;
+}
+
+// ── ステップ3: 完了 ────────────────────────────────────────────────────
+function showDone() {
+  document.getElementById('step-dive').style.display = 'none';
+  document.getElementById('step-done').style.display = 'block';
+  document.getElementById('done-summary').textContent =
+    `${sessDate} · ${sessLocation} · ${savedCount}本記録しました`;
+}
+
+function resetToSession() {
+  document.getElementById('step-done').style.display = 'none';
+  document.getElementById('step-session').style.display = 'block';
+}
+
+// ── 魚検索 ────────────────────────────────────────────────────────────
+function onFishInput() {
+  clearTimeout(fishSearchTimer);
+  fishSearchTimer = setTimeout(doFishSearch, 300);
+}
+
+async function doFishSearch() {
+  const q = document.getElementById('fish-input').value.trim();
+  if (q.length < 1) { hideFishDropdown(); return; }
+
+  try {
+    const res  = await fetch(`${WORKER}/fish/search?q=${encodeURIComponent(q)}`);
+    const list = await res.json();
+    showFishDropdown(q, list);
+  } catch (e) {
+    hideFishDropdown();
+  }
+}
+
+function showFishDropdown(q, results) {
+  const dd = document.getElementById('fish-dropdown');
+  dd.innerHTML = '';
+
+  results.forEach(f => {
+    if (selectedFish.find(s => s.id === f.id)) return;
+    const div = document.createElement('div');
+    div.className = 'fish-option';
+    div.textContent = f.name;
+    div.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      addFish(f);
+    });
+    dd.appendChild(div);
+  });
+
+  const addNew = document.createElement('div');
+  addNew.className = 'fish-option-new';
+  addNew.textContent = `＋「${q}」を新規追加`;
+  addNew.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    openFishModal(q);
+  });
+  dd.appendChild(addNew);
+
+  dd.classList.add('open');
+}
+
+function hideFishDropdown() {
+  document.getElementById('fish-dropdown').classList.remove('open');
+}
+
+function addFish(f) {
+  if (!selectedFish.find(s => s.id === f.id)) {
+    selectedFish.push(f);
+    renderFishTags();
+  }
+  document.getElementById('fish-input').value = '';
+  hideFishDropdown();
+}
+
+function removeFish(id) {
+  selectedFish = selectedFish.filter(f => f.id !== id);
+  renderFishTags();
+}
+
+function renderFishTags() {
+  const wrap = document.getElementById('fish-tags');
+  wrap.innerHTML = '';
+  selectedFish.forEach(f => {
+    const tag = document.createElement('span');
+    tag.className = 'fish-tag';
+    tag.innerHTML = `${f.name}<button type="button" onclick="removeFish('${f.id}')">✕</button>`;
+    wrap.appendChild(tag);
+  });
+}
+
+// ── 新規魚モーダル ─────────────────────────────────────────────────────
+function openFishModal(name) {
+  pendingNewFishName = name;
+  document.getElementById('new-fish-name').value = name;
+  document.getElementById('new-fish-en').value = '';
+  document.getElementById('new-fish-sci').value = '';
+  document.getElementById('new-fish-cat').value = '';
+  document.getElementById('new-fish-memo').value = '';
+  setMsg('fish-modal-msg', '', '');
+  document.getElementById('fish-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFishModal() {
+  document.getElementById('fish-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function addNewFish() {
+  const name = document.getElementById('new-fish-name').value.trim();
+  if (!name) { setMsg('fish-modal-msg', '名前は必須です', 'err'); return; }
+
+  document.getElementById('btn-fish-add').disabled = true;
+  setMsg('fish-modal-msg', '追加中...', '');
+
+  try {
+    const res  = await fetch(`${WORKER}/fish/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        english_name:    document.getElementById('new-fish-en').value.trim(),
+        scientific_name: document.getElementById('new-fish-sci').value.trim(),
+        category:        document.getElementById('new-fish-cat').value,
+        memo:            document.getElementById('new-fish-memo').value.trim(),
+      }),
+    });
+    const data = await res.json();
+    if (!data.id) throw new Error(data.error || 'Unknown error');
+
+    addFish({ id: data.id, name: data.name });
+    closeFishModal();
+  } catch (e) {
+    setMsg('fish-modal-msg', `エラー: ${e.message}`, 'err');
+    document.getElementById('btn-fish-add').disabled = false;
+  }
+}
+
+// ── ユーティリティ ─────────────────────────────────────────────────────
+function setMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg' + (type ? ' ' + type : '');
+}
+</script>
+</body>
+</html>
