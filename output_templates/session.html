@@ -132,6 +132,19 @@
     }
 
     /* ── 写真ストリップ ── */
+    .loc-desc-note {
+      font-size: var(--fs-xs);
+      color: var(--ink-faint);
+      margin-top: calc(var(--sp-xs) * -1);
+      margin-bottom: var(--sp-xl);
+      padding-left: var(--sp-m);
+    }
+    .loc-desc-note a {
+      color: var(--ink-faint);
+      text-decoration: underline;
+    }
+    .loc-desc-note a:hover { color: var(--ink-fade); }
+
     .photo-strip {
       display: flex;
       gap: var(--sp-s);
@@ -433,6 +446,10 @@
 
       {% if s.loc_desc %}
       <div class="loc-desc">{{ s.loc_desc }}</div>
+      <div class="loc-desc-note">
+        ※ この説明文はAI（Claude）が生成したものです。情報の正確性を保証するものではありません。
+        参考情報源：<a href="https://www.google.com/search?q={{ s.location }}+ダイビング" target="_blank" rel="noopener">Google 検索</a>・<a href="https://ja.wikipedia.org/wiki/{{ s.location }}" target="_blank" rel="noopener">Wikipedia</a>
+      </div>
       {% endif %}
 
       {% if s.photos %}
