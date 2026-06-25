@@ -281,7 +281,9 @@ def build():
         else:
             dive_range = ""
 
-        thumb = session_photos[0]["url"] if session_photos else ""
+        # ホームページ用サムネイル（docs/ 基準なので ../不要）
+        first_local = next((p for p in session_photos if p["is_local"]), None)
+        thumb = first_local["url"].replace("../", "") if first_local else ""
 
         sessions.append({
             "date":         date_str,
