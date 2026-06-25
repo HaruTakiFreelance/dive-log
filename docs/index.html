@@ -53,14 +53,14 @@
 
     @keyframes rise {
       0%   { transform: translateY(0) translateX(0); opacity: 0; }
-      8%   { opacity: 0.7; }
-      88%  { opacity: 0.35; }
+      8%   { opacity: 0.35; }
+      88%  { opacity: 0.18; }
       100% { transform: translateY(-108vh) translateX(var(--drift)); opacity: 0; }
     }
     .b {
       position: absolute; border-radius: 50%;
-      border: 1.5px solid rgba(140,220,255,0.5);
-      background: radial-gradient(circle at 32% 28%, rgba(200,240,255,0.38), rgba(60,170,255,0.06));
+      border: 1px solid rgba(140,220,255,0.18);
+      background: radial-gradient(circle at 32% 28%, rgba(200,240,255,0.12), rgba(60,170,255,0.02));
       animation: rise var(--dur) ease-in var(--delay) infinite;
     }
     @keyframes swim-right {
@@ -319,7 +319,7 @@
     var bottom=(8+Math.random()*72).toFixed(1);
     var width=(40+Math.random()*90).toFixed(0);
     var dur=(15+Math.random()*32).toFixed(1);
-    var delay=(idx*5+Math.random()*4).toFixed(1);
+    var delay=(5+idx*5+Math.random()*4).toFixed(1);
     var el=document.createElementNS('http://www.w3.org/2000/svg','svg');
     el.setAttribute('viewBox',f[0]);
     el.setAttribute('xmlns','http://www.w3.org/2000/svg');
