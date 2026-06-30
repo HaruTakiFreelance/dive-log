@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6月28日 富戸 — Dive Log</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* 黄金比: 1.618 を基準にスペースと比率を設計 */
+    :root {
+      --phi: 1.618;
+
+      --paper:     #f4ede0;
+      --paper-d:   #e8dbc8;
+      --ink:       #333333;
+      --ink-fade:  #666655;
+      --ink-faint: #999988;
+      --accent:    #3d6b8a;
+      --accent-d:  #2a4f6b;
+      --rust:      #8b3a1e;
+      --shadow:    rgba(51,51,51,0.15);
+
+      /* 黄金比ベースのスペーシング */
+      --sp-xs:  0.382rem;   /* 1/phi^2 */
+      --sp-s:   0.618rem;   /* 1/phi   */
+      --sp-m:   1rem;
+      --sp-l:   1.618rem;   /* phi     */
+      --sp-xl:  2.618rem;   /* phi^2   */
+      --sp-xxl: 4.236rem;   /* phi^3   */
+
+      /* 黄金比ベースのフォントスケール */
+      --fs-xs:  0.618rem;
+      --fs-s:   0.764rem;
+      --fs-m:   1rem;
+      --fs-l:   1.272rem;
+      --fs-xl:  1.618rem;
+      --fs-xxl: 2.618rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: linear-gradient(180deg, #03111f 0%, #051828 45%, #071e32 100%);
+      min-height: 100vh;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: var(--ink);
+      padding: var(--sp-xl) var(--sp-m) var(--sp-xxl);
+    }
+
+    /* ── 海中レイヤー ── */
+    .sea {
+      position: fixed; inset: 0;
+      pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .book { position: relative; z-index: 1; }
+
+    @keyframes rise {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      8%   { opacity: 0.35; }
+      88%  { opacity: 0.18; }
+      100% { transform: translateY(-108vh) translateX(var(--drift)); opacity: 0; }
+    }
+    .b {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(140,220,255,0.18);
+      background: radial-gradient(circle at 32% 28%, rgba(200,240,255,0.12), rgba(60,170,255,0.02));
+      animation: rise var(--dur) ease-in var(--delay) infinite;
+    }
+
+    @keyframes swim-right {
+      0%   { transform: translateX(-200px); opacity: 0; }
+      6%   { opacity: 0.8; }
+      92%  { opacity: 0.7; }
+      100% { transform: translateX(calc(100vw + 200px)); opacity: 0; }
+    }
+    @keyframes swim-left {
+      0%   { transform: translateX(calc(100vw + 200px)) scaleX(-1); opacity: 0; }
+      6%   { opacity: 0.8; }
+      92%  { opacity: 0.7; }
+      100% { transform: translateX(-200px) scaleX(-1); opacity: 0; }
+    }
+    .fish-sea { position: absolute; pointer-events: none; }
+
+    .book { max-width: 860px; margin: 0 auto; }
+
+    .page {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 2px 6px var(--shadow), 0 8px 24px rgba(0,0,0,0.35);
+      position: relative; overflow: hidden;
+    }
+    .page::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        transparent, transparent 27px, rgba(51,51,51,0.05) 28px
+      );
+      pointer-events: none;
+    }
+    .page-inner {
+      padding: var(--sp-xxl) calc(var(--sp-xxl) * var(--phi) * 0.5);
+      position: relative;
+    }
+
+    /* ── 戻るリンク ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-xs);
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      margin-bottom: var(--sp-l);
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: rgba(255,255,255,0.7); }
+
+    /* ── セッションヘッダ ── */
+    .session-header {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--sp-m);
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: var(--sp-s);
+      margin-bottom: var(--sp-l);
+    }
+    .session-date {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      color: var(--ink-faint);
+      letter-spacing: 0.15em;
+      line-height: 1;
+      margin-bottom: var(--sp-xs);
+    }
+    .session-location {
+      font-size: var(--fs-xxl);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .session-diverange {
+      margin-left: auto;
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-s);
+      color: var(--ink-fade);
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    /* ── 場所説明 ── */
+    .loc-desc {
+      font-style: italic;
+      color: var(--ink-fade);
+      font-size: var(--fs-m);
+      line-height: var(--phi);
+      border-left: 2px solid var(--paper-d);
+      padding-left: var(--sp-m);
+      margin-bottom: var(--sp-xl);
+    }
+
+    /* ── 写真ストリップ ── */
+    .loc-desc-note {
+      font-size: var(--fs-xs);
+      color: var(--ink-faint);
+      margin-top: calc(var(--sp-xs) * -1);
+      margin-bottom: var(--sp-xl);
+      padding-left: var(--sp-m);
+    }
+    .loc-desc-note a {
+      color: var(--ink-faint);
+      text-decoration: underline;
+    }
+    .loc-desc-note a:hover { color: var(--ink-fade); }
+
+    .photo-strip {
+      display: flex;
+      gap: var(--sp-s);
+      overflow-x: auto;
+      padding-bottom: var(--sp-s);
+      margin-bottom: var(--sp-xl);
+      scrollbar-width: thin;
+      scrollbar-color: var(--paper-d) transparent;
+      align-items: flex-end;
+    }
+    .photo-item { flex-shrink: 0; }
+
+    /* 高さ統一・トリミングなし */
+    .photo-item a {
+      display: block;
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+      line-height: 0;
+    }
+    .photo-item img {
+      height: 200px;
+      width: auto;
+      display: block;
+      filter: sepia(12%) saturate(88%);
+      transition: filter 0.2s;
+    }
+    .photo-item a:hover img { filter: none; }
+
+    /* 外部リンクカード（Google Photos等） */
+    .photo-link-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      width: 130px;
+      background: var(--paper-d);
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+      text-decoration: none;
+      color: var(--ink-fade);
+      gap: var(--sp-xs);
+      transition: background 0.15s;
+    }
+    .photo-link-card:hover { background: #d8cab0; }
+    .photo-link-card .ph-icon { font-size: 1.8rem; }
+    .photo-link-card .ph-label {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      text-align: center;
+      padding: 0 6px;
+    }
+
+    .photo-caption {
+      font-family: 'Caveat', cursive;
+      font-size: var(--fs-s);
+      color: var(--ink-fade);
+      text-align: center;
+      margin-top: var(--sp-xs);
+    }
+
+    .divider {
+      text-align: center;
+      margin: var(--sp-xl) 0;
+      color: var(--ink-faint);
+      font-size: var(--fs-s);
+      letter-spacing: 0.5em;
+    }
+    .divider::before, .divider::after { content: '─────'; margin: 0 0.5em; }
+
+    /* ── ダイブエントリ ── */
+    .dive-entry {
+      border: 1px solid var(--paper-d);
+      background: rgba(255,255,255,0.22);
+      padding: var(--sp-m) var(--sp-l);
+      margin-bottom: var(--sp-m);
+      position: relative;
+    }
+    .dive-badge {
+      position: absolute;
+      top: var(--sp-m); left: -0.1rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      padding: 2px var(--sp-s);
+      letter-spacing: 0.05em;
+    }
+    .dive-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-s);
+      align-items: center;
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-bottom: var(--sp-s);
+    }
+    .dive-point { font-weight: 700; font-size: var(--fs-l); color: var(--ink); }
+    .dive-chip {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      color: var(--ink-fade);
+      background: var(--paper-d);
+      padding: 2px var(--sp-s);
+      letter-spacing: 0.04em;
+    }
+    .dive-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-xs) var(--sp-xl);
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-bottom: var(--sp-s);
+    }
+    .dive-meta-item { font-size: var(--fs-s); color: var(--ink-fade); }
+    .dive-meta-item strong { color: var(--ink); font-weight: 600; }
+    .meta-label {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.08em;
+      color: var(--ink-faint);
+      margin-right: var(--sp-xs);
+    }
+
+    .depth-graph {
+      margin: var(--sp-s) 0 var(--sp-m) calc(var(--sp-xxl) * 0.9);
+      border-radius: 3px;
+      overflow: hidden;
+      opacity: 0.92;
+      max-width: 360px;
+    }
+
+    .dive-comment {
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      font-style: italic;
+      font-size: var(--fs-m);
+      color: var(--ink-fade);
+      line-height: var(--phi);
+      margin-bottom: var(--sp-s);
+    }
+
+    .dive-fish-list {
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-top: var(--sp-xs);
+      display: flex; flex-wrap: wrap; gap: var(--sp-xs);
+    }
+    .fish-tag {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      padding: 2px var(--sp-s);
+      background: var(--accent);
+      color: #deeaf3;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── ダイブ内動画スライダー ── */
+    .dive-videos {
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-top: var(--sp-s);
+      position: relative;
+    }
+    /* ── スワイプスライダー共通 ── */
+    .slider-wrap { position: relative; }
+    .inf-slider {
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .inf-slider::-webkit-scrollbar { display: none; }
+    .inf-track {
+      display: flex;
+    }
+    .inf-slide {
+      scroll-snap-align: start;
+      flex-shrink: 0;
+    }
+    .inf-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: var(--sp-xs);
+    }
+    .inf-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--paper-d);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .inf-dot.active { background: var(--ink-fade); }
+
+    /* 動画スライダー */
+    .video-slide { flex-shrink: 0; }
+    /* 動画スライダー共通 */
+    .video-embed {
+      border: 2px solid var(--paper-d);
+      box-shadow: 2px 3px 8px var(--shadow);
+      overflow: hidden;
+      border-radius: 2px;
+    }
+    .video-embed iframe {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+    }
+    /* 非YouTube動画リンク */
+    .video-link a {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-xs);
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-s);
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      padding: var(--sp-xs) var(--sp-s);
+    }
+    .video-link a:hover { background: var(--accent); color: #fff; }
+
+    /* ── ダイブ内 魚スライダー ── */
+    .fish-slider-wrap {
+      margin-left: calc(var(--sp-xxl) * 0.9);
+      margin-top: var(--sp-s);
+    }
+    .fish-slider-label {
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      letter-spacing: 0.2em;
+      color: var(--ink-faint);
+      margin-bottom: var(--sp-xs);
+    }
+    /* 魚スライダー */
+    .fish-inf-slider .inf-track { gap: var(--sp-s); }
+    .fish-slide { flex-shrink: 0; width: 140px; }
+    .fish-card {
+      background: rgba(255,255,255,0.28);
+      border: 1px solid var(--paper-d);
+      padding: var(--sp-s);
+      cursor: pointer;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .fish-card:hover {
+      box-shadow: 0 4px 12px var(--shadow);
+      transform: translateY(-2px);
+    }
+    .fish-thumb {
+      width: 100%;
+      aspect-ratio: 1.618 / 1;
+      object-fit: cover;
+      display: block;
+      margin-bottom: var(--sp-xs);
+      border: 1px solid var(--paper-d);
+      filter: sepia(10%) saturate(88%);
+    }
+    .fish-thumb-placeholder {
+      width: 100%;
+      aspect-ratio: 1.618 / 1;
+      background: var(--paper-d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: var(--sp-xs);
+      opacity: 0.4;
+    }
+    .fish-name-ja { font-weight: 700; font-size: var(--fs-s); color: var(--ink); margin-bottom: 1px; }
+    .fish-name-en { font-size: var(--fs-xs); color: var(--ink-fade); }
+    .star.filled { color: #b89200; }
+    .star.empty  { color: var(--ink-faint); }
+
+    /* 魚詳細モーダル */
+    .fish-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20,14,6,0.82);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-l);
+    }
+    .fish-modal-overlay.open { display: flex; }
+    .fish-modal {
+      background: var(--paper);
+      border-radius: 2px;
+      box-shadow: 0 4px 12px var(--shadow), 0 16px 48px rgba(0,0,0,0.5);
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .fish-modal::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(44,30,16,0.05) 28px);
+      pointer-events: none;
+    }
+    .fish-modal-close {
+      position: absolute; top: var(--sp-m); right: var(--sp-m);
+      background: none; border: none;
+      font-size: var(--fs-m); color: var(--ink-faint);
+      cursor: pointer; padding: 4px 8px; z-index: 1;
+      transition: color 0.15s;
+    }
+    .fish-modal-close:hover { color: var(--ink); }
+    .fish-modal-thumb-wrap {
+      width: 100%; aspect-ratio: 16/9;
+      overflow: hidden; background: var(--paper-d);
+      border-bottom: 2px solid var(--paper-d);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .fish-modal-thumb-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: sepia(8%) saturate(90%);
+    }
+    .fish-modal-thumb-placeholder { font-size: 4rem; opacity: 0.25; }
+    .fish-modal-inner { padding: var(--sp-xl); position: relative; }
+    .fish-modal-category {
+      font-family: 'Special Elite', monospace; font-size: var(--fs-xs);
+      letter-spacing: 0.12em; background: var(--accent); color: #deeaf3;
+      padding: 2px 10px; display: inline-block; margin-bottom: var(--sp-s);
+    }
+    .fish-modal-name-ja {
+      font-size: var(--fs-xxl); font-weight: 700; color: var(--ink);
+      line-height: 1.1; margin-bottom: var(--sp-xs);
+    }
+    .fish-modal-name-en {
+      font-family: 'Special Elite', monospace; font-size: var(--fs-m);
+      color: var(--ink-fade); letter-spacing: 0.06em; margin-bottom: 2px;
+    }
+    .fish-modal-name-sci { font-style: italic; font-size: var(--fs-s); color: var(--ink-faint); margin-bottom: var(--sp-l); }
+    .fish-modal-divider { border: none; border-top: 1px solid var(--paper-d); margin: var(--sp-m) 0; }
+    .fish-modal-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-s) var(--sp-l); margin-bottom: var(--sp-m); }
+    .fish-modal-meta-label { font-family: 'Special Elite', monospace; font-size: var(--fs-xs); letter-spacing: 0.12em; color: var(--ink-faint); margin-bottom: 2px; }
+    .fish-modal-meta-value { font-size: var(--fs-s); color: var(--ink-fade); }
+    .fish-modal-meta-value.stars { color: #b89200; }
+    .fish-modal-memo { font-style: italic; font-size: var(--fs-m); color: var(--ink-fade); line-height: var(--phi); border-left: 2px solid var(--paper-d); padding-left: var(--sp-m); margin-top: var(--sp-m); }
+    @media (max-width: 600px) {
+      .fish-modal-meta-grid { grid-template-columns: 1fr; }
+      .fish-modal-inner { padding: var(--sp-l); }
+    }
+    .build-note {
+      text-align: center;
+      font-family: 'Special Elite', monospace;
+      font-size: var(--fs-xs);
+      color: rgba(255,255,255,0.18);
+      margin-top: var(--sp-xl);
+      letter-spacing: 0.15em;
+    }
+
+    @media (max-width: 600px) {
+      .page-inner { padding: var(--sp-xl) var(--sp-l); }
+      .fish-grid { grid-template-columns: repeat(2, 1fr); }
+      .session-location { font-size: var(--fs-xl); }
+
+      /* モバイル: バッジをフロー内に戻してインデント解除 */
+      .dive-entry { padding: var(--sp-s) var(--sp-m); }
+      .dive-badge {
+        position: static;
+        display: inline-block;
+        margin-bottom: var(--sp-s);
+      }
+      .dive-header,
+      .dive-meta,
+      .dive-comment,
+      .dive-fish-list,
+      .fish-slider-wrap,
+      .dive-videos {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="sea" aria-hidden="true">
+  <div class="b" style="left:4%;bottom:-5%;width:10px;height:10px;--dur:7s;--delay:0s;--drift:8px"></div>
+  <div class="b" style="left:11%;bottom:-5%;width:5px;height:5px;--dur:5s;--delay:2.2s;--drift:-5px"></div>
+  <div class="b" style="left:18%;bottom:-5%;width:22px;height:22px;--dur:11s;--delay:0.8s;--drift:12px"></div>
+  <div class="b" style="left:26%;bottom:-5%;width:7px;height:7px;--dur:6s;--delay:3.5s;--drift:-6px"></div>
+  <div class="b" style="left:33%;bottom:-5%;width:16px;height:16px;--dur:9s;--delay:1s;--drift:9px"></div>
+  <div class="b" style="left:40%;bottom:-5%;width:32px;height:32px;--dur:14s;--delay:4.5s;--drift:14px"></div>
+  <div class="b" style="left:48%;bottom:-5%;width:8px;height:8px;--dur:6.5s;--delay:0.5s;--drift:-7px"></div>
+  <div class="b" style="left:55%;bottom:-5%;width:24px;height:24px;--dur:12s;--delay:2s;--drift:10px"></div>
+  <div class="b" style="left:62%;bottom:-5%;width:6px;height:6px;--dur:5.5s;--delay:3s;--drift:-4px"></div>
+  <div class="b" style="left:69%;bottom:-5%;width:18px;height:18px;--dur:9.5s;--delay:1.5s;--drift:8px"></div>
+  <div class="b" style="left:76%;bottom:-5%;width:12px;height:12px;--dur:7.5s;--delay:5s;--drift:-9px"></div>
+  <div class="b" style="left:82%;bottom:-5%;width:28px;height:28px;--dur:13s;--delay:0.2s;--drift:6px"></div>
+  <div class="b" style="left:89%;bottom:-5%;width:9px;height:9px;--dur:6s;--delay:2.8s;--drift:-5px"></div>
+  <div class="b" style="left:94%;bottom:-5%;width:4px;height:4px;--dur:4.5s;--delay:7s;--drift:3px"></div>
+  <div class="b" style="left:22%;bottom:-5%;width:40px;height:40px;--dur:16s;--delay:6s;--drift:16px"></div>
+  <div class="b" style="left:58%;bottom:-5%;width:14px;height:14px;--dur:8s;--delay:8.5s;--drift:-6px"></div>
+  <div class="b" style="left:74%;bottom:-5%;width:5px;height:5px;--dur:5s;--delay:10s;--drift:4px"></div>
+</div>
+<script>
+(function(){
+  var FISH=[
+    // カクレクマノミ
+    ['0 0 100 70','<path d="M32,35 L11,21 L17,35 L11,49 Z" fill="rgba(70,160,235,0.26)"/><path d="M40,18 C52,10 66,11 78,20 C70,18 56,17 42,20 Z" fill="rgba(70,160,235,0.26)"/><path d="M44,52 C52,57 62,57 70,53 C60,54 52,54 46,51 Z" fill="rgba(70,160,235,0.26)"/><path d="M30,35 C30,21 47,14 67,15 C80,16 92,23 92,35 C92,47 80,54 67,55 C47,56 30,49 30,35 Z" fill="rgba(95,180,245,0.22)"/><path d="M40,18 C38,30 38,40 40,52 C45,51 47,51 51,52 C49,40 49,30 51,18 C46,17 44,17 40,18 Z" fill="rgba(160,220,255,0.20)"/><path d="M62,16 C60,28 60,42 62,54 C67,53 69,53 73,54 C71,42 71,28 73,16 C68,15 66,15 62,16 Z" fill="rgba(160,220,255,0.20)"/><path d="M82,21 C81,29 81,41 82,49 C85,47 87,42 87,35 C87,28 85,23 82,21 Z" fill="rgba(160,220,255,0.20)"/><circle cx="83" cy="31" r="2.7" fill="rgba(210,245,255,0.62)"/>','S'],
+    // ハタタテハゼ
+    ['0 0 130 90','<path d="M24,54 L10,46 L16,54 L10,62 Z" fill="rgba(70,160,235,0.26)"/><path d="M58,50 L65,8 L69,11 L64,50 Z" fill="rgba(130,205,250,0.28)"/><path d="M74,49 C78,38 85,36 89,42 C83,44 78,46 75,50 Z" fill="rgba(100,185,245,0.20)"/><path d="M50,60 C56,70 67,70 73,63 C64,64 56,64 51,59 Z" fill="rgba(70,160,235,0.22)"/><path d="M22,54 C24,48 50,46 86,48 C106,49 116,52 118,54 C116,56 106,59 86,60 C50,62 24,60 22,54 Z" fill="rgba(95,180,245,0.22)"/><circle cx="108" cy="52" r="2.6" fill="rgba(210,245,255,0.62)"/>','S'],
+    // ウミガメ
+    ['0 0 144 114','<path d="M94,28 C112,11 135,5 141,14 C133,24 114,37 98,41 C95,36 95,32 94,28 Z" fill="rgba(70,160,235,0.26)"/><path d="M94,86 C112,103 135,109 141,100 C133,90 114,77 98,73 C95,78 95,82 94,86 Z" fill="rgba(70,160,235,0.26)"/><path d="M44,32 C31,21 18,24 23,35 C28,44 39,46 47,41 Z" fill="rgba(70,160,235,0.24)"/><path d="M44,82 C31,93 18,90 23,79 C28,70 39,68 47,73 Z" fill="rgba(70,160,235,0.24)"/><path d="M118,50 C130,42 140,46 138,55 C136,63 126,65 118,60 Z" fill="rgba(70,160,235,0.26)"/><path d="M34,57 C34,31 58,18 82,20 C105,22 119,37 119,57 C119,77 105,92 82,94 C58,96 34,83 34,57 Z" fill="rgba(95,180,245,0.22)"/><path d="M52,42 C72,33 98,35 112,47 C106,57 106,57 112,67 C98,79 72,81 52,72 C58,60 58,54 52,42 Z" fill="rgba(150,215,255,0.15)"/><circle cx="130" cy="51" r="2.6" fill="rgba(210,245,255,0.62)"/>','M'],
+    // ロウニンアジ
+    ['0 0 162 106','<path d="M48,53 C40,49 30,43 22,37 C26,46 26,60 22,69 C30,63 40,57 48,53 Z" fill="rgba(70,160,235,0.26)"/><path d="M70,22 C90,15 112,17 126,26 C110,22 90,22 72,27 Z" fill="rgba(70,160,235,0.24)"/><path d="M72,84 C90,91 110,89 124,82 C110,87 90,87 74,82 Z" fill="rgba(70,160,235,0.24)"/><path d="M46,53 C46,31 66,18 94,18 C120,18 140,30 146,46 C148,50 148,56 146,60 C140,76 120,88 94,88 C66,88 46,75 46,53 Z" fill="rgba(95,180,245,0.22)"/><path d="M70,52 C90,48 116,48 138,52 C116,56 90,56 70,52 Z" fill="rgba(60,150,225,0.16)"/><circle cx="131" cy="42" r="3.4" fill="rgba(210,245,255,0.62)"/>','M'],
+    // キビナゴ
+    ['0 0 150 110','<g fill="rgba(130,205,250,0.22)"><path d="M30,20 C30,17 42,16 48,19 L52,20 L48,21 C42,24 30,23 30,20 Z M30,20 L24,16 L26,20 L24,24 Z"/><path d="M48,30 C48,27 60,26 66,29 L70,30 L66,31 C60,34 48,33 48,30 Z M48,30 L42,26 L44,30 L42,34 Z"/><path d="M22,38 C22,35 34,34 40,37 L44,38 L40,39 C34,42 22,41 22,38 Z M22,38 L16,34 L18,38 L16,42 Z"/><path d="M44,46 C44,43 56,42 62,45 L66,46 L62,47 C56,50 44,49 44,46 Z M44,46 L38,42 L40,46 L38,50 Z"/><path d="M66,40 C66,37 78,36 84,39 L88,40 L84,41 C78,44 66,43 66,40 Z M66,40 L60,36 L62,40 L60,44 Z"/><path d="M88,30 C88,27 100,26 106,29 L110,30 L106,31 C100,34 88,33 88,30 Z M88,30 L82,26 L84,30 L82,34 Z"/><path d="M70,54 C70,51 82,50 88,53 L92,54 L88,55 C82,58 70,57 70,54 Z M70,54 L64,50 L66,54 L64,58 Z"/><path d="M94,46 C94,43 106,42 112,45 L116,46 L112,47 C106,50 94,49 94,46 Z M94,46 L88,42 L90,46 L88,50 Z"/><path d="M38,62 C38,59 50,58 56,61 L60,62 L56,63 C50,66 38,65 38,62 Z M38,62 L32,58 L34,62 L32,66 Z"/><path d="M62,70 C62,67 74,66 80,69 L84,70 L80,71 C74,74 62,73 62,70 Z M62,70 L56,66 L58,70 L56,74 Z"/><path d="M90,62 C90,59 102,58 108,61 L112,62 L108,63 C102,66 90,65 90,62 Z M90,62 L84,58 L86,62 L84,66 Z"/><path d="M112,54 C112,51 124,50 130,53 L134,54 L130,55 C124,58 112,57 112,54 Z M112,54 L106,50 L108,54 L106,58 Z"/><path d="M54,82 C54,79 66,78 72,81 L76,82 L72,83 C66,86 54,85 54,82 Z M54,82 L48,78 L50,82 L48,86 Z"/><path d="M82,84 C82,81 94,80 100,83 L104,84 L100,85 C94,88 82,87 82,84 Z M82,84 L76,80 L78,84 L76,88 Z"/><path d="M108,76 C108,73 120,72 126,75 L130,76 L126,77 C120,80 108,79 108,76 Z M108,76 L102,72 L104,76 L102,80 Z"/></g>','M'],
+    // バラクーダ
+    ['0 0 170 100','<g fill="rgba(95,180,245,0.22)"><path d="M14,24 C14,21 60,20 78,22 L84,24 L78,26 C60,28 14,27 14,24 Z M14,24 L6,18 L9,24 L6,30 Z M52,20 L58,15 L60,21 Z M52,28 L58,33 L60,27 Z"/><path d="M40,42 C40,39 86,38 104,40 L110,42 L104,44 C86,46 40,45 40,42 Z M40,42 L32,36 L35,42 L32,48 Z M78,38 L84,33 L86,39 Z M78,46 L84,51 L86,45 Z"/><path d="M20,58 C20,55 66,54 84,56 L90,58 L84,60 C66,62 20,61 20,58 Z M20,58 L12,52 L15,58 L12,64 Z M58,54 L64,49 L66,55 Z M58,62 L64,67 L66,61 Z"/><path d="M50,74 C50,71 96,70 114,72 L120,74 L114,76 C96,78 50,77 50,74 Z M50,74 L42,68 L45,74 L42,80 Z M88,70 L94,65 L96,71 Z M88,78 L94,83 L96,77 Z"/><path d="M30,90 C30,87 76,86 94,88 L100,90 L94,92 C76,94 30,93 30,90 Z M30,90 L22,84 L25,90 L22,96 Z M68,86 L74,81 L76,87 Z M68,94 L74,99 L76,93 Z"/></g><g fill="rgba(210,245,255,0.55)"><circle cx="76" cy="24" r="1.8"/><circle cx="102" cy="42" r="1.8"/><circle cx="82" cy="58" r="1.8"/><circle cx="112" cy="74" r="1.8"/><circle cx="92" cy="90" r="1.8"/></g>','M'],
+    // マンタ
+    ['0 0 200 132','<path d="M40,66 C26,64 12,64 4,66 C12,68 26,68 40,68 Z" fill="rgba(70,160,235,0.22)"/><path d="M150,60 C162,53 171,55 167,62 C162,65 156,65 150,63 Z" fill="rgba(70,160,235,0.26)"/><path d="M150,72 C162,79 171,77 167,70 C162,67 156,67 150,69 Z" fill="rgba(70,160,235,0.26)"/><path d="M150,66 C146,43 110,21 72,13 C96,40 90,54 60,60 C50,62 42,64 40,66 C42,68 50,70 60,72 C90,78 96,92 72,119 C110,111 146,89 150,66 Z" fill="rgba(95,180,245,0.22)"/><path d="M120,50 C108,42 96,40 84,44 C100,48 110,54 116,62 C118,57 119,53 120,50 Z" fill="rgba(160,225,255,0.14)"/><circle cx="140" cy="62" r="3" fill="rgba(210,245,255,0.60)"/>','L'],
+    // ジンベイザメ
+    ['0 0 240 132','<path d="M52,68 C38,50 24,30 16,18 C24,38 32,56 42,66 C36,74 28,84 22,94 C34,82 46,72 52,68 Z" fill="rgba(70,160,235,0.26)"/><path d="M132,36 C142,12 160,12 166,36 C154,31 144,31 132,36 Z" fill="rgba(70,160,235,0.26)"/><path d="M70,42 C78,30 90,30 94,42 Z" fill="rgba(70,160,235,0.24)"/><path d="M178,84 C190,104 210,108 218,98 C206,89 192,84 182,82 Z" fill="rgba(70,160,235,0.24)"/><path d="M50,68 C52,46 86,32 144,30 C188,28 218,36 232,48 C236,54 236,58 232,60 C234,62 234,66 232,68 C218,82 188,90 144,88 C86,86 52,90 50,68 Z" fill="rgba(95,180,245,0.22)"/><g fill="rgba(190,235,255,0.24)"><circle cx="92" cy="50" r="3.6"/><circle cx="118" cy="46" r="3.6"/><circle cx="146" cy="48" r="3.6"/><circle cx="172" cy="52" r="3.6"/><circle cx="104" cy="70" r="3.6"/><circle cx="132" cy="72" r="3.6"/><circle cx="160" cy="70" r="3.6"/><circle cx="186" cy="62" r="3.6"/></g><circle cx="222" cy="64" r="3.4" fill="rgba(210,245,255,0.62)"/>','L'],
+    // シロワニ
+    ['0 0 200 96','<path d="M34,50 C24,38 12,18 6,11 C10,24 16,38 26,48 C18,52 12,58 6,65 C14,60 24,56 34,50 Z" fill="rgba(70,160,235,0.26)"/><path d="M104,32 C108,15 121,15 125,32 C117,29 111,29 104,32 Z" fill="rgba(70,160,235,0.26)"/><path d="M72,34 C76,20 88,20 92,34 Z" fill="rgba(70,160,235,0.24)"/><path d="M88,64 C92,77 105,77 111,66 Z" fill="rgba(70,160,235,0.24)"/><path d="M34,50 C48,34 92,28 132,30 C164,32 184,41 195,49 C184,57 164,64 132,66 C92,68 48,62 34,50 Z" fill="rgba(95,180,245,0.22)"/><path d="M173,52 L177,57 L180,52 L183,57 L186,52 L189,56 L192,52 Z" fill="rgba(190,235,255,0.26)"/><circle cx="176" cy="45" r="3" fill="rgba(210,245,255,0.62)"/>','L'],
+    // マンボウ
+    ['0 0 152 172','<path d="M74,46 L82,6 L102,48 C92,43 82,43 74,46 Z" fill="rgba(70,160,235,0.26)"/><path d="M74,128 L82,168 L102,126 C92,131 82,131 74,128 Z" fill="rgba(70,160,235,0.26)"/><path d="M64,52 C56,62 60,68 56,76 C60,82 56,90 60,98 C56,106 60,112 56,120 C60,124 64,124 66,122 C62,110 62,96 62,86 C62,76 62,62 66,52 Z" fill="rgba(70,160,235,0.24)"/><path d="M62,86 C62,56 84,34 110,36 C132,38 146,60 146,86 C146,112 132,134 110,136 C84,138 62,116 62,86 Z" fill="rgba(95,180,245,0.22)"/><path d="M120,84 C128,80 134,82 132,88 C128,90 124,88 120,86 Z" fill="rgba(70,160,235,0.24)"/><circle cx="128" cy="72" r="3.2" fill="rgba(210,245,255,0.62)"/>','L'],
+    // ハンドウイルカ
+    ['0 0 200 102','<path d="M32,54 C20,49 10,47 4,43 C10,49 12,55 10,60 C16,57 22,56 28,56 C24,59 18,63 12,71 C20,67 28,61 32,57 C31,56 31,55 32,54 Z" fill="rgba(70,160,235,0.26)"/><path d="M100,32 C95,19 89,11 95,9 C103,13 111,23 118,33 C112,31 106,31 100,32 Z" fill="rgba(70,160,235,0.26)"/><path d="M138,62 C146,76 158,82 162,74 C154,68 146,64 142,60 Z" fill="rgba(70,160,235,0.24)"/><path d="M30,54 C42,40 82,30 134,30 C152,30 164,32 172,37 C177,41 174,45 179,48 C185,49 191,50 195,52 C191,54 185,55 179,56 C176,57 174,57 172,59 C150,66 110,68 80,66 C56,64 40,62 30,54 Z" fill="rgba(95,180,245,0.22)"/><path d="M70,58 C100,66 140,64 168,57 C160,64 130,68 100,68 C84,68 76,64 70,58 Z" fill="rgba(160,222,255,0.16)"/><circle cx="176" cy="46" r="2.8" fill="rgba(210,245,255,0.62)"/>','L'],
+    // ザトウクジラ
+    ['0 0 262 152','<path d="M54,76 C42,64 26,54 12,48 C20,60 26,72 22,84 C32,78 44,74 52,74 C44,77 30,84 16,98 C28,90 44,82 56,78 C55,77 54,76 54,76 Z" fill="rgba(95,180,245,0.22)"/><path d="M152,90 C142,116 120,140 94,150 C90,140 96,124 110,110 C126,94 144,88 156,86 Z" fill="rgba(85,175,240,0.26)"/><path d="M106,36 C110,23 122,23 126,35 C118,32 112,32 106,36 Z" fill="rgba(70,160,235,0.24)"/><path d="M52,76 C56,48 104,34 168,34 C210,34 238,44 248,58 C251,62 251,66 248,70 C240,82 214,90 168,92 C104,94 56,98 52,76 Z" fill="rgba(95,180,245,0.22)"/><g fill="rgba(70,160,235,0.28)"><circle cx="214" cy="42" r="3.2"/><circle cx="226" cy="46" r="3"/><circle cx="236" cy="52" r="2.8"/><circle cx="218" cy="84" r="3"/><circle cx="230" cy="78" r="2.8"/></g><g fill="rgba(80,170,235,0.26)"><circle cx="108" cy="116" r="2.6"/><circle cx="122" cy="104" r="2.6"/><circle cx="138" cy="96" r="2.6"/></g><circle cx="234" cy="64" r="3.2" fill="rgba(210,245,255,0.60)"/>','L'],
+  ];
+  var sea=document.querySelector('.sea');
+  if(!sea)return;
+  var count=3+Math.floor(Math.random()*3);
+  var pool=FISH.map(function(_,i){return i;});
+  for(var i=pool.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=pool[i];pool[i]=pool[j];pool[j]=t;}
+  pool.slice(0,count).forEach(function(fi,idx){
+    var f=FISH[fi];
+    var goRight=Math.random()>0.5;
+    var bottom=(8+Math.random()*72).toFixed(1);
+    var sz={S:[38,65],M:[60,110],L:[110,190]}[f[2]||'M'];var width=(sz[0]+Math.random()*(sz[1]-sz[0])).toFixed(0);
+    var dur=(15+Math.random()*32).toFixed(1);
+    var delay=(5+idx*5+Math.random()*4).toFixed(1);
+    var el=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    el.setAttribute('viewBox',f[0]);
+    el.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    el.classList.add('fish-sea');
+    el.style.cssText='bottom:'+bottom+'%;width:'+width+'px;opacity:0;animation:'+(goRight?'swim-right':'swim-left')+' '+dur+'s linear '+delay+'s infinite normal backwards';
+    el.innerHTML=f[1];
+    sea.appendChild(el);
+  });
+})();
+</script>
+<div class="book">
+
+  <a class="back-link" href="../index.html">← ログブック一覧に戻る</a>
+
+  <div class="page">
+    <div class="page-inner">
+
+      <div class="session-header">
+        <div>
+          <div class="session-date">2026 / 6月28日</div>
+          <div class="session-location">富戸</div>
+        </div>
+        <div class="session-diverange">#129〜130本目</div>
+      </div>
+
+      
+      <div class="loc-desc">{&#39;lat&#39;: 34.90617, &#39;lon&#39;: 139.1154}</div>
+      <div class="loc-desc-note">
+        ※ この説明文はAI（Claude）が生成したものです。情報の正確性を保証するものではありません。
+        参考情報源：<a href="https://www.google.com/search?q=富戸+ダイビング" target="_blank" rel="noopener">Google 検索</a>・<a href="https://ja.wikipedia.org/wiki/富戸" target="_blank" rel="noopener">Wikipedia</a>
+      </div>
+      
+
+      
+      <div class="photo-strip">
+        
+        <div class="photo-item">
+          
+          
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-28_68bb0770.jpeg" data-caption="ぎょぎょぎょ" onclick="openLightbox(this);return false;">
+            <img src="../photos/2026-06-28_68bb0770.jpeg" alt="ぎょぎょぎょ" loading="lazy">
+          </a>
+          
+          
+          <div class="photo-caption">ぎょぎょぎょ</div>
+          
+        </div>
+        
+        <div class="photo-item">
+          
+          
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-28_458f518e.jpeg" data-caption="" onclick="openLightbox(this);return false;">
+            <img src="../photos/2026-06-28_458f518e.jpeg" alt="" loading="lazy">
+          </a>
+          
+          
+        </div>
+        
+        <div class="photo-item">
+          
+          
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-28_61bb4255.jpeg" data-caption="スマホ in ドライスーツ" onclick="openLightbox(this);return false;">
+            <img src="../photos/2026-06-28_61bb4255.jpeg" alt="スマホ in ドライスーツ" loading="lazy">
+          </a>
+          
+          
+          <div class="photo-caption">スマホ in ドライスーツ</div>
+          
+        </div>
+        
+        <div class="photo-item">
+          
+          
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-28_037d9d32.jpeg" data-caption="すやすや" onclick="openLightbox(this);return false;">
+            <img src="../photos/2026-06-28_037d9d32.jpeg" alt="すやすや" loading="lazy">
+          </a>
+          
+          
+          <div class="photo-caption">すやすや</div>
+          
+        </div>
+        
+        <div class="photo-item">
+          
+          
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-28_118ff70a.jpeg" data-caption="カマス丼" onclick="openLightbox(this);return false;">
+            <img src="../photos/2026-06-28_118ff70a.jpeg" alt="カマス丼" loading="lazy">
+          </a>
+          
+          
+          <div class="photo-caption">カマス丼</div>
+          
+        </div>
+        
+        <div class="photo-item">
+          
+          
+          <a href="#" class="lb-trigger" data-src="../photos/2026-06-28_ab708616.jpeg" data-caption="学生証💦" onclick="openLightbox(this);return false;">
+            <img src="../photos/2026-06-28_ab708616.jpeg" alt="学生証💦" loading="lazy">
+          </a>
+          
+          
+          <div class="photo-caption">学生証💦</div>
+          
+        </div>
+        
+      </div>
+      
+
+      <div class="divider">· · ·</div>
+
+      
+      <div class="dive-entry">
+        <div class="dive-badge">#129</div>
+
+        <div class="dive-header">
+          <span class="dive-point">ヨコバマ</span>
+          <span class="dive-chip">雨</span>
+          <span class="dive-chip">水温 22℃</span>
+        </div>
+
+        <div class="dive-meta">
+          
+          
+          <span class="dive-meta-item"><span class="meta-label">最大水深</span><strong>20.9m</strong></span>
+          
+          
+          <span class="dive-meta-item"><span class="meta-label">平均水深</span>12.1m</span>
+          
+          
+          <span class="dive-meta-item"><span class="meta-label">ウェイト</span>2kg</span>
+          
+          
+          <span class="dive-meta-item"><span class="meta-label">波高</span>1.7m</span>
+          
+          
+          <span class="dive-meta-item"><span class="meta-label">バディ</span>ななこ</span>
+          
+        </div>
+
+        
+        <div class="depth-graph"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 145" width="100%" style="display:block;">
+  <defs>
+    <linearGradient id="dg20260628_1312" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d6b8a" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1a3a50" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect x="38" y="10" width="286" height="109" fill="#e8f0f5" opacity="0.3" rx="1"/>
+  <line x1="38" y1="10.0" x2="324" y2="10.0" stroke="#3d6b8a" stroke-width="0.6" stroke-dasharray="3,4" opacity="0.35"/><text x="34" y="13.0" text-anchor="end" font-size="7" fill="#999988" font-family="monospace">0m</text><line x1="38" y1="22.1" x2="324" y2="22.1" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.18"/><line x1="38" y1="34.2" x2="324" y2="34.2" stroke="#3d6b8a" stroke-width="0.6" stroke-dasharray="3,4" opacity="0.35"/><text x="34" y="37.2" text-anchor="end" font-size="7" fill="#999988" font-family="monospace">10m</text><line x1="38" y1="46.3" x2="324" y2="46.3" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.18"/><line x1="38" y1="58.4" x2="324" y2="58.4" stroke="#3d6b8a" stroke-width="0.6" stroke-dasharray="3,4" opacity="0.35"/><text x="34" y="61.4" text-anchor="end" font-size="7" fill="#999988" font-family="monospace">20m</text><line x1="38" y1="70.6" x2="324" y2="70.6" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.18"/><line x1="38" y1="82.7" x2="324" y2="82.7" stroke="#3d6b8a" stroke-width="0.6" stroke-dasharray="3,4" opacity="0.35"/><text x="34" y="85.7" text-anchor="end" font-size="7" fill="#999988" font-family="monospace">30m</text><line x1="38" y1="94.8" x2="324" y2="94.8" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.18"/><line x1="38" y1="106.9" x2="324" y2="106.9" stroke="#3d6b8a" stroke-width="0.6" stroke-dasharray="3,4" opacity="0.35"/><text x="34" y="109.9" text-anchor="end" font-size="7" fill="#999988" font-family="monospace">40m</text><line x1="38" y1="119.0" x2="324" y2="119.0" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.18"/>
+  <line x1="38.0" y1="10" x2="38.0" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="38.0" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">0m</text><line x1="85.7" y1="10" x2="85.7" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="85.7" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">10m</text><line x1="133.3" y1="10" x2="133.3" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="133.3" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">20m</text><line x1="181.0" y1="10" x2="181.0" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="181.0" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">30m</text><line x1="228.7" y1="10" x2="228.7" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="228.7" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">40m</text><line x1="276.3" y1="10" x2="276.3" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="276.3" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">50m</text><line x1="324.0" y1="10" x2="324.0" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="324.0" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">60m</text>
+  <path d="M 38,10 L 38.0,20.2 L 39.0,23.1 L 40.1,25.5 L 41.1,24.8 L 42.1,27.2 L 43.2,28.4 L 44.2,28.9 L 45.2,27.9 L 46.3,27.4 L 47.3,28.2 L 48.4,30.8 L 49.4,33.0 L 50.4,34.2 L 51.5,35.4 L 52.5,36.4 L 53.5,39.1 L 54.6,40.8 L 55.6,42.9 L 56.6,43.2 L 57.7,43.2 L 58.7,43.9 L 59.7,44.2 L 60.8,44.4 L 61.8,44.2 L 62.8,47.1 L 63.9,46.3 L 64.9,44.2 L 65.9,44.6 L 67.0,44.2 L 68.0,42.7 L 69.1,43.9 L 70.1,44.6 L 71.1,43.9 L 72.2,45.4 L 73.2,44.6 L 74.2,43.4 L 75.3,43.7 L 76.3,43.7 L 77.3,42.7 L 78.4,43.2 L 79.4,42.9 L 80.4,42.7 L 81.5,43.7 L 82.5,43.7 L 83.5,42.5 L 84.6,43.4 L 85.6,43.4 L 86.6,43.4 L 87.7,42.2 L 88.7,42.9 L 89.8,42.9 L 90.8,43.2 L 91.8,43.4 L 92.9,43.2 L 93.9,42.7 L 94.9,42.2 L 96.0,41.0 L 97.0,40.5 L 98.0,42.0 L 99.1,41.0 L 100.1,40.5 L 101.1,37.6 L 102.2,34.9 L 103.2,34.9 L 104.2,34.5 L 105.3,35.9 L 106.3,38.8 L 107.3,39.3 L 108.4,36.4 L 109.4,37.9 L 110.5,38.6 L 111.5,40.3 L 112.5,42.9 L 113.6,43.4 L 114.6,41.0 L 115.6,42.2 L 116.7,43.2 L 117.7,41.2 L 118.7,43.4 L 119.8,44.2 L 120.8,44.2 L 121.8,42.7 L 122.9,43.4 L 123.9,45.4 L 124.9,43.4 L 126.0,43.2 L 127.0,43.2 L 128.0,43.7 L 129.1,45.4 L 130.1,45.4 L 131.2,46.8 L 132.2,48.5 L 133.2,49.0 L 134.3,49.0 L 135.3,49.5 L 136.3,49.7 L 137.4,51.4 L 138.4,53.4 L 139.4,54.3 L 140.5,55.8 L 141.5,53.6 L 142.5,53.8 L 143.6,54.3 L 144.6,54.3 L 145.6,58.7 L 146.7,59.4 L 147.7,58.7 L 148.8,57.0 L 149.8,56.3 L 150.8,58.0 L 151.9,58.4 L 152.9,58.2 L 153.9,60.6 L 155.0,57.7 L 156.0,57.5 L 157.0,57.5 L 158.1,57.5 L 159.1,57.5 L 160.1,55.8 L 161.2,57.5 L 162.2,55.3 L 163.2,52.9 L 164.3,48.5 L 165.3,45.8 L 166.3,45.8 L 167.4,42.5 L 168.4,38.3 L 169.5,36.2 L 170.5,40.0 L 171.5,43.7 L 172.6,44.2 L 173.6,44.2 L 174.6,43.4 L 175.7,41.2 L 176.7,36.9 L 177.7,34.5 L 178.8,32.8 L 179.8,32.0 L 180.8,33.3 L 181.9,32.3 L 182.9,28.9 L 183.9,28.4 L 185.0,26.7 L 186.0,29.1 L 187.0,28.4 L 188.1,27.4 L 189.1,27.0 L 190.2,26.5 L 191.2,25.5 L 192.2,23.8 L 193.3,25.0 L 194.3,22.8 L 195.3,23.1 L 196.4,24.5 L 197.4,24.0 L 198.4,24.8 L 199.5,24.3 L 200.5,24.3 L 201.5,23.6 L 202.6,24.0 L 203.6,23.8 L 204.6,22.4 L 205.7,21.6 L 206.7,21.9 L 207.7,19.4 L 208.8,17.3 L 209.8,17.5 L 210.9,13.9 L 211.9,13.6 L 212.9,14.6 L 214.0,15.1 L 215.0,14.6 L 216.0,13.6 L 217.1,14.6 L 218.1,14.1 L 219.1,12.7 L 219.1,10 Z" fill="url(#dg20260628_1312)"/>
+  <path d="M 38.0,20.2 L 39.0,23.1 L 40.1,25.5 L 41.1,24.8 L 42.1,27.2 L 43.2,28.4 L 44.2,28.9 L 45.2,27.9 L 46.3,27.4 L 47.3,28.2 L 48.4,30.8 L 49.4,33.0 L 50.4,34.2 L 51.5,35.4 L 52.5,36.4 L 53.5,39.1 L 54.6,40.8 L 55.6,42.9 L 56.6,43.2 L 57.7,43.2 L 58.7,43.9 L 59.7,44.2 L 60.8,44.4 L 61.8,44.2 L 62.8,47.1 L 63.9,46.3 L 64.9,44.2 L 65.9,44.6 L 67.0,44.2 L 68.0,42.7 L 69.1,43.9 L 70.1,44.6 L 71.1,43.9 L 72.2,45.4 L 73.2,44.6 L 74.2,43.4 L 75.3,43.7 L 76.3,43.7 L 77.3,42.7 L 78.4,43.2 L 79.4,42.9 L 80.4,42.7 L 81.5,43.7 L 82.5,43.7 L 83.5,42.5 L 84.6,43.4 L 85.6,43.4 L 86.6,43.4 L 87.7,42.2 L 88.7,42.9 L 89.8,42.9 L 90.8,43.2 L 91.8,43.4 L 92.9,43.2 L 93.9,42.7 L 94.9,42.2 L 96.0,41.0 L 97.0,40.5 L 98.0,42.0 L 99.1,41.0 L 100.1,40.5 L 101.1,37.6 L 102.2,34.9 L 103.2,34.9 L 104.2,34.5 L 105.3,35.9 L 106.3,38.8 L 107.3,39.3 L 108.4,36.4 L 109.4,37.9 L 110.5,38.6 L 111.5,40.3 L 112.5,42.9 L 113.6,43.4 L 114.6,41.0 L 115.6,42.2 L 116.7,43.2 L 117.7,41.2 L 118.7,43.4 L 119.8,44.2 L 120.8,44.2 L 121.8,42.7 L 122.9,43.4 L 123.9,45.4 L 124.9,43.4 L 126.0,43.2 L 127.0,43.2 L 128.0,43.7 L 129.1,45.4 L 130.1,45.4 L 131.2,46.8 L 132.2,48.5 L 133.2,49.0 L 134.3,49.0 L 135.3,49.5 L 136.3,49.7 L 137.4,51.4 L 138.4,53.4 L 139.4,54.3 L 140.5,55.8 L 141.5,53.6 L 142.5,53.8 L 143.6,54.3 L 144.6,54.3 L 145.6,58.7 L 146.7,59.4 L 147.7,58.7 L 148.8,57.0 L 149.8,56.3 L 150.8,58.0 L 151.9,58.4 L 152.9,58.2 L 153.9,60.6 L 155.0,57.7 L 156.0,57.5 L 157.0,57.5 L 158.1,57.5 L 159.1,57.5 L 160.1,55.8 L 161.2,57.5 L 162.2,55.3 L 163.2,52.9 L 164.3,48.5 L 165.3,45.8 L 166.3,45.8 L 167.4,42.5 L 168.4,38.3 L 169.5,36.2 L 170.5,40.0 L 171.5,43.7 L 172.6,44.2 L 173.6,44.2 L 174.6,43.4 L 175.7,41.2 L 176.7,36.9 L 177.7,34.5 L 178.8,32.8 L 179.8,32.0 L 180.8,33.3 L 181.9,32.3 L 182.9,28.9 L 183.9,28.4 L 185.0,26.7 L 186.0,29.1 L 187.0,28.4 L 188.1,27.4 L 189.1,27.0 L 190.2,26.5 L 191.2,25.5 L 192.2,23.8 L 193.3,25.0 L 194.3,22.8 L 195.3,23.1 L 196.4,24.5 L 197.4,24.0 L 198.4,24.8 L 199.5,24.3 L 200.5,24.3 L 201.5,23.6 L 202.6,24.0 L 203.6,23.8 L 204.6,22.4 L 205.7,21.6 L 206.7,21.9 L 207.7,19.4 L 208.8,17.3 L 209.8,17.5 L 210.9,13.9 L 211.9,13.6 L 212.9,14.6 L 214.0,15.1 L 215.0,14.6 L 216.0,13.6 L 217.1,14.6 L 218.1,14.1 L 219.1,12.7" fill="none" stroke="#deeaf3" stroke-width="1.4" stroke-linejoin="round"/>
+  <line x1="38" y1="39.3" x2="324" y2="39.3" stroke="#8b3a1e" stroke-width="0.9" stroke-dasharray="3,3" opacity="0.6"/><text x="326" y="42.3" font-size="6.5" fill="#8b3a1e" opacity="0.75" font-family="monospace">avg</text>
+  
+</svg></div>
+        
+
+        
+        <div class="dive-comment">"前日の土曜日に台風が2個も直撃。中止かななんて思っていたが案外大丈夫だった。しかし海峡はあまり良くなく透明度もうんこ。台風一過なんていうから晴れるかななんて思ったが大雨だった。
+
+メンバーは
+みうさん、そうさん、ますかわさん、こうせいさん、俺、奈々子、おち
+
+お目当てであるアオリイカとヤシャハゼは△と×。イカは遠くに逃げちゃうし、ハゼに関してはダテハゼしかいなかった。
+サカタザメとワニゴチがいたことがせめてもの救い。"</div>
+        
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        <div class="fish-slider-wrap">
+          <div class="fish-slider-label">── 見れた魚 ──</div>
+          <div class="slider-wrap">
+            <div class="inf-slider fish-inf-slider">
+              <div class="inf-track">
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-8145-8722-f2378c91b7a7')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">アオリイカ</div>
+                  
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-813a-b333-c86c280dc14a')">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg" alt="アオリイカの卵" loading="lazy"
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+                  
+                  <div class="fish-name-ja">アオリイカの卵</div>
+                  
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8188-a3a2-fd1d3ae8cdec')">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg" alt="ウツボ" loading="lazy"
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+                  
+                  <div class="fish-name-ja">ウツボ</div>
+                  <div class="fish-name-en">Barred moray</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-813f-af68-f2acd6e0b13d')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">カワハギ</div>
+                  <div class="fish-name-en">Thread-sail filefish</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-814c-9f89-ff489b48ebf4')">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg" alt="サカタザメ" loading="lazy"
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+                  
+                  <div class="fish-name-ja">サカタザメ</div>
+                  <div class="fish-name-en">guitarfish</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-81d2-b55c-c27458443bb2')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">シラコダイ</div>
+                  <div class="fish-name-en">Japanese butterflyfish</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-814a-a5ab-f564da4f71a4')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">ソラスズメダイ</div>
+                  <div class="fish-name-en">Neon damselfish</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-8121-b1ab-f9d171f5a3b2')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">ダテハゼ</div>
+                  <div class="fish-name-en">-</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-81ee-9cfc-e61d70d001c7')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">チョウチョウウオ</div>
+                  <div class="fish-name-en">Oriental butterflyfish</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-8150-aac8-d6be8c9672a5')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">ニシキテッポウエビ</div>
+                  
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8163-b983-e2b877ba35bb')">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg" alt="ミノカサゴ" loading="lazy"
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+                  
+                  <div class="fish-name-ja">ミノカサゴ</div>
+                  <div class="fish-name-en">Luna lionfish</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-8161-8f69-d5a64f3ef956')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">ヨメヒメジ</div>
+                  <div class="fish-name-en">Freckled goatfish</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-8128-ac40-e38bba65ce18')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">ワニゴチ</div>
+                  <div class="fish-name-en">Spot eye flathead</div>
+                </div>
+              </div>
+              
+              </div>
+            </div>
+            
+            <div class="inf-dots">
+              
+              <span class="inf-dot active"></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+            </div>
+            
+          </div>
+        </div>
+        
+
+        
+
+      </div>
+      
+      <div class="dive-entry">
+        <div class="dive-badge">#130</div>
+
+        <div class="dive-header">
+          <span class="dive-point">ヨコバマ</span>
+          <span class="dive-chip">雨</span>
+          <span class="dive-chip">水温 20.6℃</span>
+        </div>
+
+        <div class="dive-meta">
+          
+          
+          <span class="dive-meta-item"><span class="meta-label">最大水深</span><strong>28.5m</strong></span>
+          
+          
+          <span class="dive-meta-item"><span class="meta-label">平均水深</span>11.7m</span>
+          
+          
+          <span class="dive-meta-item"><span class="meta-label">ウェイト</span>2kg</span>
+          
+          
+          <span class="dive-meta-item"><span class="meta-label">波高</span>1.7m</span>
+          
+          
+          <span class="dive-meta-item"><span class="meta-label">バディ</span>ななこ</span>
+          
+        </div>
+
+        
+        <div class="depth-graph"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 145" width="100%" style="display:block;">
+  <defs>
+    <linearGradient id="dg20260628_1010" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d6b8a" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1a3a50" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect x="38" y="10" width="286" height="109" fill="#e8f0f5" opacity="0.3" rx="1"/>
+  <line x1="38" y1="10.0" x2="324" y2="10.0" stroke="#3d6b8a" stroke-width="0.6" stroke-dasharray="3,4" opacity="0.35"/><text x="34" y="13.0" text-anchor="end" font-size="7" fill="#999988" font-family="monospace">0m</text><line x1="38" y1="22.1" x2="324" y2="22.1" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.18"/><line x1="38" y1="34.2" x2="324" y2="34.2" stroke="#3d6b8a" stroke-width="0.6" stroke-dasharray="3,4" opacity="0.35"/><text x="34" y="37.2" text-anchor="end" font-size="7" fill="#999988" font-family="monospace">10m</text><line x1="38" y1="46.3" x2="324" y2="46.3" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.18"/><line x1="38" y1="58.4" x2="324" y2="58.4" stroke="#3d6b8a" stroke-width="0.6" stroke-dasharray="3,4" opacity="0.35"/><text x="34" y="61.4" text-anchor="end" font-size="7" fill="#999988" font-family="monospace">20m</text><line x1="38" y1="70.6" x2="324" y2="70.6" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.18"/><line x1="38" y1="82.7" x2="324" y2="82.7" stroke="#3d6b8a" stroke-width="0.6" stroke-dasharray="3,4" opacity="0.35"/><text x="34" y="85.7" text-anchor="end" font-size="7" fill="#999988" font-family="monospace">30m</text><line x1="38" y1="94.8" x2="324" y2="94.8" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.18"/><line x1="38" y1="106.9" x2="324" y2="106.9" stroke="#3d6b8a" stroke-width="0.6" stroke-dasharray="3,4" opacity="0.35"/><text x="34" y="109.9" text-anchor="end" font-size="7" fill="#999988" font-family="monospace">40m</text><line x1="38" y1="119.0" x2="324" y2="119.0" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.18"/>
+  <line x1="38.0" y1="10" x2="38.0" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="38.0" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">0m</text><line x1="85.7" y1="10" x2="85.7" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="85.7" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">10m</text><line x1="133.3" y1="10" x2="133.3" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="133.3" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">20m</text><line x1="181.0" y1="10" x2="181.0" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="181.0" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">30m</text><line x1="228.7" y1="10" x2="228.7" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="228.7" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">40m</text><line x1="276.3" y1="10" x2="276.3" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="276.3" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">50m</text><line x1="324.0" y1="10" x2="324.0" y2="119" stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/><text x="324.0" y="133" text-anchor="middle" font-size="7" fill="#999988" font-family="monospace">60m</text>
+  <path d="M 38,10 L 38.0,14.6 L 39.0,19.7 L 40.0,22.1 L 41.0,23.6 L 41.9,24.3 L 42.9,25.3 L 43.9,27.2 L 44.9,25.5 L 45.9,24.8 L 46.9,26.2 L 47.8,28.4 L 48.8,32.5 L 49.8,32.3 L 50.8,34.0 L 51.8,35.2 L 52.8,37.6 L 53.8,38.6 L 54.7,37.4 L 55.7,36.4 L 56.7,36.9 L 57.7,40.3 L 58.7,39.6 L 59.7,38.3 L 60.6,39.6 L 61.6,38.8 L 62.6,38.8 L 63.6,36.9 L 64.6,34.5 L 65.6,35.7 L 66.5,36.4 L 67.5,37.4 L 68.5,38.8 L 69.5,38.6 L 70.5,41.0 L 71.5,40.3 L 72.5,40.8 L 73.4,39.1 L 74.4,37.1 L 75.4,36.9 L 76.4,33.7 L 77.4,35.4 L 78.4,35.4 L 79.3,33.7 L 80.3,35.9 L 81.3,35.7 L 82.3,35.4 L 83.3,34.0 L 84.3,33.7 L 85.3,32.0 L 86.2,35.2 L 87.2,36.4 L 88.2,37.4 L 89.2,39.3 L 90.2,39.8 L 91.2,40.3 L 92.1,40.0 L 93.1,41.0 L 94.1,42.9 L 95.1,41.5 L 96.1,43.2 L 97.1,45.8 L 98.0,45.8 L 99.0,46.8 L 100.0,46.8 L 101.0,46.8 L 102.0,45.4 L 103.0,46.1 L 104.0,46.1 L 104.9,46.1 L 105.9,46.6 L 106.9,45.1 L 107.9,44.4 L 108.9,44.9 L 109.9,45.4 L 110.8,46.3 L 111.8,50.0 L 112.8,52.1 L 113.8,52.4 L 114.8,52.9 L 115.8,54.3 L 116.8,54.3 L 117.7,55.1 L 118.7,59.2 L 119.7,59.9 L 120.7,61.6 L 121.7,64.0 L 122.7,67.4 L 123.6,69.3 L 124.6,70.6 L 125.6,71.3 L 126.6,72.5 L 127.6,76.6 L 128.6,77.6 L 129.6,77.6 L 130.5,78.1 L 131.5,77.8 L 132.5,78.3 L 133.5,78.1 L 134.5,78.1 L 135.5,76.9 L 136.4,75.2 L 137.4,74.9 L 138.4,68.4 L 139.4,66.4 L 140.4,67.6 L 141.4,64.7 L 142.3,64.0 L 143.3,65.2 L 144.3,63.0 L 145.3,60.9 L 146.3,59.4 L 147.3,60.6 L 148.3,59.4 L 149.2,58.2 L 150.2,54.3 L 151.2,53.4 L 152.2,50.9 L 153.2,47.8 L 154.2,42.0 L 155.1,40.5 L 156.1,36.4 L 157.1,32.0 L 158.1,27.9 L 159.1,25.7 L 160.1,24.0 L 161.1,23.8 L 162.0,25.0 L 163.0,23.8 L 164.0,23.8 L 165.0,24.0 L 166.0,23.8 L 167.0,22.6 L 167.9,22.4 L 168.9,21.4 L 169.9,21.4 L 170.9,20.9 L 171.9,18.7 L 172.9,18.5 L 173.8,19.9 L 174.8,20.2 L 175.8,20.7 L 176.8,22.4 L 177.8,24.5 L 178.8,26.7 L 179.8,25.0 L 180.7,23.6 L 181.7,22.8 L 182.7,22.1 L 183.7,22.1 L 184.7,21.9 L 185.7,21.1 L 186.6,20.2 L 187.6,21.9 L 188.6,21.6 L 189.6,20.7 L 190.6,21.9 L 191.6,20.9 L 192.6,20.7 L 193.5,21.1 L 194.5,23.3 L 195.5,23.6 L 196.5,23.8 L 197.5,21.6 L 198.5,22.6 L 199.4,22.1 L 200.4,19.9 L 201.4,21.1 L 202.4,20.7 L 203.4,19.9 L 204.4,20.9 L 205.4,19.0 L 206.3,18.5 L 207.3,19.2 L 208.3,20.9 L 209.3,20.2 L 210.3,22.1 L 211.3,19.9 L 212.2,18.0 L 213.2,19.2 L 214.2,18.7 L 215.2,19.4 L 216.2,18.7 L 217.2,17.0 L 218.1,16.5 L 219.1,12.4 L 219.1,10 Z" fill="url(#dg20260628_1010)"/>
+  <path d="M 38.0,14.6 L 39.0,19.7 L 40.0,22.1 L 41.0,23.6 L 41.9,24.3 L 42.9,25.3 L 43.9,27.2 L 44.9,25.5 L 45.9,24.8 L 46.9,26.2 L 47.8,28.4 L 48.8,32.5 L 49.8,32.3 L 50.8,34.0 L 51.8,35.2 L 52.8,37.6 L 53.8,38.6 L 54.7,37.4 L 55.7,36.4 L 56.7,36.9 L 57.7,40.3 L 58.7,39.6 L 59.7,38.3 L 60.6,39.6 L 61.6,38.8 L 62.6,38.8 L 63.6,36.9 L 64.6,34.5 L 65.6,35.7 L 66.5,36.4 L 67.5,37.4 L 68.5,38.8 L 69.5,38.6 L 70.5,41.0 L 71.5,40.3 L 72.5,40.8 L 73.4,39.1 L 74.4,37.1 L 75.4,36.9 L 76.4,33.7 L 77.4,35.4 L 78.4,35.4 L 79.3,33.7 L 80.3,35.9 L 81.3,35.7 L 82.3,35.4 L 83.3,34.0 L 84.3,33.7 L 85.3,32.0 L 86.2,35.2 L 87.2,36.4 L 88.2,37.4 L 89.2,39.3 L 90.2,39.8 L 91.2,40.3 L 92.1,40.0 L 93.1,41.0 L 94.1,42.9 L 95.1,41.5 L 96.1,43.2 L 97.1,45.8 L 98.0,45.8 L 99.0,46.8 L 100.0,46.8 L 101.0,46.8 L 102.0,45.4 L 103.0,46.1 L 104.0,46.1 L 104.9,46.1 L 105.9,46.6 L 106.9,45.1 L 107.9,44.4 L 108.9,44.9 L 109.9,45.4 L 110.8,46.3 L 111.8,50.0 L 112.8,52.1 L 113.8,52.4 L 114.8,52.9 L 115.8,54.3 L 116.8,54.3 L 117.7,55.1 L 118.7,59.2 L 119.7,59.9 L 120.7,61.6 L 121.7,64.0 L 122.7,67.4 L 123.6,69.3 L 124.6,70.6 L 125.6,71.3 L 126.6,72.5 L 127.6,76.6 L 128.6,77.6 L 129.6,77.6 L 130.5,78.1 L 131.5,77.8 L 132.5,78.3 L 133.5,78.1 L 134.5,78.1 L 135.5,76.9 L 136.4,75.2 L 137.4,74.9 L 138.4,68.4 L 139.4,66.4 L 140.4,67.6 L 141.4,64.7 L 142.3,64.0 L 143.3,65.2 L 144.3,63.0 L 145.3,60.9 L 146.3,59.4 L 147.3,60.6 L 148.3,59.4 L 149.2,58.2 L 150.2,54.3 L 151.2,53.4 L 152.2,50.9 L 153.2,47.8 L 154.2,42.0 L 155.1,40.5 L 156.1,36.4 L 157.1,32.0 L 158.1,27.9 L 159.1,25.7 L 160.1,24.0 L 161.1,23.8 L 162.0,25.0 L 163.0,23.8 L 164.0,23.8 L 165.0,24.0 L 166.0,23.8 L 167.0,22.6 L 167.9,22.4 L 168.9,21.4 L 169.9,21.4 L 170.9,20.9 L 171.9,18.7 L 172.9,18.5 L 173.8,19.9 L 174.8,20.2 L 175.8,20.7 L 176.8,22.4 L 177.8,24.5 L 178.8,26.7 L 179.8,25.0 L 180.7,23.6 L 181.7,22.8 L 182.7,22.1 L 183.7,22.1 L 184.7,21.9 L 185.7,21.1 L 186.6,20.2 L 187.6,21.9 L 188.6,21.6 L 189.6,20.7 L 190.6,21.9 L 191.6,20.9 L 192.6,20.7 L 193.5,21.1 L 194.5,23.3 L 195.5,23.6 L 196.5,23.8 L 197.5,21.6 L 198.5,22.6 L 199.4,22.1 L 200.4,19.9 L 201.4,21.1 L 202.4,20.7 L 203.4,19.9 L 204.4,20.9 L 205.4,19.0 L 206.3,18.5 L 207.3,19.2 L 208.3,20.9 L 209.3,20.2 L 210.3,22.1 L 211.3,19.9 L 212.2,18.0 L 213.2,19.2 L 214.2,18.7 L 215.2,19.4 L 216.2,18.7 L 217.2,17.0 L 218.1,16.5 L 219.1,12.4" fill="none" stroke="#deeaf3" stroke-width="1.4" stroke-linejoin="round"/>
+  <line x1="38" y1="38.3" x2="324" y2="38.3" stroke="#8b3a1e" stroke-width="0.9" stroke-dasharray="3,3" opacity="0.6"/><text x="326" y="41.3" font-size="6.5" fill="#8b3a1e" opacity="0.75" font-family="monospace">avg</text>
+  
+</svg></div>
+        
+
+        
+        <div class="dive-comment">"2本目に関しては、アオリイカの接写をできたので最低限丸をつけたい。また、一本目でカメラが水没してしまい絶望したが、2本目はなんとかそんなに曇らずに耐えてくれた。
+
+今回のダイビングは、みうさんから奈々子とおちまでと幅広い世代が来ていたがみな人が良くて楽しく過ごせた。帰りに寄ったギョギョギョが美味しかった。アジ専門店なのだがカマス丼がとても美味。溶けた脂の風味が素晴らしかった。"</div>
+        
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        
+        <div class="fish-slider-wrap">
+          <div class="fish-slider-label">── 見れた魚 ──</div>
+          <div class="slider-wrap">
+            <div class="inf-slider fish-inf-slider">
+              <div class="inf-track">
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-8145-8722-f2378c91b7a7')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">アオリイカ</div>
+                  
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-813a-b333-c86c280dc14a')">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg" alt="アオリイカの卵" loading="lazy"
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+                  
+                  <div class="fish-name-ja">アオリイカの卵</div>
+                  
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('389393d9-df81-8188-a3a2-fd1d3ae8cdec')">
+                  
+                  <img class="fish-thumb" src="../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg" alt="ウツボ" loading="lazy"
+                       onerror="this.outerHTML='<div class=\'fish-thumb-placeholder\'>🐠</div>'">
+                  
+                  <div class="fish-name-ja">ウツボ</div>
+                  <div class="fish-name-en">Barred moray</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-81eb-887b-ccc42aafc9c6')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">ウミスズメ</div>
+                  <div class="fish-name-en">Roundbelly cowfish</div>
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-8123-bf35-c9c11f1305d1')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">カレイ</div>
+                  
+                </div>
+              </div>
+              
+              <div class="fish-slide inf-slide">
+                <div class="fish-card" onclick="openFishModal('38f393d9-df81-8186-bff5-ca0f4f97772d')">
+                  
+                  <div class="fish-thumb-placeholder">🐠</div>
+                  
+                  <div class="fish-name-ja">ミツボシクロスズメダイ</div>
+                  <div class="fish-name-en">Threespot dascyllus</div>
+                </div>
+              </div>
+              
+              </div>
+            </div>
+            
+            <div class="inf-dots">
+              
+              <span class="inf-dot active"></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+              <span class="inf-dot "></span>
+              
+            </div>
+            
+          </div>
+        </div>
+        
+
+        
+
+      </div>
+      
+
+
+    </div>
+  </div>
+
+</div>
+<div class="build-note">Generated 2026年7月1日 · Dive Log Book</div>
+
+<!-- スワイプスライダー -->
+<script>
+(function() {
+  // 動画スライドをスライダー幅に合わせる
+  document.querySelectorAll('.video-inf-slider').forEach(function(slider) {
+    var w = slider.offsetWidth;
+    slider.querySelectorAll('.video-slide').forEach(function(s) {
+      s.style.minWidth = w + 'px';
+    });
+  });
+
+  // スクロールでドット更新 & ドットクリックでスクロール
+  document.querySelectorAll('.inf-slider').forEach(function(slider) {
+    var wrap = slider.closest('.slider-wrap') || slider;
+    var dots = Array.from(wrap.querySelectorAll('.inf-dot'));
+    if (!dots.length) return;
+    var slides = Array.from(slider.querySelectorAll('.inf-slide'));
+
+    slider.addEventListener('scroll', function() {
+      var scrollLeft = slider.scrollLeft;
+      var closest = 0, minDist = Infinity;
+      slides.forEach(function(s, i) {
+        var d = Math.abs(s.offsetLeft - scrollLeft);
+        if (d < minDist) { minDist = d; closest = i; }
+      });
+      dots.forEach(function(d, i) { d.classList.toggle('active', i === closest); });
+    }, { passive: true });
+
+    dots.forEach(function(dot, i) {
+      dot.addEventListener('click', function() {
+        var s = slides[i];
+        if (s) slider.scrollTo({ left: s.offsetLeft, behavior: 'smooth' });
+      });
+    });
+  });
+})();
+</script>
+
+<!-- 魚詳細モーダル -->
+<div class="fish-modal-overlay" id="fish-modal-overlay" onclick="closeFishOnOverlay(event)">
+  <div class="fish-modal" id="fish-modal">
+    <button class="fish-modal-close" onclick="closeFishModal()">✕</button>
+    <div class="fish-modal-thumb-wrap" id="fm-thumb-wrap">
+      <div class="fish-modal-thumb-placeholder">🐠</div>
+    </div>
+    <div class="fish-modal-inner">
+      <div id="fm-category" class="fish-modal-category" style="display:none"></div>
+      <div id="fm-name-ja" class="fish-modal-name-ja"></div>
+      <div id="fm-name-en" class="fish-modal-name-en" style="display:none"></div>
+      <div id="fm-name-sci" class="fish-modal-name-sci" style="display:none"></div>
+      <hr class="fish-modal-divider">
+      <div class="fish-modal-meta-grid">
+        <div id="fm-order-wrap" style="display:none">
+          <div class="fish-modal-meta-label">ORDER / FAMILY</div>
+          <div class="fish-modal-meta-value" id="fm-order"></div>
+        </div>
+        <div id="fm-first-wrap" style="display:none">
+          <div class="fish-modal-meta-label">FIRST SEEN</div>
+          <div class="fish-modal-meta-value" id="fm-first"></div>
+        </div>
+        <div id="fm-rarity-wrap" style="display:none">
+          <div class="fish-modal-meta-label">RARITY</div>
+          <div class="fish-modal-meta-value stars" id="fm-rarity"></div>
+        </div>
+        <div id="fm-popularity-wrap" style="display:none">
+          <div class="fish-modal-meta-label">POPULARITY</div>
+          <div class="fish-modal-meta-value stars" id="fm-popularity"></div>
+        </div>
+        <div id="fm-photo-wrap" style="display:none">
+          <div class="fish-modal-meta-label">PHOTO EASE</div>
+          <div class="fish-modal-meta-value stars" id="fm-photo"></div>
+        </div>
+      </div>
+      <div id="fm-memo" class="fish-modal-memo" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── 魚データ（セッション全魚） ── */
+var SESSION_FISH = {
+  
+  "38f393d9-df81-8145-8722-f2378c91b7a7": {
+    name:           "\u30a2\u30aa\u30ea\u30a4\u30ab",
+    english_name:   "",
+    scientific_name:"",
+    category:       "\u9b5a\u985e",
+    order:          "",
+    family:         "",
+    genus:          "",
+    memo:           "",
+    rarity:         "",
+    popularity:     "",
+    photo_ease:     "",
+    first_seen:     "2026-06-28",
+    thumbnail:      ""
+  },
+  
+  "389393d9-df81-813a-b333-c86c280dc14a": {
+    name:           "\u30a2\u30aa\u30ea\u30a4\u30ab\u306e\u5375",
+    english_name:   "",
+    scientific_name:"",
+    category:       "\u305d\u306e\u4ed6",
+    order:          "",
+    family:         "",
+    genus:          "",
+    memo:           "",
+    rarity:         "",
+    popularity:     "",
+    photo_ease:     "",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81813ab333c86c280dc14a.jpg"
+  },
+  
+  "389393d9-df81-8188-a3a2-fd1d3ae8cdec": {
+    name:           "\u30a6\u30c4\u30dc",
+    english_name:   "Barred moray",
+    scientific_name:"Gymnothorax kidako",
+    category:       "\u9b5a\u985e",
+    order:          "\u30a6\u30ca\u30ae\u76ee",
+    family:         "\u30a6\u30c4\u30dc\u79d1",
+    genus:          "\u30a6\u30c4\u30dc\u5c5e",
+    memo:           "\u305f\u3060\u306e\u30a6\u30c4\u30dc\u3002\u6e29\u5e2f\u57df\u306e\u6cbf\u5cb8\u5ca9\u7901\u306e\u6d45\u702c\u3067\u666e\u901a\u306b\u898b\u3089\u308c\u308b\u3002\u304c\u3001\u7409\u7403\u5217\u5cf6\u3067\u306f\u9006\u306b\u975e\u5e38\u306b\u7a00\u3002\u5730\u65b9\u306b\u3088\u3063\u3066\u306f\u98df\u7528\u3002\u98df\u3079\u3066\u307f\u305f\u3044\u3002\u305d\u3057\u3066\u3069\u3046\u3084\u3063\u3066\u7372\u308b\u3093\u3060\u308d\u3046\u3002\u3000\n\n\u8ffd\u8a18: \u3053\u3046\u3068\u300c\u91e3\u308c\u308b\u3088\u3002\u30a6\u30c4\u30dc\u5c02\u7528\u306e\u4ed5\u639b\u3051\u304c\u3042\u308b\u3089\u3057\u3044\u3002\u300d\n\n\u5206\u5e03\uff1a\u672c\u5dde\u306e\u592a\u5e73\u6d0b\u6cbf\u5cb8\u3001\u516b\u4e08\u5cf6\u3001\u5c4b\u4e45\u5cf6\u3001\u5944\u7f8e\u8af8\u5cf6\u3001\u6176\u826f\u9593\u8af8\u5cf6\u3001\u53f0\u6e7e",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df818188a3a2fd1d3ae8cdec.jpg"
+  },
+  
+  "38f393d9-df81-81eb-887b-ccc42aafc9c6": {
+    name:           "\u30a6\u30df\u30b9\u30ba\u30e1",
+    english_name:   "Roundbelly cowfish",
+    scientific_name:"Lactoria diaphana",
+    category:       "\u9b5a\u985e",
+    order:          "\u30d5\u30b0\u76ee",
+    family:         "\u30cf\u30b3\u30d5\u30b0\u79d1",
+    genus:          "\u30b3\u30f3\u30b4\u30a6\u30d5\u30b0\u5c5e",
+    memo:           "\u6cbf\u5cb8\u306e\u30b5\u30f3\u30b4\u7901\u3001\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u4f0a\u8c46\u534a\u5cf6\u4ee5\u5357\u3001\u30a4\u30f3\u30c9\u6d0b\u304b\u3089\u897f\u592a\u5e73\u6d0b\u306e\u71b1\u5e2f\u57df",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-28",
+    thumbnail:      ""
+  },
+  
+  "38f393d9-df81-8123-bf35-c9c11f1305d1": {
+    name:           "\u30ab\u30ec\u30a4",
+    english_name:   "",
+    scientific_name:"",
+    category:       "\u9b5a\u985e",
+    order:          "",
+    family:         "",
+    genus:          "",
+    memo:           "",
+    rarity:         "",
+    popularity:     "",
+    photo_ease:     "",
+    first_seen:     "",
+    thumbnail:      ""
+  },
+  
+  "38f393d9-df81-813f-af68-f2acd6e0b13d": {
+    name:           "\u30ab\u30ef\u30cf\u30ae",
+    english_name:   "Thread-sail filefish",
+    scientific_name:"Stephanolepis cirrhifer",
+    category:       "\u9b5a\u985e",
+    order:          "\u30d5\u30b0\u76ee",
+    family:         "\u30ab\u30ef\u30cf\u30ae\u79d1",
+    genus:          "\u30ab\u30ef\u30cf\u30ae\u5c5e",
+    memo:           "\u6c34\u6df1\uff12\uff10\uff10\uff4d\u4ee5\u6d45\u306e\u7802\u6ce5\u5e95\u3001\u5ca9\u7901\u57df\u306b\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u5317\u6d77\u9053\u4ee5\u5357\u3001\u6771\u30b7\u30ca\u6d77\u306b\u5206\u5e03\u3059\u308b\u3002",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-28",
+    thumbnail:      ""
+  },
+  
+  "389393d9-df81-814c-9f89-ff489b48ebf4": {
+    name:           "\u30b5\u30ab\u30bf\u30b6\u30e1",
+    english_name:   "guitarfish",
+    scientific_name:"Rhinobatos schlegelii",
+    category:       "\u9b5a\u985e",
+    order:          "\u30ce\u30b3\u30ae\u30ea\u30a8\u30a4\u76ee",
+    family:         "\u30b5\u30ab\u30bf\u30b6\u30e1\u79d1",
+    genus:          "\u30b5\u30ab\u30bf\u30b6\u30e1\u5c5e",
+    memo:           "\u6c34\u6df1100m\u4ee5\u6df1\u306e\u7802\u6ce5\u5e95\u306b\u751f\u606f\u3059\u308b\u3002\u3057\u304b\u3057\u3001\u4f0a\u8c46\u534a\u5cf6\u3067\u306f8\u6708\u301c12\u6708\u306b\u63a8\u903225m\u524d\u5f8c\u306e\u7802\u5e95\u306b\u3044\u308b\u3002\u904a\u6cf3\u529b\u304c\u4f4e\u304f\u3001\u7372\u7269\u306f\u7802\u306e\u4e2d\u306b\u3044\u308b\u751f\u7269\u3002\u30ae\u30bf\u30fc\u306e\u5f62\u306b\u4f3c\u3066\u3044\u308b\u304b\u3089\u82f1\u540d\u306f\u30ae\u30bf\u30fc\u30d5\u30a3\u30c3\u30b7\u30e5\u3002\n\n\u5206\u5e03\uff1a\u5357\u65e5\u672c\u592a\u5e73\u6d0b\u6cbf\u5cb8\u3001\u516b\u4e08\u5cf6\u3001\u65b0\u6f5f\u304b\u3089\u4e5d\u5dde\u306e\u65e5\u672c\u6d77\u30fb\u6771\u30b7\u30ca\u6d77\u6cbf\u5cb8\u3001\u6c96\u7e04\u8af8\u5cf6",
+    rarity:         "\u4e0d\u660e\uff08\u30ec\u30a2\u76ee\uff09",
+    popularity:     "",
+    photo_ease:     "",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df81814c9f89ff489b48ebf4.jpg"
+  },
+  
+  "38f393d9-df81-81d2-b55c-c27458443bb2": {
+    name:           "\u30b7\u30e9\u30b3\u30c0\u30a4",
+    english_name:   "Japanese butterflyfish",
+    scientific_name:"Chaetodon nippon",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30c1\u30e7\u30a6\u30c1\u30e7\u30a6\u30a6\u30aa\u79d1",
+    genus:          "\u30c1\u30e7\u30a6\u30c1\u30e7\u30a6\u30a6\u30aa\u5c5e",
+    memo:           "\u5ca9\u7901\u57df\u306b\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u65e5\u672c\u672c\u5dde\u5357\u90e8\u304b\u3089\u53f0\u6e7e\u3001\u30d5\u30a3\u30ea\u30d4\u30f3\u306b\u5206\u5e03\u3059\u308b\u3002",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-28",
+    thumbnail:      ""
+  },
+  
+  "38f393d9-df81-814a-a5ab-f564da4f71a4": {
+    name:           "\u30bd\u30e9\u30b9\u30ba\u30e1\u30c0\u30a4",
+    english_name:   "Neon damselfish",
+    scientific_name:"Pomacentrus coelestis",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30b9\u30ba\u30e1\u30c0\u30a4\u79d1",
+    genus:          "\u30bd\u30e9\u30b9\u30ba\u30e1\u30c0\u30a4\u5c5e",
+    memo:           "\u30b5\u30f3\u30b4\u7901\u3001\u5ca9\u7901\u57df\u306b\u7fa4\u308c\u3067\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u5343\u8449\u770c\u30fb\u65b0\u6f5f\u770c\u4ee5\u5357\u3001\u897f\u592a\u5e73\u6d0b\u3002",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-28",
+    thumbnail:      ""
+  },
+  
+  "38f393d9-df81-8121-b1ab-f9d171f5a3b2": {
+    name:           "\u30c0\u30c6\u30cf\u30bc",
+    english_name:   "-",
+    scientific_name:"Amblyeleotris japonica",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30cf\u30bc\u79d1",
+    genus:          "\u30c0\u30c6\u30cf\u30bc\u5c5e",
+    memo:           "\u7802\u5e95\u3084\u7802\u6ce5\u5e95\u3067\u30c6\u30c3\u30dd\u30a6\u30a8\u30d3\u985e\u3068\u5171\u751f\u3059\u308b\u3002\u6c34\u6df1 3-15m\u3002\u3000\u5206\u5e03\uff1a\u5343\u8449\u770c\u4ee5\u5357\u306e\u5357\u65e5\u672c\u3001\u30a4\u30f3\u30c9\u304b\u3089\u592a\u5e73\u6d0b",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-28",
+    thumbnail:      ""
+  },
+  
+  "38f393d9-df81-81ee-9cfc-e61d70d001c7": {
+    name:           "\u30c1\u30e7\u30a6\u30c1\u30e7\u30a6\u30a6\u30aa",
+    english_name:   "Oriental butterflyfish",
+    scientific_name:"Chaetodon auripes",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30c1\u30e7\u30a6\u30c1\u30e7\u30a6\u30a6\u30aa\u79d1",
+    genus:          "\u30c1\u30e7\u30a6\u30c1\u30e7\u30a6\u30a6\u30aa\u5c5e",
+    memo:           "\u5ca9\u7901\u3001\u30b5\u30f3\u30b4\u7901\u57df\u306b\u751f\u606f\u3002\u3000\u5206\u5e03\uff1a\u5357\u30b7\u30ca\u6d77\u304b\u3089\u592a\u5e73\u6d0b\u306b\u751f\u606f\u3002",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2606\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-28",
+    thumbnail:      ""
+  },
+  
+  "38f393d9-df81-8150-aac8-d6be8c9672a5": {
+    name:           "\u30cb\u30b7\u30ad\u30c6\u30c3\u30dd\u30a6\u30a8\u30d3",
+    english_name:   "",
+    scientific_name:"",
+    category:       "\u9b5a\u985e",
+    order:          "",
+    family:         "",
+    genus:          "",
+    memo:           "",
+    rarity:         "",
+    popularity:     "",
+    photo_ease:     "",
+    first_seen:     "2026-06-28",
+    thumbnail:      ""
+  },
+  
+  "38f393d9-df81-8186-bff5-ca0f4f97772d": {
+    name:           "\u30df\u30c4\u30dc\u30b7\u30af\u30ed\u30b9\u30ba\u30e1\u30c0\u30a4",
+    english_name:   "Threespot dascyllus",
+    scientific_name:"Dascyllus trimaculatus",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30b9\u30ba\u30e1\u30c0\u30a4\u79d1",
+    genus:          "\u30df\u30b9\u30b8\u30ea\u30e5\u30a6\u30ad\u30e5\u30a6\u30b9\u30ba\u30e1\u30c0\u30a4\u5c5e",
+    memo:           "\u5ca9\u7901\u57df\u306e\u5e95\u5c64\u3002\u30a4\u30bd\u30ae\u30f3\u30c1\u30e3\u30af\u3068\u5171\u751f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u4f0a\u8c46\u534a\u5cf6\u4ee5\u5357\u3001\u897f\u592a\u5e73\u6d0b\u3002",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "",
+    thumbnail:      ""
+  },
+  
+  "389393d9-df81-8163-b983-e2b877ba35bb": {
+    name:           "\u30df\u30ce\u30ab\u30b5\u30b4",
+    english_name:   "Luna lionfish",
+    scientific_name:"Pterois lunulata",
+    category:       "\u9b5a\u985e",
+    order:          "\u30ab\u30b5\u30b4\u76ee",
+    family:         "\u30d5\u30b5\u30ab\u30b5\u30b4\u79d1",
+    genus:          "\u30df\u30ce\u30ab\u30b5\u30b4\u5c5e",
+    memo:           "\u6cbf\u5cb8\u306e\u5ca9\u7901\u57df\u3000\u5206\u5e03\uff1a\u5317\u6d77\u9053\u5357\u90e8\u4ee5\u5357\u3001\u30a4\u30f3\u30c9\u304b\u3089\u592a\u5e73\u6d0b\u897f\u90e8",
+    rarity:         "\u2605\u2606\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2605\u2606",
+    first_seen:     "2026-06-21",
+    thumbnail:      "../fish_thumbs/389393d9df818163b983e2b877ba35bb.jpg"
+  },
+  
+  "38f393d9-df81-8161-8f69-d5a64f3ef956": {
+    name:           "\u30e8\u30e1\u30d2\u30e1\u30b8",
+    english_name:   "Freckled goatfish",
+    scientific_name:"Upeneus tragula",
+    category:       "\u9b5a\u985e",
+    order:          "\u30b9\u30ba\u30ad\u76ee",
+    family:         "\u30d2\u30e1\u30b8\u79d1",
+    genus:          "\u30d2\u30e1\u30b8\u5c5e",
+    memo:           "\u6cbf\u5cb8\u306e\u5ca9\u7901\u3001\u7802\u5e95\u57df\u3000\u5206\u5e03\uff1a\u5343\u8449\u770c\u4ee5\u5357\u306e\u5357\u65e5\u672c\u3001\u6771\u30b7\u30ca\u6d77",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2606\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2606\u2606",
+    first_seen:     "2026-06-28",
+    thumbnail:      ""
+  },
+  
+  "38f393d9-df81-8128-ac40-e38bba65ce18": {
+    name:           "\u30ef\u30cb\u30b4\u30c1",
+    english_name:   "Spot eye flathead",
+    scientific_name:"Inegocia guttata",
+    category:       "\u9b5a\u985e",
+    order:          "\u30ab\u30b5\u30b4\u76ee",
+    family:         "\u30b3\u30c1\u79d1",
+    genus:          "\u30c8\u30ab\u30b2\u30b4\u30c1\u5c5e",
+    memo:           "\u7802\u6ce5\u5e95\u306b\u751f\u606f\u3059\u308b\u3002\u3000\u5206\u5e03\uff1a\u4f0a\u8c46\u534a\u5cf6\u4ee5\u5357\u306e\u5357\u65e5\u672c\u306b\u5206\u5e03\u3059\u308b\u3002",
+    rarity:         "\u2605\u2605\u2606\u2606\u2606",
+    popularity:     "\u2605\u2605\u2605\u2605\u2606",
+    photo_ease:     "\u2605\u2605\u2605\u2605\u2606",
+    first_seen:     "2026-06-28",
+    thumbnail:      ""
+  }
+  
+};
+
+function fmSet(id, value, wrapId) {
+  var el = document.getElementById(id);
+  var wrap = wrapId ? document.getElementById(wrapId) : el;
+  if (value) { el.textContent = value; wrap.style.display = ''; }
+  else { wrap.style.display = 'none'; }
+}
+
+function openFishModal(fishId) {
+  var f = SESSION_FISH[fishId];
+  if (!f) return;
+  var thumbWrap = document.getElementById('fm-thumb-wrap');
+  thumbWrap.innerHTML = '';
+  if (f.thumbnail) {
+    var img = document.createElement('img');
+    img.src = f.thumbnail;
+    img.alt = f.name;
+    img.loading = 'lazy';
+    img.addEventListener('error', function() {
+      thumbWrap.innerHTML = '<div class="fish-modal-thumb-placeholder">🐠</div>';
+    });
+    thumbWrap.appendChild(img);
+  } else {
+    thumbWrap.innerHTML = '<div class="fish-modal-thumb-placeholder">🐠</div>';
+  }
+  fmSet('fm-category', f.category);
+  fmSet('fm-name-ja', f.name);
+  fmSet('fm-name-en', f.english_name);
+  fmSet('fm-name-sci', f.scientific_name);
+  var taxon = [f.order, f.family, f.genus].filter(Boolean).join(' / ');
+  fmSet('fm-order', taxon, 'fm-order-wrap');
+  fmSet('fm-first', f.first_seen, 'fm-first-wrap');
+  fmSet('fm-rarity', f.rarity, 'fm-rarity-wrap');
+  fmSet('fm-popularity', f.popularity, 'fm-popularity-wrap');
+  fmSet('fm-photo', f.photo_ease, 'fm-photo-wrap');
+  fmSet('fm-memo', f.memo);
+  document.getElementById('fish-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFishModal() {
+  document.getElementById('fish-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeFishOnOverlay(e) {
+  if (e.target === document.getElementById('fish-modal-overlay')) closeFishModal();
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeFishModal();
+    closeLightbox();
+  }
+});
+</script>
+
+<!-- ライトボックス -->
+<div id="lightbox" onclick="closeLightbox(event)" style="
+  display:none;
+  position:fixed; inset:0; z-index:9000;
+  background:rgba(0,0,0,0.88);
+  align-items:center; justify-content:center;
+">
+  <button onclick="closeLightbox()" style="
+    position:fixed; top:1.2rem; right:1.4rem;
+    background:none; border:none; color:#fff;
+    font-size:2rem; line-height:1; cursor:pointer;
+    opacity:0.75; transition:opacity 0.15s;
+    z-index:9001;
+  " onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.75">✕</button>
+  <img id="lb-img" src="" alt="" style="
+    max-width:92vw; max-height:90vh;
+    object-fit:contain;
+    box-shadow:0 8px 40px rgba(0,0,0,0.6);
+    border-radius:1px;
+    display:block;
+  ">
+</div>
+
+<script>
+function openLightbox(el) {
+  var lb = document.getElementById('lightbox');
+  document.getElementById('lb-img').src = el.dataset.src;
+  lb.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox')) return;
+  var lb = document.getElementById('lightbox');
+  lb.style.display = 'none';
+  document.getElementById('lb-img').src = '';
+  document.body.style.overflow = '';
+}
+</script>
+
+</body>
+</html>
