@@ -39,17 +39,44 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #2a2016;
-      background-image:
-        radial-gradient(ellipse at 30% 10%, #3d2e1a 0%, transparent 60%),
-        radial-gradient(ellipse at 70% 90%, #1e1608 0%, transparent 60%);
+      background: linear-gradient(180deg, #02101d 0%, #041525 45%, #061a2e 100%);
       min-height: 100vh;
       font-family: 'Playfair Display', Georgia, serif;
       color: var(--ink);
       padding: 2rem 1rem 4rem;
     }
 
-    .book { max-width: 960px; margin: 0 auto; }
+    .sea {
+      position: fixed; inset: 0;
+      pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .book { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+
+    @keyframes rise {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      8%   { opacity: 0.35; }
+      88%  { opacity: 0.18; }
+      100% { transform: translateY(-108vh) translateX(var(--drift)); opacity: 0; }
+    }
+    .b {
+      position: absolute; border-radius: 50%;
+      border: 1px solid rgba(140,220,255,0.18);
+      background: radial-gradient(circle at 32% 28%, rgba(200,240,255,0.12), rgba(60,170,255,0.02));
+      animation: rise var(--dur) ease-in var(--delay) infinite;
+    }
+    @keyframes swim-right {
+      0%   { transform: translateX(-200px); opacity: 0; }
+      6%   { opacity: 0.8; }
+      92%  { opacity: 0.7; }
+      100% { transform: translateX(calc(100vw + 200px)); opacity: 0; }
+    }
+    @keyframes swim-left {
+      0%   { transform: translateX(calc(100vw + 200px)) scaleX(-1); opacity: 0; }
+      6%   { opacity: 0.8; }
+      92%  { opacity: 0.7; }
+      100% { transform: translateX(-200px) scaleX(-1); opacity: 0; }
+    }
+    .fish-sea { position: absolute; pointer-events: none; }
 
     /* ── back link ── */
     .back-link {
@@ -416,6 +443,21 @@
       letter-spacing: 0.15em;
     }
 
+    .guidebook-link-wrap { margin-top: 1.2rem; text-align: center; }
+    .guidebook-link {
+      display: inline-block;
+      font-family: 'Special Elite', monospace;
+      font-size: 0.74rem;
+      letter-spacing: 0.14em;
+      color: var(--accent-d);
+      border: 1px solid var(--accent);
+      border-radius: 2px;
+      padding: 6px 16px;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .guidebook-link:hover { background: var(--accent); color: var(--paper); }
+
     @media (max-width: 600px) {
       .cover-inner { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
       .cover-stats { align-items: flex-start; }
@@ -427,6 +469,73 @@
   </style>
 </head>
 <body>
+<div class="sea" aria-hidden="true">
+  <div class="b" style="left:3%;bottom:-5%;width:9px;height:9px;--dur:7s;--delay:0s;--drift:7px"></div>
+  <div class="b" style="left:10%;bottom:-5%;width:5px;height:5px;--dur:5s;--delay:2s;--drift:-5px"></div>
+  <div class="b" style="left:17%;bottom:-5%;width:20px;height:20px;--dur:11s;--delay:1s;--drift:11px"></div>
+  <div class="b" style="left:25%;bottom:-5%;width:7px;height:7px;--dur:6s;--delay:3.5s;--drift:-6px"></div>
+  <div class="b" style="left:32%;bottom:-5%;width:36px;height:36px;--dur:15s;--delay:5s;--drift:15px"></div>
+  <div class="b" style="left:42%;bottom:-5%;width:10px;height:10px;--dur:7.5s;--delay:0.5s;--drift:-8px"></div>
+  <div class="b" style="left:50%;bottom:-5%;width:22px;height:22px;--dur:12s;--delay:2.5s;--drift:10px"></div>
+  <div class="b" style="left:59%;bottom:-5%;width:6px;height:6px;--dur:5.5s;--delay:4s;--drift:-4px"></div>
+  <div class="b" style="left:66%;bottom:-5%;width:16px;height:16px;--dur:9s;--delay:1.5s;--drift:8px"></div>
+  <div class="b" style="left:73%;bottom:-5%;width:28px;height:28px;--dur:13s;--delay:0.3s;--drift:6px"></div>
+  <div class="b" style="left:80%;bottom:-5%;width:8px;height:8px;--dur:6.5s;--delay:6s;--drift:-7px"></div>
+  <div class="b" style="left:88%;bottom:-5%;width:14px;height:14px;--dur:8.5s;--delay:3s;--drift:5px"></div>
+  <div class="b" style="left:94%;bottom:-5%;width:4px;height:4px;--dur:4.5s;--delay:8s;--drift:3px"></div>
+  <div class="b" style="left:20%;bottom:-5%;width:44px;height:44px;--dur:17s;--delay:7s;--drift:18px"></div>
+  <div class="b" style="left:60%;bottom:-5%;width:12px;height:12px;--dur:8s;--delay:9s;--drift:-5px"></div>
+</div>
+<script>
+(function(){
+  var FISH=[
+    // カクレクマノミ
+    ['0 0 100 70','<path d="M32,35 L11,21 L17,35 L11,49 Z" fill="rgba(70,160,235,0.26)"/><path d="M40,18 C52,10 66,11 78,20 C70,18 56,17 42,20 Z" fill="rgba(70,160,235,0.26)"/><path d="M44,52 C52,57 62,57 70,53 C60,54 52,54 46,51 Z" fill="rgba(70,160,235,0.26)"/><path d="M30,35 C30,21 47,14 67,15 C80,16 92,23 92,35 C92,47 80,54 67,55 C47,56 30,49 30,35 Z" fill="rgba(95,180,245,0.22)"/><path d="M40,18 C38,30 38,40 40,52 C45,51 47,51 51,52 C49,40 49,30 51,18 C46,17 44,17 40,18 Z" fill="rgba(160,220,255,0.20)"/><path d="M62,16 C60,28 60,42 62,54 C67,53 69,53 73,54 C71,42 71,28 73,16 C68,15 66,15 62,16 Z" fill="rgba(160,220,255,0.20)"/><path d="M82,21 C81,29 81,41 82,49 C85,47 87,42 87,35 C87,28 85,23 82,21 Z" fill="rgba(160,220,255,0.20)"/><circle cx="83" cy="31" r="2.7" fill="rgba(210,245,255,0.62)"/>','S'],
+    // ハタタテハゼ
+    ['0 0 130 90','<path d="M24,54 L10,46 L16,54 L10,62 Z" fill="rgba(70,160,235,0.26)"/><path d="M58,50 L65,8 L69,11 L64,50 Z" fill="rgba(130,205,250,0.28)"/><path d="M74,49 C78,38 85,36 89,42 C83,44 78,46 75,50 Z" fill="rgba(100,185,245,0.20)"/><path d="M50,60 C56,70 67,70 73,63 C64,64 56,64 51,59 Z" fill="rgba(70,160,235,0.22)"/><path d="M22,54 C24,48 50,46 86,48 C106,49 116,52 118,54 C116,56 106,59 86,60 C50,62 24,60 22,54 Z" fill="rgba(95,180,245,0.22)"/><circle cx="108" cy="52" r="2.6" fill="rgba(210,245,255,0.62)"/>','S'],
+    // ウミガメ
+    ['0 0 144 114','<path d="M94,28 C112,11 135,5 141,14 C133,24 114,37 98,41 C95,36 95,32 94,28 Z" fill="rgba(70,160,235,0.26)"/><path d="M94,86 C112,103 135,109 141,100 C133,90 114,77 98,73 C95,78 95,82 94,86 Z" fill="rgba(70,160,235,0.26)"/><path d="M44,32 C31,21 18,24 23,35 C28,44 39,46 47,41 Z" fill="rgba(70,160,235,0.24)"/><path d="M44,82 C31,93 18,90 23,79 C28,70 39,68 47,73 Z" fill="rgba(70,160,235,0.24)"/><path d="M118,50 C130,42 140,46 138,55 C136,63 126,65 118,60 Z" fill="rgba(70,160,235,0.26)"/><path d="M34,57 C34,31 58,18 82,20 C105,22 119,37 119,57 C119,77 105,92 82,94 C58,96 34,83 34,57 Z" fill="rgba(95,180,245,0.22)"/><path d="M52,42 C72,33 98,35 112,47 C106,57 106,57 112,67 C98,79 72,81 52,72 C58,60 58,54 52,42 Z" fill="rgba(150,215,255,0.15)"/><circle cx="130" cy="51" r="2.6" fill="rgba(210,245,255,0.62)"/>','M'],
+    // ロウニンアジ
+    ['0 0 162 106','<path d="M48,53 C40,49 30,43 22,37 C26,46 26,60 22,69 C30,63 40,57 48,53 Z" fill="rgba(70,160,235,0.26)"/><path d="M70,22 C90,15 112,17 126,26 C110,22 90,22 72,27 Z" fill="rgba(70,160,235,0.24)"/><path d="M72,84 C90,91 110,89 124,82 C110,87 90,87 74,82 Z" fill="rgba(70,160,235,0.24)"/><path d="M46,53 C46,31 66,18 94,18 C120,18 140,30 146,46 C148,50 148,56 146,60 C140,76 120,88 94,88 C66,88 46,75 46,53 Z" fill="rgba(95,180,245,0.22)"/><path d="M70,52 C90,48 116,48 138,52 C116,56 90,56 70,52 Z" fill="rgba(60,150,225,0.16)"/><circle cx="131" cy="42" r="3.4" fill="rgba(210,245,255,0.62)"/>','M'],
+    // キビナゴ
+    ['0 0 150 110','<g fill="rgba(130,205,250,0.22)"><path d="M30,20 C30,17 42,16 48,19 L52,20 L48,21 C42,24 30,23 30,20 Z M30,20 L24,16 L26,20 L24,24 Z"/><path d="M48,30 C48,27 60,26 66,29 L70,30 L66,31 C60,34 48,33 48,30 Z M48,30 L42,26 L44,30 L42,34 Z"/><path d="M22,38 C22,35 34,34 40,37 L44,38 L40,39 C34,42 22,41 22,38 Z M22,38 L16,34 L18,38 L16,42 Z"/><path d="M44,46 C44,43 56,42 62,45 L66,46 L62,47 C56,50 44,49 44,46 Z M44,46 L38,42 L40,46 L38,50 Z"/><path d="M66,40 C66,37 78,36 84,39 L88,40 L84,41 C78,44 66,43 66,40 Z M66,40 L60,36 L62,40 L60,44 Z"/><path d="M88,30 C88,27 100,26 106,29 L110,30 L106,31 C100,34 88,33 88,30 Z M88,30 L82,26 L84,30 L82,34 Z"/><path d="M70,54 C70,51 82,50 88,53 L92,54 L88,55 C82,58 70,57 70,54 Z M70,54 L64,50 L66,54 L64,58 Z"/><path d="M94,46 C94,43 106,42 112,45 L116,46 L112,47 C106,50 94,49 94,46 Z M94,46 L88,42 L90,46 L88,50 Z"/><path d="M38,62 C38,59 50,58 56,61 L60,62 L56,63 C50,66 38,65 38,62 Z M38,62 L32,58 L34,62 L32,66 Z"/><path d="M62,70 C62,67 74,66 80,69 L84,70 L80,71 C74,74 62,73 62,70 Z M62,70 L56,66 L58,70 L56,74 Z"/><path d="M90,62 C90,59 102,58 108,61 L112,62 L108,63 C102,66 90,65 90,62 Z M90,62 L84,58 L86,62 L84,66 Z"/><path d="M112,54 C112,51 124,50 130,53 L134,54 L130,55 C124,58 112,57 112,54 Z M112,54 L106,50 L108,54 L106,58 Z"/><path d="M54,82 C54,79 66,78 72,81 L76,82 L72,83 C66,86 54,85 54,82 Z M54,82 L48,78 L50,82 L48,86 Z"/><path d="M82,84 C82,81 94,80 100,83 L104,84 L100,85 C94,88 82,87 82,84 Z M82,84 L76,80 L78,84 L76,88 Z"/><path d="M108,76 C108,73 120,72 126,75 L130,76 L126,77 C120,80 108,79 108,76 Z M108,76 L102,72 L104,76 L102,80 Z"/></g>','M'],
+    // バラクーダ
+    ['0 0 170 100','<g fill="rgba(95,180,245,0.22)"><path d="M14,24 C14,21 60,20 78,22 L84,24 L78,26 C60,28 14,27 14,24 Z M14,24 L6,18 L9,24 L6,30 Z M52,20 L58,15 L60,21 Z M52,28 L58,33 L60,27 Z"/><path d="M40,42 C40,39 86,38 104,40 L110,42 L104,44 C86,46 40,45 40,42 Z M40,42 L32,36 L35,42 L32,48 Z M78,38 L84,33 L86,39 Z M78,46 L84,51 L86,45 Z"/><path d="M20,58 C20,55 66,54 84,56 L90,58 L84,60 C66,62 20,61 20,58 Z M20,58 L12,52 L15,58 L12,64 Z M58,54 L64,49 L66,55 Z M58,62 L64,67 L66,61 Z"/><path d="M50,74 C50,71 96,70 114,72 L120,74 L114,76 C96,78 50,77 50,74 Z M50,74 L42,68 L45,74 L42,80 Z M88,70 L94,65 L96,71 Z M88,78 L94,83 L96,77 Z"/><path d="M30,90 C30,87 76,86 94,88 L100,90 L94,92 C76,94 30,93 30,90 Z M30,90 L22,84 L25,90 L22,96 Z M68,86 L74,81 L76,87 Z M68,94 L74,99 L76,93 Z"/></g><g fill="rgba(210,245,255,0.55)"><circle cx="76" cy="24" r="1.8"/><circle cx="102" cy="42" r="1.8"/><circle cx="82" cy="58" r="1.8"/><circle cx="112" cy="74" r="1.8"/><circle cx="92" cy="90" r="1.8"/></g>','M'],
+    // マンタ
+    ['0 0 200 132','<path d="M40,66 C26,64 12,64 4,66 C12,68 26,68 40,68 Z" fill="rgba(70,160,235,0.22)"/><path d="M150,60 C162,53 171,55 167,62 C162,65 156,65 150,63 Z" fill="rgba(70,160,235,0.26)"/><path d="M150,72 C162,79 171,77 167,70 C162,67 156,67 150,69 Z" fill="rgba(70,160,235,0.26)"/><path d="M150,66 C146,43 110,21 72,13 C96,40 90,54 60,60 C50,62 42,64 40,66 C42,68 50,70 60,72 C90,78 96,92 72,119 C110,111 146,89 150,66 Z" fill="rgba(95,180,245,0.22)"/><path d="M120,50 C108,42 96,40 84,44 C100,48 110,54 116,62 C118,57 119,53 120,50 Z" fill="rgba(160,225,255,0.14)"/><circle cx="140" cy="62" r="3" fill="rgba(210,245,255,0.60)"/>','L'],
+    // ジンベイザメ
+    ['0 0 240 132','<path d="M52,68 C38,50 24,30 16,18 C24,38 32,56 42,66 C36,74 28,84 22,94 C34,82 46,72 52,68 Z" fill="rgba(70,160,235,0.26)"/><path d="M132,36 C142,12 160,12 166,36 C154,31 144,31 132,36 Z" fill="rgba(70,160,235,0.26)"/><path d="M70,42 C78,30 90,30 94,42 Z" fill="rgba(70,160,235,0.24)"/><path d="M178,84 C190,104 210,108 218,98 C206,89 192,84 182,82 Z" fill="rgba(70,160,235,0.24)"/><path d="M50,68 C52,46 86,32 144,30 C188,28 218,36 232,48 C236,54 236,58 232,60 C234,62 234,66 232,68 C218,82 188,90 144,88 C86,86 52,90 50,68 Z" fill="rgba(95,180,245,0.22)"/><g fill="rgba(190,235,255,0.24)"><circle cx="92" cy="50" r="3.6"/><circle cx="118" cy="46" r="3.6"/><circle cx="146" cy="48" r="3.6"/><circle cx="172" cy="52" r="3.6"/><circle cx="104" cy="70" r="3.6"/><circle cx="132" cy="72" r="3.6"/><circle cx="160" cy="70" r="3.6"/><circle cx="186" cy="62" r="3.6"/></g><circle cx="222" cy="64" r="3.4" fill="rgba(210,245,255,0.62)"/>','L'],
+    // シロワニ
+    ['0 0 200 96','<path d="M34,50 C24,38 12,18 6,11 C10,24 16,38 26,48 C18,52 12,58 6,65 C14,60 24,56 34,50 Z" fill="rgba(70,160,235,0.26)"/><path d="M104,32 C108,15 121,15 125,32 C117,29 111,29 104,32 Z" fill="rgba(70,160,235,0.26)"/><path d="M72,34 C76,20 88,20 92,34 Z" fill="rgba(70,160,235,0.24)"/><path d="M88,64 C92,77 105,77 111,66 Z" fill="rgba(70,160,235,0.24)"/><path d="M34,50 C48,34 92,28 132,30 C164,32 184,41 195,49 C184,57 164,64 132,66 C92,68 48,62 34,50 Z" fill="rgba(95,180,245,0.22)"/><path d="M173,52 L177,57 L180,52 L183,57 L186,52 L189,56 L192,52 Z" fill="rgba(190,235,255,0.26)"/><circle cx="176" cy="45" r="3" fill="rgba(210,245,255,0.62)"/>','L'],
+    // マンボウ
+    ['0 0 152 172','<path d="M74,46 L82,6 L102,48 C92,43 82,43 74,46 Z" fill="rgba(70,160,235,0.26)"/><path d="M74,128 L82,168 L102,126 C92,131 82,131 74,128 Z" fill="rgba(70,160,235,0.26)"/><path d="M64,52 C56,62 60,68 56,76 C60,82 56,90 60,98 C56,106 60,112 56,120 C60,124 64,124 66,122 C62,110 62,96 62,86 C62,76 62,62 66,52 Z" fill="rgba(70,160,235,0.24)"/><path d="M62,86 C62,56 84,34 110,36 C132,38 146,60 146,86 C146,112 132,134 110,136 C84,138 62,116 62,86 Z" fill="rgba(95,180,245,0.22)"/><path d="M120,84 C128,80 134,82 132,88 C128,90 124,88 120,86 Z" fill="rgba(70,160,235,0.24)"/><circle cx="128" cy="72" r="3.2" fill="rgba(210,245,255,0.62)"/>','L'],
+    // ハンドウイルカ
+    ['0 0 200 102','<path d="M32,54 C20,49 10,47 4,43 C10,49 12,55 10,60 C16,57 22,56 28,56 C24,59 18,63 12,71 C20,67 28,61 32,57 C31,56 31,55 32,54 Z" fill="rgba(70,160,235,0.26)"/><path d="M100,32 C95,19 89,11 95,9 C103,13 111,23 118,33 C112,31 106,31 100,32 Z" fill="rgba(70,160,235,0.26)"/><path d="M138,62 C146,76 158,82 162,74 C154,68 146,64 142,60 Z" fill="rgba(70,160,235,0.24)"/><path d="M30,54 C42,40 82,30 134,30 C152,30 164,32 172,37 C177,41 174,45 179,48 C185,49 191,50 195,52 C191,54 185,55 179,56 C176,57 174,57 172,59 C150,66 110,68 80,66 C56,64 40,62 30,54 Z" fill="rgba(95,180,245,0.22)"/><path d="M70,58 C100,66 140,64 168,57 C160,64 130,68 100,68 C84,68 76,64 70,58 Z" fill="rgba(160,222,255,0.16)"/><circle cx="176" cy="46" r="2.8" fill="rgba(210,245,255,0.62)"/>','L'],
+    // ザトウクジラ
+    ['0 0 262 152','<path d="M54,76 C42,64 26,54 12,48 C20,60 26,72 22,84 C32,78 44,74 52,74 C44,77 30,84 16,98 C28,90 44,82 56,78 C55,77 54,76 54,76 Z" fill="rgba(95,180,245,0.22)"/><path d="M152,90 C142,116 120,140 94,150 C90,140 96,124 110,110 C126,94 144,88 156,86 Z" fill="rgba(85,175,240,0.26)"/><path d="M106,36 C110,23 122,23 126,35 C118,32 112,32 106,36 Z" fill="rgba(70,160,235,0.24)"/><path d="M52,76 C56,48 104,34 168,34 C210,34 238,44 248,58 C251,62 251,66 248,70 C240,82 214,90 168,92 C104,94 56,98 52,76 Z" fill="rgba(95,180,245,0.22)"/><g fill="rgba(70,160,235,0.28)"><circle cx="214" cy="42" r="3.2"/><circle cx="226" cy="46" r="3"/><circle cx="236" cy="52" r="2.8"/><circle cx="218" cy="84" r="3"/><circle cx="230" cy="78" r="2.8"/></g><g fill="rgba(80,170,235,0.26)"><circle cx="108" cy="116" r="2.6"/><circle cx="122" cy="104" r="2.6"/><circle cx="138" cy="96" r="2.6"/></g><circle cx="234" cy="64" r="3.2" fill="rgba(210,245,255,0.60)"/>','L'],
+  ];
+  var sea=document.querySelector('.sea');
+  if(!sea)return;
+  var count=3+Math.floor(Math.random()*3);
+  var pool=FISH.map(function(_,i){return i;});
+  for(var i=pool.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=pool[i];pool[i]=pool[j];pool[j]=t;}
+  pool.slice(0,count).forEach(function(fi,idx){
+    var f=FISH[fi];
+    var goRight=Math.random()>0.5;
+    var bottom=(8+Math.random()*72).toFixed(1);
+    var sz={S:[38,65],M:[60,110],L:[110,190]}[f[2]||'M'];var width=(sz[0]+Math.random()*(sz[1]-sz[0])).toFixed(0);
+    var dur=(15+Math.random()*32).toFixed(1);
+    var delay=(5+idx*5+Math.random()*4).toFixed(1);
+    var el=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    el.setAttribute('viewBox',f[0]);
+    el.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    el.classList.add('fish-sea');
+    el.style.cssText='bottom:'+bottom+'%;width:'+width+'px;opacity:0;animation:'+(goRight?'swim-right':'swim-left')+' '+dur+'s linear '+delay+'s infinite normal backwards';
+    el.innerHTML=f[1];
+    sea.appendChild(el);
+  });
+})();
+</script>
 <div class="book">
 
   <a class="back-link" href="index.html">← ログブック一覧に戻る</a>
@@ -437,7 +546,7 @@
       <div class="cover-text">
         <div class="stamp">Personal Dive Log Book</div>
         <div class="title">Fish Encyclopedia</div>
-        <div class="subtitle">出会った生き物の記録</div>
+        <div class="subtitle">魚図鑑</div>
       </div>
       <div class="cover-stats">
         <div class="stat-total">{{ total }}</div>
@@ -526,6 +635,9 @@
         </div>
       </div>
       <div id="modal-memo" class="modal-memo" style="display:none"></div>
+      <div id="modal-guidebook-wrap" class="guidebook-link-wrap" style="display:none">
+        <a id="modal-guidebook-link" href="#" target="_blank" class="guidebook-link">📖 図鑑で見る</a>
+      </div>
     </div>
   </div>
 </div>
@@ -591,8 +703,16 @@
 
     /* thumbnail */
     var thumbWrap = document.getElementById('modal-thumb-wrap');
+    thumbWrap.innerHTML = '';
     if (f.thumbnail) {
-      thumbWrap.innerHTML = '<img src="' + f.thumbnail + '" alt="' + f.name + '" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=\\\"modal-thumb-placeholder\\\">🐠</div>\'">';
+      var img = document.createElement('img');
+      img.src     = f.thumbnail;
+      img.alt     = f.name;
+      img.loading = 'lazy';
+      img.addEventListener('error', function() {
+        thumbWrap.innerHTML = '<div class="modal-thumb-placeholder">🐠</div>';
+      });
+      thumbWrap.appendChild(img);
     } else {
       thumbWrap.innerHTML = '<div class="modal-thumb-placeholder">🐠</div>';
     }
@@ -607,6 +727,15 @@
     setField('meta-popularity', f.popularity, 'meta-popularity-wrap');
     setField('meta-photo', f.photo_ease, 'meta-photo-wrap');
     setField('modal-memo', f.memo);
+
+    var gbWrap = document.getElementById('modal-guidebook-wrap');
+    var gbLink = document.getElementById('modal-guidebook-link');
+    if (f.family) {
+      gbLink.href = 'guidebook.html?family=' + encodeURIComponent(f.family);
+      gbWrap.style.display = '';
+    } else {
+      gbWrap.style.display = 'none';
+    }
 
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';

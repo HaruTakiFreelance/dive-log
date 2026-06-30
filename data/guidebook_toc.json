@@ -1,0 +1,622 @@
+[
+  {
+    "name": "ネコザメ科",
+    "book_page": 16,
+    "page": 22
+  },
+  {
+    "name": "オオセ科",
+    "book_page": 16,
+    "page": 22
+  },
+  {
+    "name": "テンジクザメ科",
+    "book_page": 16,
+    "page": 22
+  },
+  {
+    "name": "ジンベエザメ科",
+    "book_page": 17,
+    "page": 23
+  },
+  {
+    "name": "オオワニザメ科",
+    "book_page": 17,
+    "page": 23
+  },
+  {
+    "name": "トラザメ科",
+    "book_page": 18,
+    "page": 24
+  },
+  {
+    "name": "ドチザメ科",
+    "book_page": 18,
+    "page": 24
+  },
+  {
+    "name": "メジロザメ科",
+    "book_page": 19,
+    "page": 25
+  },
+  {
+    "name": "シュモクザメ科",
+    "book_page": 20,
+    "page": 26
+  },
+  {
+    "name": "ツノザメ科",
+    "book_page": 21,
+    "page": 27
+  },
+  {
+    "name": "カスザメ科",
+    "book_page": 21,
+    "page": 27
+  },
+  {
+    "name": "ノコギリザメ科",
+    "book_page": 21,
+    "page": 27
+  },
+  {
+    "name": "サカタザメ科",
+    "book_page": 22,
+    "page": 28
+  },
+  {
+    "name": "ウチワザメ科",
+    "book_page": 22,
+    "page": 28
+  },
+  {
+    "name": "シビレエイ科",
+    "book_page": 22,
+    "page": 28
+  },
+  {
+    "name": "ヒラタエイ科",
+    "book_page": 23,
+    "page": 29
+  },
+  {
+    "name": "アカエイ科",
+    "book_page": 23,
+    "page": 29
+  },
+  {
+    "name": "トビエイ科",
+    "book_page": 24,
+    "page": 30
+  },
+  {
+    "name": "ウツボ科",
+    "book_page": 25,
+    "page": 31
+  },
+  {
+    "name": "ウミヘビ科",
+    "book_page": 32,
+    "page": 38
+  },
+  {
+    "name": "アナゴ科",
+    "book_page": 34,
+    "page": 40
+  },
+  {
+    "name": "ニシン科",
+    "book_page": 36,
+    "page": 42
+  },
+  {
+    "name": "コンズイ科",
+    "book_page": 37,
+    "page": 43
+  },
+  {
+    "name": "エソ科",
+    "book_page": 37,
+    "page": 43
+  },
+  {
+    "name": "ホタテエソ科",
+    "book_page": 38,
+    "page": 44
+  },
+  {
+    "name": "クサアジ科",
+    "book_page": 39,
+    "page": 45
+  },
+  {
+    "name": "チゴタラ科",
+    "book_page": 39,
+    "page": 45
+  },
+  {
+    "name": "アシロ科",
+    "book_page": 40,
+    "page": 46
+  },
+  {
+    "name": "アンコウ科",
+    "book_page": 40,
+    "page": 46
+  },
+  {
+    "name": "カエルアンコウ科",
+    "book_page": 41,
+    "page": 47
+  },
+  {
+    "name": "アカグツ科",
+    "book_page": 45,
+    "page": 51
+  },
+  {
+    "name": "キンメダイ科",
+    "book_page": 46,
+    "page": 52
+  },
+  {
+    "name": "イットウダイ科",
+    "book_page": 46,
+    "page": 52
+  },
+  {
+    "name": "マツカサウオ科",
+    "book_page": 50,
+    "page": 56
+  },
+  {
+    "name": "ヒカリキンメダイ科",
+    "book_page": 51,
+    "page": 57
+  },
+  {
+    "name": "マトウダイ科",
+    "book_page": 51,
+    "page": 57
+  },
+  {
+    "name": "ウミテング科",
+    "book_page": 52,
+    "page": 58
+  },
+  {
+    "name": "ヘラヤガラ科",
+    "book_page": 52,
+    "page": 58
+  },
+  {
+    "name": "ヤガラ科",
+    "book_page": 53,
+    "page": 59
+  },
+  {
+    "name": "ヘコアユ科",
+    "book_page": 53,
+    "page": 59
+  },
+  {
+    "name": "カミソリウオ科",
+    "book_page": 54,
+    "page": 60
+  },
+  {
+    "name": "ヨウジウオ科",
+    "book_page": 55,
+    "page": 61
+  },
+  {
+    "name": "ボラ科",
+    "book_page": 61,
+    "page": 67
+  },
+  {
+    "name": "ダツ科",
+    "book_page": 61,
+    "page": 67
+  },
+  {
+    "name": "メバル科",
+    "book_page": 61,
+    "page": 67
+  },
+  {
+    "name": "フサカサゴ科",
+    "book_page": 64,
+    "page": 70
+  },
+  {
+    "name": "ハチ科",
+    "book_page": 72,
+    "page": 78
+  },
+  {
+    "name": "ハオコゼ科",
+    "book_page": 73,
+    "page": 79
+  },
+  {
+    "name": "オニオコゼ科",
+    "book_page": 73,
+    "page": 79
+  },
+  {
+    "name": "イボオコゼ科",
+    "book_page": 74,
+    "page": 80
+  },
+  {
+    "name": "ヒレナガカサゴ科",
+    "book_page": 75,
+    "page": 81
+  },
+  {
+    "name": "ホウボウ科",
+    "book_page": 75,
+    "page": 81
+  },
+  {
+    "name": "コチ科",
+    "book_page": 75,
+    "page": 81
+  },
+  {
+    "name": "セミホウボウ科",
+    "book_page": 76,
+    "page": 82
+  },
+  {
+    "name": "ホタルジャコ科",
+    "book_page": 76,
+    "page": 82
+  },
+  {
+    "name": "ハタ科",
+    "book_page": 77,
+    "page": 83
+  },
+  {
+    "name": "シキシマハナダイ科",
+    "book_page": 95,
+    "page": 101
+  },
+  {
+    "name": "カワリハナダイ科",
+    "book_page": 96,
+    "page": 102
+  },
+  {
+    "name": "メギス科",
+    "book_page": 96,
+    "page": 102
+  },
+  {
+    "name": "タナバタウオ科",
+    "book_page": 97,
+    "page": 103
+  },
+  {
+    "name": "アゴアマダイ科",
+    "book_page": 98,
+    "page": 104
+  },
+  {
+    "name": "キントキダイ科",
+    "book_page": 99,
+    "page": 105
+  },
+  {
+    "name": "テンジクダイ科",
+    "book_page": 100,
+    "page": 106
+  },
+  {
+    "name": "アマダイ科",
+    "book_page": 112,
+    "page": 118
+  },
+  {
+    "name": "キツネアマダイ科",
+    "book_page": 112,
+    "page": 118
+  },
+  {
+    "name": "ムツ科",
+    "book_page": 114,
+    "page": 120
+  },
+  {
+    "name": "コバンザメ科",
+    "book_page": 115,
+    "page": 121
+  },
+  {
+    "name": "アジ科",
+    "book_page": 115,
+    "page": 121
+  },
+  {
+    "name": "シマガツオ科",
+    "book_page": 121,
+    "page": 127
+  },
+  {
+    "name": "フエダイ科",
+    "book_page": 121,
+    "page": 127
+  },
+  {
+    "name": "タカサゴ科",
+    "book_page": 126,
+    "page": 132
+  },
+  {
+    "name": "マツダイ科",
+    "book_page": 127,
+    "page": 133
+  },
+  {
+    "name": "クロサギ科",
+    "book_page": 128,
+    "page": 134
+  },
+  {
+    "name": "イサキ科",
+    "book_page": 128,
+    "page": 134
+  },
+  {
+    "name": "フエフキダイ科",
+    "book_page": 135,
+    "page": 141
+  },
+  {
+    "name": "キス科",
+    "book_page": 137,
+    "page": 143
+  },
+  {
+    "name": "ヒメジ科",
+    "book_page": 137,
+    "page": 143
+  },
+  {
+    "name": "ハタンポ科",
+    "book_page": 141,
+    "page": 147
+  },
+  {
+    "name": "チョウチョウウオ科",
+    "book_page": 142,
+    "page": 148
+  },
+  {
+    "name": "キンチャクダイ科",
+    "book_page": 158,
+    "page": 164
+  },
+  {
+    "name": "カワビシャ科",
+    "book_page": 170,
+    "page": 176
+  },
+  {
+    "name": "ゴンベ科",
+    "book_page": 170,
+    "page": 176
+  },
+  {
+    "name": "タカノハダイ科",
+    "book_page": 174,
+    "page": 180
+  },
+  {
+    "name": "アカタチ科",
+    "book_page": 175,
+    "page": 181
+  },
+  {
+    "name": "ウミタナゴ科",
+    "book_page": 175,
+    "page": 181
+  },
+  {
+    "name": "スズメダイ科",
+    "book_page": 176,
+    "page": 182
+  },
+  {
+    "name": "タカベ科",
+    "book_page": 200,
+    "page": 206
+  },
+  {
+    "name": "イシダイ科",
+    "book_page": 201,
+    "page": 207
+  },
+  {
+    "name": "イスズミ科",
+    "book_page": 201,
+    "page": 207
+  },
+  {
+    "name": "カゴカキダイ科",
+    "book_page": 203,
+    "page": 209
+  },
+  {
+    "name": "メジナ科",
+    "book_page": 203,
+    "page": 209
+  },
+  {
+    "name": "イボダイ科",
+    "book_page": 204,
+    "page": 210
+  },
+  {
+    "name": "エボシダイ科",
+    "book_page": 205,
+    "page": 211
+  },
+  {
+    "name": "ベラ科",
+    "book_page": 205,
+    "page": 211
+  },
+  {
+    "name": "ブダイ科",
+    "book_page": 253,
+    "page": 259
+  },
+  {
+    "name": "カジカ科",
+    "book_page": 266,
+    "page": 272
+  },
+  {
+    "name": "ダンゴウオ科",
+    "book_page": 266,
+    "page": 272
+  },
+  {
+    "name": "クサウオ科",
+    "book_page": 267,
+    "page": 273
+  },
+  {
+    "name": "トラギス科",
+    "book_page": 267,
+    "page": 273
+  },
+  {
+    "name": "ベラギンポ科",
+    "book_page": 271,
+    "page": 277
+  },
+  {
+    "name": "ミシマオコゼ科",
+    "book_page": 272,
+    "page": 278
+  },
+  {
+    "name": "ヘビギンポ科",
+    "book_page": 272,
+    "page": 278
+  },
+  {
+    "name": "コケギンポ科",
+    "book_page": 281,
+    "page": 287
+  },
+  {
+    "name": "イソギンポ科",
+    "book_page": 285,
+    "page": 291
+  },
+  {
+    "name": "ウバウオ科",
+    "book_page": 294,
+    "page": 300
+  },
+  {
+    "name": "ネズッポ科",
+    "book_page": 296,
+    "page": 302
+  },
+  {
+    "name": "ハゼ科",
+    "book_page": 301,
+    "page": 307
+  },
+  {
+    "name": "クロユリハゼ科",
+    "book_page": 329,
+    "page": 335
+  },
+  {
+    "name": "アイゴ科",
+    "book_page": 333,
+    "page": 339
+  },
+  {
+    "name": "ツノダシ科",
+    "book_page": 334,
+    "page": 340
+  },
+  {
+    "name": "ニザダイ科",
+    "book_page": 334,
+    "page": 340
+  },
+  {
+    "name": "カマス科",
+    "book_page": 345,
+    "page": 351
+  },
+  {
+    "name": "サバ科",
+    "book_page": 347,
+    "page": 353
+  },
+  {
+    "name": "ヒラメ科",
+    "book_page": 349,
+    "page": 355
+  },
+  {
+    "name": "ダルマガレイ科",
+    "book_page": 349,
+    "page": 355
+  },
+  {
+    "name": "べロガレイ科",
+    "book_page": 349,
+    "page": 355
+  },
+  {
+    "name": "ササウシノシタ科",
+    "book_page": 350,
+    "page": 356
+  },
+  {
+    "name": "ギマ科",
+    "book_page": 351,
+    "page": 357
+  },
+  {
+    "name": "モンガラカワハギ科",
+    "book_page": 351,
+    "page": 357
+  },
+  {
+    "name": "カワハギ科",
+    "book_page": 357,
+    "page": 363
+  },
+  {
+    "name": "ハコフグ科",
+    "book_page": 363,
+    "page": 369
+  },
+  {
+    "name": "フグ科",
+    "book_page": 366,
+    "page": 372
+  },
+  {
+    "name": "ハリセンボン科",
+    "book_page": 372,
+    "page": 378
+  },
+  {
+    "name": "マンボウ科",
+    "book_page": 373,
+    "page": 379
+  }
+]
