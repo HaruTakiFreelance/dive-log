@@ -6,23 +6,23 @@ GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search"
 WEATHER_URL   = "https://archive-api.open-meteo.com/v1/archive"
 MARINE_URL    = "https://marine-api.open-meteo.com/v1/marine"
 
-_cache_path = Path(__file__).parent.parent / "data" / "locations_cache.json"
+_coords_cache_path = Path(__file__).parent.parent / "data" / "coords_cache.json"
 
 
-def _load_cache():
-    if _cache_path.exists():
-        return json.loads(_cache_path.read_text(encoding="utf-8"))
+def _load_coords_cache():
+    if _coords_cache_path.exists():
+        return json.loads(_coords_cache_path.read_text(encoding="utf-8"))
     return {}
 
 
-def _save_cache(cache):
-    _cache_path.write_text(
+def _save_coords_cache(cache):
+    _coords_cache_path.write_text(
         json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
 
 def _geocode(location_name):
-    cache = _load_cache()
+    cache = _load_coords_cache()
     if location_name in cache:
         return cache[location_name]
     try:
@@ -35,7 +35,7 @@ def _geocode(location_name):
             r = res["results"][0]
             coords = {"lat": r["latitude"], "lon": r["longitude"]}
             cache[location_name] = coords
-            _save_cache(cache)
+            _save_coords_cache(cache)
             return coords
     except Exception:
         pass
@@ -72,8 +72,8 @@ def get_weather_and_marine(location, date, start_time, end_time):
         return {}
 
     lat, lon = coords["lat"], coords["lon"]
-    start_h  = int(start_time.split(":")[0])
-    end_h    = int(end_time.split(":")[0])
+    start_h  = int(start_time.split(":")[0]) if start_time else 0
+    end_h    = int(end_time.split(":")[0])   if end_time   else 23
     result   = {}
 
     try:

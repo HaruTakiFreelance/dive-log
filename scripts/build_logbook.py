@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
+PROFILES_DIR = ROOT / "data" / "depth_profiles"
 
 load_dotenv(ROOT / ".env")
 load_dotenv(Path("/Users/harutakizawa/Desktop/claude code/my-hq-bot/.env"))
@@ -28,10 +29,10 @@ from lib.notion_api import NotionDiveClient
 
 _ids = json.loads((ROOT / "data" / "notion_ids.json").read_text())
 notion = NotionDiveClient(
-    os.getenv("NOTION_TOKEN"), _ids["dive_log_db"], _ids["fish_db"], _ids["photo_db"]
+    os.getenv("NOTION_TOKEN"), _ids["dive_log_db"], _ids["fish_db"], _ids["photo_db"],
+    _ids.get("review_db"),
 )
 
-LOCATION_CACHE_PATH = ROOT / "data" / "locations_cache.json"
 OUTPUT_DIR    = ROOT / "docs"
 SESSIONS_DIR  = OUTPUT_DIR / "sessions"
 FISH_THUMB_DIR = OUTPUT_DIR / "fish_thumbs"
@@ -81,34 +82,6 @@ def stars_to_html(stars: str) -> Markup:
     return Markup(html)
 
 
-# ── 場所説明 (Claude Haiku, キャッシュ) ──────────────────────────────────────
-def get_location_desc(location: str, cache: dict) -> str:
-    if location in cache:
-        return cache[location]
-    try:
-        import anthropic
-        client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-        msg = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=300,
-            messages=[{
-                "role": "user",
-                "content": (
-                    f"ダイビングスポット「{location}」について、"
-                    "日本語で3〜4文の魅力的な紹介文を書いてください。"
-                    "海の様子、地形、生き物の特徴などを含めてください。"
-                    "マークダウンや記号は使わず、自然な文章で。"
-                ),
-            }],
-        )
-        desc = msg.content[0].text.strip()
-        cache[location] = desc
-        return desc
-    except Exception as e:
-        print(f"  [warn] 場所説明生成失敗 ({location}): {e}")
-        return ""
-
-
 # ── Notionページのパース ──────────────────────────────────────────────────────
 def parse_dive(page: dict) -> dict:
     p = page["properties"]
@@ -123,6 +96,7 @@ def parse_dive(page: dict) -> dict:
         "end_time":    _txt(p, "終了時刻"),
         "duration":    _num(p, "潜水時間"),
         "max_depth":   _num(p, "Max Depth"),
+        "avg_depth":   _num(p, "平均水深"),
         "weight":      _num(p, "ウェイト"),
         "weather":     _select(p, "天気"),
         "wave_height": _num(p, "波の高さ(m)"),
@@ -130,6 +104,7 @@ def parse_dive(page: dict) -> dict:
         "cost":        _num(p, "かかった金額"),
         "comment":     _txt(p, "コメント"),
         "video_links": _txt(p, "動画リンク"),
+        "buddy":       _txt(p, "バディ"),
         "fish_ids":    _relation_ids(p, "見れた魚"),
     }
 
@@ -211,6 +186,111 @@ def make_session_filename(date_str: str, location: str) -> str:
     return f"{date_str}_{safe_loc}.html"
 
 
+# ── 深度プロファイル ──────────────────────────────────────────────────────────
+def load_depth_profiles() -> dict:
+    """(date, start_time) → profile JSON"""
+    if not PROFILES_DIR.exists():
+        return {}
+    result = {}
+    for f in PROFILES_DIR.glob("*.json"):
+        try:
+            data = json.loads(f.read_text())
+            result[(data["date"], data["start_time"])] = data
+        except Exception:
+            pass
+    return result
+
+
+GRAPH_MAX_DEPTH    = 45   # y軸固定: 0〜45m
+GRAPH_MAX_DURATION = 60   # x軸固定: 0〜60分
+GRAPH_DEPTH_STEP   = 5    # y軸目盛り間隔
+
+def generate_depth_svg(profile: list, avg_depth: float | None,
+                       warning: str, uid: str, duration_mins: float | None = None) -> str:
+    if not profile or len(profile) < 2:
+        return ""
+
+    W, H = 340, 145
+    PL, PR, PT, PB = 38, 16, 10, 26
+    pw = W - PL - PR
+    ph = H - PT - PB
+
+    y_scale = GRAPH_MAX_DEPTH
+    n = len(profile)
+    actual_mins = min(duration_mins or 38, GRAPH_MAX_DURATION)  # 60分上限
+
+    # X軸は常に60分固定。プロファイルはその中に actual_mins 分だけ描画
+    pts = [
+        (PL + (i / (n - 1) * actual_mins / GRAPH_MAX_DURATION) * pw,
+         PT + min(profile[i], y_scale) / y_scale * ph)
+        for i in range(n)
+    ]
+
+    # 塗り: 左端(水面)→プロファイル→最終点の真上(水面)→閉じる
+    last_x = pts[-1][0]
+    fill_d = f"M {PL},{PT} " + " ".join(f"L {x:.1f},{y:.1f}" for x, y in pts) + f" L {last_x:.1f},{PT} Z"
+    line_d = f"M {pts[0][0]:.1f},{pts[0][1]:.1f} " + " ".join(f"L {x:.1f},{y:.1f}" for x, y in pts[1:])
+
+    # Y軸: 5m刻み（0〜45m）
+    depth_labels = []
+    for val in range(0, GRAPH_MAX_DEPTH + 1, GRAPH_DEPTH_STEP):
+        y = PT + val / y_scale * ph
+        depth_labels.append(
+            f'<line x1="{PL}" y1="{y:.1f}" x2="{PL+pw}" y2="{y:.1f}" '
+            f'stroke="#3d6b8a" stroke-width="{0.6 if val % 10 == 0 else 0.3}" '
+            f'stroke-dasharray="{"2,3" if val % 10 != 0 else "3,4"}" opacity="{"0.35" if val % 10 == 0 else "0.18"}"/>'
+        )
+        if val % 10 == 0:  # 10m刻みでラベル表示
+            depth_labels.append(
+                f'<text x="{PL-4}" y="{y+3:.1f}" text-anchor="end" font-size="7" '
+                f'fill="#999988" font-family="monospace">{val}m</text>'
+            )
+
+    # X軸: 固定60分・10分刻み
+    time_labels = []
+    for t in range(0, GRAPH_MAX_DURATION + 1, 10):
+        x = PL + (t / GRAPH_MAX_DURATION) * pw
+        time_labels.append(
+            f'<line x1="{x:.1f}" y1="{PT}" x2="{x:.1f}" y2="{PT+ph}" '
+            f'stroke="#3d6b8a" stroke-width="0.3" stroke-dasharray="2,4" opacity="0.2"/>'
+        )
+        time_labels.append(
+            f'<text x="{x:.1f}" y="{PT+ph+14}" text-anchor="middle" font-size="7" '
+            f'fill="#999988" font-family="monospace">{t}m</text>'
+        )
+
+    # 平均深度ライン
+    avg_line = ""
+    if avg_depth:
+        ay = PT + min(avg_depth, y_scale) / y_scale * ph
+        avg_line = (
+            f'<line x1="{PL}" y1="{ay:.1f}" x2="{PL+pw}" y2="{ay:.1f}" '
+            f'stroke="#8b3a1e" stroke-width="0.9" stroke-dasharray="3,3" opacity="0.6"/>'
+            f'<text x="{PL+pw+2}" y="{ay+3:.1f}" font-size="6.5" fill="#8b3a1e" opacity="0.75" font-family="monospace">avg</text>'
+        )
+
+    # DECO警告
+    deco = (f'<text x="{PL+pw}" y="{PT+6}" text-anchor="end" font-size="7.5" '
+            f'fill="#8b3a1e" font-family="monospace" font-weight="bold">⚠ DECO</text>'
+            if "DECO" in warning else "")
+
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="100%" style="display:block;">
+  <defs>
+    <linearGradient id="dg{uid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d6b8a" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1a3a50" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect x="{PL}" y="{PT}" width="{pw}" height="{ph}" fill="#e8f0f5" opacity="0.3" rx="1"/>
+  {''.join(depth_labels)}
+  {''.join(time_labels)}
+  <path d="{fill_d}" fill="url(#dg{uid})"/>
+  <path d="{line_d}" fill="none" stroke="#deeaf3" stroke-width="1.4" stroke-linejoin="round"/>
+  {avg_line}
+  {deco}
+</svg>'''
+
+
 # ── メインビルド ──────────────────────────────────────────────────────────────
 def build():
     print("📥 Notionからデータ取得中...")
@@ -218,14 +298,32 @@ def build():
     raw_fish   = notion.get_all_fish()
     raw_photos = notion.get_all_photo_logs() if _ids.get("photo_db") else []
 
-    dives      = [parse_dive(p) for p in raw_dives]
+    dives         = [parse_dive(p) for p in raw_dives]
+    depth_profiles = load_depth_profiles()
+
+    # 深度プロファイルSVGを各ダイブに付与
+    for d in dives:
+        key  = (d["date"], d["start_time"])
+        pdat = depth_profiles.get(key)
+        if pdat and pdat.get("profile"):
+            uid = f"{d['date'].replace('-','')}_{d['start_time'].replace(':','')}"
+            svg = generate_depth_svg(
+                pdat["profile"],
+                d.get("avg_depth") or pdat.get("avg_depth"),
+                pdat.get("warning", ""),
+                uid,
+                duration_mins=d.get("duration") or pdat.get("duration"),
+            )
+            d["depth_svg"] = Markup(svg)
+        else:
+            d["depth_svg"] = None
     fish_index = {f["id"]: f for f in [parse_fish(p) for p in raw_fish]}
     photos     = [parse_photo_log(p) for p in raw_photos]
 
     print(f"  ダイブ {len(dives)}本 / 魚 {len(fish_index)}種 / 写真ログ {len(photos)}件")
 
-    # 場所キャッシュ読み込み
-    loc_cache = json.loads(LOCATION_CACHE_PATH.read_text()) if LOCATION_CACHE_PATH.exists() else {}
+    # セッション総評読み込み
+    session_reviews = notion.get_all_session_reviews()
 
     # 写真を (日付, 場所) でグループ化
     photo_map = defaultdict(list)
@@ -265,7 +363,7 @@ def build():
             ]
 
         print(f"  → {date_str} {location} ({len(dive_list)}本)")
-        loc_desc = get_location_desc(location, loc_cache)
+        review = session_reviews.get((date_str, location), {}).get("text", "")
 
         try:
             dt = datetime.strptime(date_str, "%Y-%m-%d")
@@ -293,14 +391,11 @@ def build():
             "dives":        dive_list,
             "fish":         seen_fish,
             "photos":       session_photos,
-            "loc_desc":     loc_desc,
+            "review":       review,
             "dive_range":   dive_range,
             "thumb":        thumb,
             "filename":     make_session_filename(date_str, location),
         })
-
-    # 場所キャッシュ保存
-    LOCATION_CACHE_PATH.write_text(json.dumps(loc_cache, ensure_ascii=False, indent=2))
 
     # サマリー統計
     total_duration = sum(d["duration"] or 0 for d in dives)
@@ -337,10 +432,21 @@ def build():
     env.filters["stars_html"] = stars_to_html
 
     # ① ホームページ生成
+    import socket
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+    except Exception:
+        local_ip = "localhost"
+    record_url = f"http://{local_ip}:5001/"
+
     home_html = env.get_template("home.html").render(
         sessions=sessions,
         summary=summary,
         build_date=build_date,
+        record_url=record_url,
     )
     (OUTPUT_DIR / "index.html").write_text(home_html, encoding="utf-8")
     print(f"\n✅ ホームページ → docs/index.html")

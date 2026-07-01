@@ -19,7 +19,12 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP",
                sans-serif;
-  background: var(--bg);
+  background-color: #eef4fb;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(43,108,176,0.07) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(49,130,206,0.06) 0%, transparent 40%),
+    radial-gradient(circle, rgba(43,108,176,0.08) 1.2px, transparent 1.2px);
+  background-size: auto, auto, 28px 28px;
   color: var(--text);
   min-height: 100vh;
   font-size: 16px;
@@ -216,7 +221,8 @@ textarea { resize: vertical; }
   margin-bottom: 12px;
   font-size: .9rem;
 }
-.alert-error { background: #fff5f5; color: var(--danger); border: 1px solid #fed7d7; }
+.alert-error   { background: #fff5f5; color: var(--danger);  border: 1px solid #fed7d7; }
+.alert-success { background: #f0fff4; color: #276749;        border: 1px solid #9ae6b4; }
 
 /* Complete */
 .complete-icon { font-size: 3rem; margin-bottom: 8px; }

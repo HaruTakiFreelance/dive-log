@@ -10,6 +10,7 @@ load_dotenv(Path(__file__).parent / ".env")
 load_dotenv(Path("/Users/harutakizawa/Desktop/claude code/my-hq-bot/.env"))
 
 from lib.ai import get_fish_info
+from lib.csv_import import match_and_update, parse_csv
 from lib.notion_api import NotionDiveClient
 from lib.weather import get_weather_and_marine
 
@@ -18,7 +19,8 @@ app.secret_key = os.urandom(24)
 
 _ids = json.loads((Path(__file__).parent / "data" / "notion_ids.json").read_text())
 notion = NotionDiveClient(
-    os.getenv("NOTION_TOKEN"), _ids["dive_log_db"], _ids["fish_db"], _ids["photo_db"]
+    os.getenv("NOTION_TOKEN"), _ids["dive_log_db"], _ids["fish_db"], _ids["photo_db"],
+    _ids.get("review_db"),
 )
 
 
@@ -50,6 +52,7 @@ def start_session():
     session["date"]                = request.form["date"]
     session["location"]            = request.form["location"]
     session["weight"]              = float(request.form["weight"] or 0)
+    session["buddy"]               = request.form.get("buddy", "")
     session["current_dive_number"] = int(request.form["dive_number"])
     return redirect(url_for("dive_form"))
 
@@ -71,15 +74,8 @@ def dive_form():
 def save_dive():
     f = request.form
 
-    if not f.get("start_time") or not f.get("end_time") or not f.get("max_depth"):
-        return "必須項目（開始時刻・終了時刻・Max Depth）が未入力です。", 400
-
-    start_dt = datetime.strptime(f["start_time"], "%H:%M")
-    end_dt   = datetime.strptime(f["end_time"],   "%H:%M")
-    duration = int((end_dt - start_dt).total_seconds() / 60)
-
     weather = get_weather_and_marine(
-        session["location"], session["date"], f["start_time"], f["end_time"]
+        session["location"], session["date"], None, None
     )
 
     fish_ids = [fid for fid in f.get("fish_ids", "").split(",") if fid.strip()]
@@ -90,10 +86,7 @@ def save_dive():
         "point":       f.get("point", ""),
         "dive_number": session["current_dive_number"],
         "weight":      session["weight"],
-        "start_time":  f["start_time"],
-        "end_time":    f["end_time"],
-        "duration":    duration,
-        "max_depth":   float(f["max_depth"] or 0),
+        "buddy":       session.get("buddy", ""),
         "cost":        int(f.get("cost") or 0),
         "fish_ids":    fish_ids,
         "comment":     f.get("comment", ""),
@@ -222,6 +215,124 @@ def fish_add():
     data    = request.json or {}
     fish_id = notion.add_fish(data)
     return jsonify({"id": fish_id, "name": data.get("name", "")})
+
+
+# ────────────────────────────────────────
+# 見れた魚 後付け追加
+# ────────────────────────────────────────
+@app.route("/dive/fish")
+def dive_fish_form():
+    pages = notion.get_recent_dive_logs(limit=60)
+    dives = []
+    for p in pages:
+        props = p["properties"]
+        title_list = props.get("名前", {}).get("title", [])
+        title = title_list[0]["plain_text"] if title_list else "—"
+        fish_count = len(props.get("見れた魚", {}).get("relation", []))
+        dives.append({
+            "id":         p["id"],
+            "title":      title,
+            "fish_count": fish_count,
+        })
+    return render_template("dive_fish_form.html", dives=dives)
+
+
+@app.route("/dive/fish", methods=["POST"])
+def dive_fish_save():
+    page_id  = request.form.get("page_id", "").strip()
+    fish_ids = [fid.strip() for fid in request.form.get("fish_ids", "").split(",") if fid.strip()]
+    if not page_id or not fish_ids:
+        return jsonify({"ok": False, "message": "ダイブと魚を指定してください"}), 400
+    try:
+        notion.append_fish_to_dive(page_id, fish_ids)
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+# ────────────────────────────────────────
+# 動画リンク後付け追加
+# ────────────────────────────────────────
+@app.route("/video")
+def video_form():
+    pages = notion.get_recent_dive_logs(limit=60)
+    dives = []
+    for p in pages:
+        props = p["properties"]
+        title_list = props.get("名前", {}).get("title", [])
+        title = title_list[0]["plain_text"] if title_list else "—"
+        rt = props.get("動画リンク", {}).get("rich_text", [])
+        existing = rt[0]["plain_text"] if rt else ""
+        dives.append({
+            "id":       p["id"],
+            "title":    title,
+            "existing": [u.strip() for u in existing.splitlines() if u.strip()],
+        })
+    return render_template("video_form.html", dives=dives)
+
+
+@app.route("/video", methods=["POST"])
+def video_save():
+    page_id = request.form.get("page_id", "").strip()
+    url     = request.form.get("url", "").strip()
+    if not page_id or not url:
+        return jsonify({"ok": False, "message": "ダイブとURLを指定してください"}), 400
+    try:
+        notion.append_video_link(page_id, url)
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+# ────────────────────────────────────────
+# ダイコンCSVインポート
+# ────────────────────────────────────────
+@app.route("/import/csv")
+def import_csv_form():
+    return render_template("import_csv.html")
+
+
+@app.route("/import/csv", methods=["POST"])
+def import_csv_post():
+    f = request.files.get("csv_file")
+    if not f or not f.filename:
+        return jsonify({"ok": False, "message": "ファイルが選択されていません"}), 400
+    try:
+        dives   = parse_csv(f.read())
+        results = match_and_update(dives, notion)
+        updated  = [r for r in results if r["status"] == "updated"]
+        no_match = [r for r in results if r["status"] == "no_match"]
+        return jsonify({"ok": True, "results": results,
+                        "updated": len(updated), "no_match": len(no_match)})
+    except Exception as e:
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+
+# ────────────────────────────────────────
+# セッション総評
+# ────────────────────────────────────────
+@app.route("/session/review")
+def session_review_form():
+    sessions = notion.get_dive_sessions(limit=60)
+    reviews  = notion.get_all_session_reviews()
+    for s in sessions:
+        r = reviews.get((s["date"], s["location"]))
+        s["existing_text"] = r["text"] if r else ""
+    return render_template("session_review_form.html", sessions=sessions)
+
+
+@app.route("/session/review", methods=["POST"])
+def session_review_save():
+    date_str = request.form.get("date", "").strip()
+    location = request.form.get("location", "").strip()
+    text     = request.form.get("text", "").strip()
+    if not date_str or not location:
+        return jsonify({"ok": False, "message": "セッションを選択してください"}), 400
+    try:
+        notion.upsert_session_review(date_str, location, text)
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "message": str(e)}), 500
 
 
 # ────────────────────────────────────────

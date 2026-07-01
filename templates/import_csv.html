@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %} — ダイコンCSVインポート{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 class="card-title">📥 ダイコンCSVインポート</h2>
+  <p class="card-sub" style="margin-bottom:20px;">
+    ダイブコンピューターからエクスポートしたCSVをアップロードすると、<br>
+    Notionの該当ダイブログに最大水深・潜水時間・水温などを自動入力します。
+  </p>
+
+  <div style="background:#f0f4f8; border-radius:8px; padding:14px 16px; margin-bottom:20px; font-size:.82rem; color:#555;">
+    <strong>照合ロジック：</strong> 同じ日付のCSV行とNotionの「Max Depth未入力」エントリを、それぞれの出現順（本数順）で1件ずつ突き合わせます。<br>
+    Notionに未入力エントリがない日のデータはスキップされます（新規作成は行いません）。
+  </div>
+
+  <form id="form-import" enctype="multipart/form-data">
+    <div style="margin-bottom:16px;">
+      <label style="font-size:.85rem; font-weight:600; display:block; margin-bottom:6px;">CSVファイル</label>
+      <input type="file" name="csv_file" accept=".csv" required
+             style="font-size:.85rem; padding:8px; border:1px solid #ddd; border-radius:6px; width:100%;">
+    </div>
+    <button type="submit" class="btn btn-primary btn-full" id="btn-submit">
+      インポート実行 →
+    </button>
+  </form>
+
+  <div id="result" style="display:none; margin-top:20px;"></div>
+</div>
+
+<script>
+document.getElementById('form-import').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('btn-submit');
+  const result = document.getElementById('result');
+  btn.disabled = true;
+  btn.textContent = '⏳ 処理中...';
+  result.style.display = 'none';
+
+  const formData = new FormData(e.target);
+  try {
+    const res  = await fetch('/import/csv', { method: 'POST', body: formData });
+    const data = await res.json();
+
+    if (data.ok) {
+      const rows = data.results.map(r => {
+        const icon   = r.status === 'updated' ? '✅' : '⚠️';
+        const label  = r.status === 'updated' ? r.notion_name : '照合なし';
+        return `<tr>
+          <td>${icon}</td>
+          <td>${r.date}</td>
+          <td>${r.start_time}</td>
+          <td style="color:${r.status === 'updated' ? '#2e7d32' : '#b36200'};">${label}</td>
+        </tr>`;
+      }).join('');
+
+      result.innerHTML = `
+        <div style="background:#e8f5e9; border-radius:8px; padding:12px 16px; margin-bottom:14px; font-size:.85rem;">
+          ✅ 完了：<strong>${data.updated}件 更新</strong>　⚠️ 照合なし：${data.no_match}件
+        </div>
+        <table style="width:100%; font-size:.82rem; border-collapse:collapse;">
+          <thead>
+            <tr style="border-bottom:2px solid #eee;">
+              <th style="padding:6px 8px; text-align:left; width:30px;"></th>
+              <th style="padding:6px 8px; text-align:left;">日付</th>
+              <th style="padding:6px 8px; text-align:left;">開始時刻</th>
+              <th style="padding:6px 8px; text-align:left;">Notionログ</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+      btn.textContent = 'インポート実行 →';
+      btn.disabled = false;
+      e.target.reset();
+    } else {
+      result.innerHTML = `<div style="background:#ffebee; border-radius:8px; padding:12px 16px; font-size:.85rem; color:#c62828;">
+        ❌ エラー: ${data.message}
+      </div>`;
+      btn.disabled = false;
+      btn.textContent = 'インポート実行 →';
+    }
+  } catch (err) {
+    result.innerHTML = `<div style="background:#ffebee; border-radius:8px; padding:12px 16px; font-size:.85rem; color:#c62828;">
+      ❌ 通信エラー: ${err.message}
+    </div>`;
+    btn.disabled = false;
+    btn.textContent = 'インポート実行 →';
+  }
+  result.style.display = 'block';
+});
+</script>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %} — その日の総評{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 class="card-title">📝 その日の総評を書く</h2>
+  <p class="card-sub">セッションを選んで、その日のダイビング全体の総評を入力してください</p>
+
+  <div id="alert-area"></div>
+
+  <div class="form">
+    <div class="field">
+      <label for="session_key">セッションを選択</label>
+      <select id="session_key" name="session_key">
+        <option value="">— セッションを選んでください —</option>
+        {% for s in sessions %}
+        <option value="{{ s.date }}|{{ s.location }}" data-existing="{{ s.existing_text }}">
+          {{ s.date }} {{ s.location }}（{{ s.count }}本）{% if s.existing_text %} ✅記入済{% endif %}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="text">総評</label>
+      <textarea id="text" name="text" rows="6"
+                placeholder="その日のダイビング全体を振り返って..."></textarea>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-full" id="btn-save" onclick="saveReview()">
+      保存する
+    </button>
+  </div>
+</div>
+
+<div class="card" style="margin-top:8px;">
+  <div class="btn-group-col" style="margin-top:0">
+    <button class="btn btn-primary btn-full" id="btn-build" onclick="buildLogbook()">
+      📖 ログブックを再生成
+    </button>
+    <a href="/" class="btn btn-secondary btn-full">🏠 トップへ</a>
+  </div>
+</div>
+
+<script>
+document.getElementById('session_key').addEventListener('change', function() {
+  var opt = this.options[this.selectedIndex];
+  document.getElementById('text').value = opt.dataset.existing || '';
+});
+
+async function saveReview() {
+  var sessionKey = document.getElementById('session_key').value;
+  var text       = document.getElementById('text').value;
+  var btn        = document.getElementById('btn-save');
+
+  if (!sessionKey) { showAlert('セッションを選択してください', 'error'); return; }
+
+  var parts    = sessionKey.split('|');
+  var date     = parts[0];
+  var location = parts.slice(1).join('|');
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ 保存中...';
+
+  try {
+    var res = await fetch('/session/review', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'date=' + encodeURIComponent(date) +
+            '&location=' + encodeURIComponent(location) +
+            '&text=' + encodeURIComponent(text),
+    });
+    var data = await res.json();
+    if (data.ok) {
+      showAlert('✅ 保存しました！ログブックの再生成を忘れずに。', 'success');
+      var opt = document.getElementById('session_key').options[document.getElementById('session_key').selectedIndex];
+      opt.dataset.existing = text;
+      opt.textContent = opt.textContent.replace(/\s*✅記入済$/, '') + (text ? ' ✅記入済' : '');
+    } else {
+      showAlert('エラー: ' + data.message, 'error');
+    }
+  } catch (e) {
+    showAlert('通信エラー: ' + e.message, 'error');
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = '保存する';
+  }
+}
+
+async function buildLogbook() {
+  var btn = document.getElementById('btn-build');
+  btn.disabled    = true;
+  btn.textContent = '⏳ 生成中...';
+  try {
+    var res  = await fetch('/build', { method: 'POST' });
+    var data = await res.json();
+    if (data.ok) {
+      btn.textContent = '✅ 生成完了！';
+    } else {
+      btn.disabled    = false;
+      btn.textContent = '📖 ログブックを再生成';
+      showAlert('エラー: ' + data.message, 'error');
+    }
+  } catch (e) {
+    btn.disabled    = false;
+    btn.textContent = '📖 ログブックを再生成';
+    showAlert('通信エラー: ' + e.message, 'error');
+  }
+}
+
+function showAlert(msg, type) {
+  document.getElementById('alert-area').innerHTML =
+    '<div class="alert alert-' + (type === 'error' ? 'error' : 'success') + '">' + msg + '</div>';
+}
+</script>
+{% endblock %}

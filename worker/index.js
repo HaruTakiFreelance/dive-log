@@ -80,38 +80,77 @@ export default {
         return respond(results);
       }
 
-      // ── 魚情報AI自動入力 ──
+      // ── 魚情報取得（shiny-ace.com スクレイプ、ai.py と同じロジック）──
       if (pathname === '/fish/suggest' && request.method === 'POST') {
         const { name } = await request.json();
-        const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'x-api-key': env.ANTHROPIC_API_KEY,
-            'anthropic-version': '2023-06-01',
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'claude-haiku-4-5-20251001',
-            max_tokens: 400,
-            messages: [{
-              role: 'user',
-              content: `海の生き物「${name}」の情報をJSONで返してください。
-english_name: 英名（なければ空文字）
-scientific_name: 学名（なければ空文字）
-category: 分類（魚類/甲殻類/頭足類/棘皮動物/軟体動物/その他 のどれか）
-memo: 生息域・特徴など1〜2文（日本語）
-JSONのみ返してください。`
-            }]
-          })
-        });
-        const aiData = await aiRes.json();
-        const text = aiData.content?.[0]?.text || '{}';
-        const match = text.match(/\{[\s\S]*\}/);
-        try {
-          return respond(match ? JSON.parse(match[0]) : {});
-        } catch {
-          return respond({});
+        const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36';
+
+        // 1. インデックスページから魚のURLを探す
+        const idxRes = await fetch('https://shiny-ace.com/sakuin.html', { headers: { 'User-Agent': UA } });
+        const idxHtml = await idxRes.text();
+        const idxLinks = [...idxHtml.matchAll(/href="(zukan\/[^"]+)"[^>]*>([^<]+)</g)];
+        let fishUrl = null;
+        for (const [, href, linkName] of idxLinks) {
+          const ln = linkName.trim();
+          if (ln === name || ln.includes(name) || name.includes(ln)) {
+            fishUrl = 'https://shiny-ace.com/' + href;
+            break;
+          }
         }
+        if (!fishUrl) return respond({});
+
+        // 2. 魚ページを取得してテキスト化
+        const pageRes = await fetch(fishUrl, { headers: { 'User-Agent': UA } });
+        const pageHtml = await pageRes.text();
+        const text = pageHtml
+          .replace(/<script[\s\S]*?<\/script>/gi, '')
+          .replace(/<style[\s\S]*?<\/style>/gi, '')
+          .replace(/<[^>]+>/g, '\n')
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&#[0-9]+;/g, '')
+          .replace(/&[a-z]+;/g, '');
+
+        // 3. フィールド抽出（ai.py と同じパターン）
+        const findField = (label) => {
+          const m = text.match(new RegExp(label + '[\\uff1a:\\s　]*([^\\n]+)'));
+          return m ? m[1].trim() : '';
+        };
+        const findStars = (label) => {
+          const m = text.match(new RegExp(label + '[\\uff1a:\\s　]*([★☆\\n]+)'));
+          return m ? m[1].replace(/\n/g, '').trim() : '';
+        };
+
+        const english_name    = findField('英名');
+        const sciM            = text.match(/\n([A-Z][a-z]+ [a-z][a-z]+(?:\s+[a-z]+)?)\n/);
+        const scientific_name = sciM ? sciM[1].trim() : '';
+        const habitat         = findField('生息');
+        const distribution    = findField('分布');
+        const rarity          = findStars('レア度');
+        const popularity      = findStars('人気');
+        const photo_ease      = findStars('撮り易さ');
+        const orderM          = text.match(/-\s*(.+目)\s*-/);
+        const familyM         = text.match(/\n([^\n]+科)\n/);
+        const genusM          = text.match(/-\s*(.+属)/);
+        const order           = orderM  ? orderM[1].trim()  : '';
+        const family          = familyM ? familyM[1].trim() : '';
+        const genus           = genusM  ? genusM[1].trim()  : '';
+
+        // 4. カテゴリ判定（ai.py と同じ）
+        const CATEGORY_KEYWORDS = [
+          ['軟体動物', ['軟体動物','頭足綱','腹足綱','二枚貝綱','タコ目','イカ目']],
+          ['甲殻類',   ['甲殻類','十脚目','口脚目','フジツボ']],
+          ['棘皮動物', ['棘皮動物','ヒトデ綱','ウニ綱','ナマコ綱']],
+          ['爬虫類',   ['爬虫類','ウミガメ科','カメ目']],
+          ['哺乳類',   ['哺乳類','クジラ目','鯨偶蹄目']],
+        ];
+        let category = '魚類';
+        for (const [cat, keywords] of CATEGORY_KEYWORDS) {
+          if (keywords.some(kw => text.includes(kw))) { category = cat; break; }
+        }
+
+        const memoParts = [habitat, distribution ? `分布：${distribution}` : ''].filter(Boolean);
+        return respond({ english_name, scientific_name, category, order, family, genus,
+                         memo: memoParts.join('　'), rarity, popularity, photo_ease });
       }
 
       // ── 魚追加 ──
@@ -120,11 +159,16 @@ JSONのみ返してください。`
         const props = {
           '名前': { title: [{ text: { content: d.name } }] },
         };
-        if (d.english_name)    props['英名']  = { rich_text: [{ text: { content: d.english_name } }] };
-        if (d.scientific_name) props['学名']  = { rich_text: [{ text: { content: d.scientific_name } }] };
-        if (d.category)        props['分類']  = { select: { name: d.category } };
-        if (d.memo)            props['メモ']  = { rich_text: [{ text: { content: d.memo } }] };
-        if (d.rarity)          props['レア度'] = { rich_text: [{ text: { content: d.rarity } }] };
+        if (d.english_name)    props['英名']      = { rich_text: [{ text: { content: d.english_name } }] };
+        if (d.scientific_name) props['学名']      = { rich_text: [{ text: { content: d.scientific_name } }] };
+        if (d.category)        props['分類']      = { select: { name: d.category } };
+        if (d.memo)            props['メモ']      = { rich_text: [{ text: { content: d.memo } }] };
+        if (d.order)           props['目']        = { rich_text: [{ text: { content: d.order } }] };
+        if (d.family)          props['科']        = { rich_text: [{ text: { content: d.family } }] };
+        if (d.genus)           props['属']        = { rich_text: [{ text: { content: d.genus } }] };
+        if (d.rarity)          props['レア度']    = { rich_text: [{ text: { content: d.rarity } }] };
+        if (d.popularity)      props['人気']      = { rich_text: [{ text: { content: d.popularity } }] };
+        if (d.photo_ease)      props['撮りやすさ'] = { rich_text: [{ text: { content: d.photo_ease } }] };
 
         const page = await notion(env, 'POST', '/pages', {
           parent: { database_id: env.FISH_DB },

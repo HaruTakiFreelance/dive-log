@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %} — 動画を追加{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 class="card-title">🎬 YouTube動画を追加</h2>
+  <p class="card-sub">ダイブを選んでYouTubeのURLを貼り付けてください</p>
+
+  <div id="alert-area"></div>
+
+  <div class="form">
+    <div class="field">
+      <label for="page_id">ダイブを選択</label>
+      <select id="page_id" name="page_id" size="1">
+        <option value="">— ダイブを選んでください —</option>
+        {% for d in dives %}
+        <option value="{{ d.id }}" data-existing="{{ d.existing | join('\n') }}">
+          {{ d.title }}{% if d.existing %} 🎬×{{ d.existing|length }}{% endif %}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div id="existing-area" style="display:none">
+      <div class="field">
+        <label>登録済みURL</label>
+        <div id="existing-list" style="font-size:.85rem;color:var(--sub);line-height:1.8;word-break:break-all;"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="url">YouTube URL</label>
+      <input type="url" id="url" name="url"
+             placeholder="https://www.youtube.com/watch?v=..."
+             autocomplete="off">
+    </div>
+
+    <button type="button" class="btn btn-primary btn-full" id="btn-save" onclick="saveVideo()">
+      追加する
+    </button>
+  </div>
+</div>
+
+<div class="card" style="margin-top:8px;">
+  <div class="btn-group-col" style="margin-top:0">
+    <button class="btn btn-primary btn-full" id="btn-build" onclick="buildLogbook()">
+      📖 ログブックを再生成
+    </button>
+    <a href="/" class="btn btn-secondary btn-full">🏠 トップへ</a>
+  </div>
+</div>
+
+<script>
+document.getElementById('page_id').addEventListener('change', function() {
+  var opt = this.options[this.selectedIndex];
+  var raw = (opt.dataset.existing || '').trim();
+  var area = document.getElementById('existing-area');
+  var list = document.getElementById('existing-list');
+  if (raw) {
+    list.innerHTML = raw.split('\n').map(function(u) {
+      return '<a href="' + u + '" target="_blank" rel="noopener" style="display:block;color:var(--accent)">' + u + '</a>';
+    }).join('');
+    area.style.display = '';
+  } else {
+    area.style.display = 'none';
+  }
+});
+
+async function saveVideo() {
+  var pageId = document.getElementById('page_id').value;
+  var url    = document.getElementById('url').value.trim();
+  var btn    = document.getElementById('btn-save');
+  var alert  = document.getElementById('alert-area');
+
+  if (!pageId) { showAlert('ダイブを選択してください', 'error'); return; }
+  if (!url)    { showAlert('URLを入力してください', 'error'); return; }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ 保存中...';
+  alert.innerHTML = '';
+
+  try {
+    var res  = await fetch('/video', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'page_id=' + encodeURIComponent(pageId) + '&url=' + encodeURIComponent(url),
+    });
+    var data = await res.json();
+    if (data.ok) {
+      showAlert('✅ 追加しました！ログブックの再生成を忘れずに。', 'success');
+      document.getElementById('url').value = '';
+      // 登録済みリストをその場で更新
+      var opt = document.getElementById('page_id').options[document.getElementById('page_id').selectedIndex];
+      var prev = (opt.dataset.existing || '').trim();
+      opt.dataset.existing = prev ? prev + '\n' + url : url;
+      var count = opt.dataset.existing.split('\n').filter(Boolean).length;
+      opt.textContent = opt.textContent.replace(/ 🎬×\d+$/, '') + ' 🎬×' + count;
+      document.getElementById('page_id').dispatchEvent(new Event('change'));
+    } else {
+      showAlert('エラー: ' + data.message, 'error');
+    }
+  } catch (e) {
+    showAlert('通信エラー: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '追加する';
+  }
+}
+
+async function buildLogbook() {
+  var btn = document.getElementById('btn-build');
+  btn.disabled = true;
+  btn.textContent = '⏳ 生成中...';
+  try {
+    var res  = await fetch('/build', { method: 'POST' });
+    var data = await res.json();
+    if (data.ok) {
+      btn.textContent = '✅ 生成完了！';
+    } else {
+      btn.disabled = false;
+      btn.textContent = '📖 ログブックを再生成';
+      showAlert('エラー: ' + data.message, 'error');
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = '📖 ログブックを再生成';
+    showAlert('通信エラー: ' + e.message, 'error');
+  }
+}
+
+function showAlert(msg, type) {
+  var a = document.getElementById('alert-area');
+  a.innerHTML = '<div class="alert alert-' + (type === 'error' ? 'error' : 'success') + '">' + msg + '</div>';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% block title %} — 見れた魚を追加{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h2 class="card-title">🐠 見れた魚を後から追加</h2>
+  <p class="card-sub">ダイブを選んで魚を検索・追加してください</p>
+
+  <div id="alert-area"></div>
+
+  <div class="form">
+    <div class="field">
+      <label for="page_id">ダイブを選択</label>
+      <select id="page_id" name="page_id">
+        <option value="">— ダイブを選んでください —</option>
+        {% for d in dives %}
+        <option value="{{ d.id }}">
+          {{ d.title }}{% if d.fish_count %} 🐠×{{ d.fish_count }}{% endif %}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="field">
+      <label>追加する魚</label>
+      <div class="fish-widget">
+        <div class="fish-chips" id="fish-chips"></div>
+        <input type="text" id="fish-input" placeholder="魚名を入力して検索..."
+               autocomplete="off" autocorrect="off" spellcheck="false">
+        <div class="fish-dropdown" id="fish-dropdown" hidden></div>
+        <input type="hidden" id="fish-ids-input">
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-full" id="btn-save" onclick="saveFish()">
+      追加する
+    </button>
+  </div>
+</div>
+
+<div class="card" style="margin-top:8px;">
+  <div class="btn-group-col" style="margin-top:0">
+    <button class="btn btn-primary btn-full" id="btn-build" onclick="buildLogbook()">
+      📖 ログブックを再生成
+    </button>
+    <a href="/" class="btn btn-secondary btn-full">🏠 トップへ</a>
+  </div>
+</div>
+
+<script>
+// ── 魚ウィジェット ──────────────────────────────────
+const dbFish  = new Map();
+let   tempCounter = 0;
+
+function addChip(id, name, isPending) {
+  const chips = document.getElementById('fish-chips');
+  const chip  = document.createElement('div');
+  chip.className = 'fish-chip' + (isPending ? ' fish-chip-new' : '');
+  chip.dataset.id = id;
+  chip.innerHTML  = name + ' <button type="button" onclick="removeChip(this)">×</button>';
+  chips.appendChild(chip);
+  syncHidden();
+}
+
+function removeChip(btn) {
+  btn.closest('.fish-chip').remove();
+  syncHidden();
+}
+
+function syncHidden() {
+  const ids = [...document.querySelectorAll('#fish-chips .fish-chip')]
+    .map(c => c.dataset.id).filter(Boolean);
+  document.getElementById('fish-ids-input').value = ids.join(',');
+}
+
+// 検索ドロップダウン
+const input    = document.getElementById('fish-input');
+const dropdown = document.getElementById('fish-dropdown');
+let   timer;
+
+input.addEventListener('input', () => {
+  clearTimeout(timer);
+  const q = input.value.trim();
+  if (!q) { dropdown.hidden = true; return; }
+  timer = setTimeout(() => fetchFish(q), 200);
+});
+
+input.addEventListener('keydown', e => {
+  if (e.key === 'Escape') dropdown.hidden = true;
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.fish-widget')) dropdown.hidden = true;
+});
+
+async function fetchFish(q) {
+  const res  = await fetch('/fish/search?q=' + encodeURIComponent(q));
+  const list = await res.json();
+  dropdown.innerHTML = '';
+
+  list.forEach(f => {
+    const item = document.createElement('div');
+    item.className   = 'dropdown-item';
+    item.textContent = f.name;
+    item.onclick = () => {
+      if (!dbFish.has(f.id)) {
+        dbFish.set(f.id, f.name);
+        addChip(f.id, f.name, false);
+      }
+      input.value    = '';
+      dropdown.hidden = true;
+    };
+    dropdown.appendChild(item);
+  });
+
+  // 新規追加オプション
+  const addItem = document.createElement('div');
+  addItem.className   = 'dropdown-item dropdown-add';
+  addItem.textContent = `「${q}」を新しく追加`;
+  addItem.onclick = () => {
+    const key = 'new_' + (++tempCounter);
+    addChip(key, q, true);
+    input.value    = '';
+    dropdown.hidden = true;
+  };
+  dropdown.appendChild(addItem);
+  dropdown.hidden = false;
+}
+
+// ── 保存 ──────────────────────────────────────────
+async function saveFish() {
+  const pageId  = document.getElementById('page_id').value;
+  const fishIds = document.getElementById('fish-ids-input').value;
+  const btn     = document.getElementById('btn-save');
+
+  if (!pageId)  { showAlert('ダイブを選択してください', 'error'); return; }
+  if (!fishIds) { showAlert('魚を1種以上選んでください', 'error'); return; }
+
+  // 未登録（new_N）の魚がある場合は登録してからIDを置換
+  const chips = [...document.querySelectorAll('#fish-chips .fish-chip')];
+  const pendingChips = chips.filter(c => c.dataset.id.startsWith('new_'));
+
+  for (const chip of pendingChips) {
+    const name = chip.querySelector('button').previousSibling.textContent.trim();
+    try {
+      const res  = await fetch('/fish/suggest', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ name }),
+      });
+      const info = await res.json();
+      const res2 = await fetch('/fish/add', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ name, ...info }),
+      });
+      const data = await res2.json();
+      chip.dataset.id = data.id;
+    } catch(e) {
+      showAlert('魚の登録に失敗: ' + e.message, 'error');
+      return;
+    }
+  }
+  syncHidden();
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ 保存中...';
+
+  try {
+    const res  = await fetch('/dive/fish', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'page_id=' + encodeURIComponent(pageId) +
+            '&fish_ids=' + encodeURIComponent(document.getElementById('fish-ids-input').value),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showAlert('✅ 追加しました！ログブックの再生成を忘れずに。', 'success');
+      // チップをリセット
+      document.getElementById('fish-chips').innerHTML = '';
+      document.getElementById('fish-ids-input').value = '';
+      // 選択中のoptionの魚数を更新
+      const opt = document.getElementById('page_id').options[document.getElementById('page_id').selectedIndex];
+      const m   = opt.textContent.match(/🐠×(\d+)/);
+      const cur = m ? parseInt(m[1]) : 0;
+      const added = document.getElementById('fish-ids-input').value.split(',').filter(Boolean).length;
+      opt.textContent = opt.textContent.replace(/\s*🐠×\d+/, '') +
+                        ' 🐠×' + (cur + chips.length);
+    } else {
+      showAlert('エラー: ' + data.message, 'error');
+    }
+  } catch(e) {
+    showAlert('通信エラー: ' + e.message, 'error');
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = '追加する';
+  }
+}
+
+async function buildLogbook() {
+  const btn = document.getElementById('btn-build');
+  btn.disabled    = true;
+  btn.textContent = '⏳ 生成中...';
+  try {
+    const res  = await fetch('/build', { method: 'POST' });
+    const data = await res.json();
+    if (data.ok) {
+      btn.textContent = '✅ 生成完了！';
+    } else {
+      btn.disabled    = false;
+      btn.textContent = '📖 ログブックを再生成';
+      showAlert('エラー: ' + data.message, 'error');
+    }
+  } catch(e) {
+    btn.disabled    = false;
+    btn.textContent = '📖 ログブックを再生成';
+    showAlert('通信エラー: ' + e.message, 'error');
+  }
+}
+
+function showAlert(msg, type) {
+  document.getElementById('alert-area').innerHTML =
+    '<div class="alert alert-' + (type === 'error' ? 'error' : 'success') + '">' + msg + '</div>';
+}
+</script>
+{% endblock %}

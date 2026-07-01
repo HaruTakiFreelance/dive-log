@@ -14,26 +14,9 @@
       <input type="text" name="point" placeholder="例: 内湾" autocomplete="off">
     </div>
 
-    <div class="field-row">
-      <div class="field">
-        <label>開始時刻</label>
-        <input type="time" name="start_time" required>
-      </div>
-      <div class="field">
-        <label>終了時刻</label>
-        <input type="time" name="end_time" required>
-      </div>
-    </div>
-
-    <div class="field-row">
-      <div class="field">
-        <label>Max Depth (m)</label>
-        <input type="number" name="max_depth" step="0.1" min="0" placeholder="例: 18.4" required>
-      </div>
-      <div class="field">
-        <label>費用 (円)</label>
-        <input type="number" name="cost" min="0" placeholder="例: 9000">
-      </div>
+    <div class="field">
+      <label>費用 (円)</label>
+      <input type="number" name="cost" min="0" placeholder="例: 9000">
     </div>
 
     <!-- 見れた魚 -->
@@ -217,28 +200,6 @@ document.addEventListener('click', e => {
 // ─────────────────────────────────────────
 function handleSubmit(action) {
   document.getElementById('form-action').value = action;
-
-  const startTime = document.querySelector('[name="start_time"]').value;
-  const endTime   = document.querySelector('[name="end_time"]').value;
-  const maxDepth  = document.querySelector('[name="max_depth"]').value;
-
-  if (!startTime || !endTime || !maxDepth) {
-    let missing = [];
-    if (!startTime) missing.push('開始時刻');
-    if (!endTime)   missing.push('終了時刻');
-    if (!maxDepth)  missing.push('Max Depth');
-
-    let errEl = document.getElementById('form-error');
-    if (!errEl) {
-      errEl = document.createElement('div');
-      errEl.id        = 'form-error';
-      errEl.className = 'alert alert-error';
-      document.getElementById('dive-form').prepend(errEl);
-    }
-    errEl.textContent = `⚠️ 未入力項目があります: ${missing.join('、')}`;
-    errEl.hidden = false;
-    return;
-  }
 
   const errEl = document.getElementById('form-error');
   if (errEl) errEl.hidden = true;
