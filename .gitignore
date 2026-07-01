@@ -7,3 +7,4 @@ docs/guidebook.pdf
 *.pdf
 .DS_Store
 logs/
+worker/.wrangler/
